@@ -1,0 +1,28 @@
+# Dependencias
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Builds
+dist/
+build/
+*.tsbuildinfo
+
+# Entornos y secretos
+.env
+.env.*
+!.env.example
+
+# Datos locales
+uploads/
+*.db
+*.sqlite3
+whatsapp-qr-service/sessions/
+whatsapp-qr-service/media/
+
+# Sistema / IDE
+.DS_Store
+.claude/
+*.log

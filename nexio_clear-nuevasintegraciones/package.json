@@ -1,0 +1,10 @@
+{
+  "name": "crm",
+  "version": "1.0.0",
+  "description": "CRM Abogados Tributarios - Unified Script",
+  "scripts": {
+    "build": "cd frontend && npm install --legacy-peer-deps && npm run build",
+    "start": "cd backend && set PYTHONIOENCODING=utf-8&& set PYTHONUTF8=1&& venv\\Scripts\\uvicorn.exe app.main:app --host 0.0.0.0 --port 8000",
+    "start:linux": "fuser -k 8000/tcp 2>/dev/null; cd backend && ./venv/bin/pip install -r requirements.txt && ./venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000"
+  }
+}
