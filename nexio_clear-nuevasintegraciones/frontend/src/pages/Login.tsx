@@ -12,11 +12,41 @@ const PERKS = [
   { icon: ShieldCheck, text: 'Acceso seguro por roles' },
 ]
 
+// Cuentas demo — un clic para probar cada rol del CRM
+const DEMO_ACCOUNTS: { label: string; role: string; email: string; pw: string }[] = [
+  { label: 'Admin Zelix',     role: 'SuperAdmin',  email: 'admin@zelix.cl',       pw: 'Admin2026!'   },
+  { label: 'Sofía Rojas',     role: 'SubAdmin',    email: 'subadmin@zelix.cl',    pw: 'Sub2026!'     },
+  { label: 'Técnico Zelix',   role: 'Técnico',     email: 'tecnico@zelix.cl',     pw: 'Tecnico2026!' },
+  { label: 'Ignacio Silva',   role: 'Verificador', email: 'verificador@zelix.cl', pw: 'Zelix2026!'   },
+  { label: 'Cobrador Zelix',  role: 'Cobrador',    email: 'cobrador@zelix.cl',    pw: 'Zelix2026!'   },
+  { label: 'Matías Vega',     role: 'Vendedor',    email: 'vendedor1@zelix.cl',   pw: 'Zelix2026!'   },
+  { label: 'Diego Fuentes',   role: 'Vendedor',    email: 'vendedor2@zelix.cl',   pw: 'Zelix2026!'   },
+  { label: 'Felipe Soto',     role: 'Vendedor',    email: 'vendedor3@zelix.cl',   pw: 'Zelix2026!'   },
+  { label: 'Tomás Herrera',   role: 'Vendedor',    email: 'vendedor5@zelix.cl',   pw: 'Zelix2026!'   },
+  { label: 'Camila Torres',   role: 'Agendadora',  email: 'agenda1@zelix.cl',     pw: 'Zelix2026!'   },
+  { label: 'Valentina Ruiz',  role: 'Agendadora',  email: 'agenda2@zelix.cl',     pw: 'Zelix2026!'   },
+  { label: 'Antonia Pérez',   role: 'Agendadora',  email: 'agenda3@zelix.cl',     pw: 'Zelix2026!'   },
+  { label: 'Josefa Muñoz',    role: 'Agendadora',  email: 'agenda4@zelix.cl',     pw: 'Zelix2026!'   },
+  { label: 'Fernanda Castro', role: 'Agendadora',  email: 'agenda5@zelix.cl',     pw: 'Zelix2026!'   },
+]
+
+const ROLE_COLORS: Record<string, string> = {
+  SuperAdmin:  '#7c3aed',
+  SubAdmin:    '#a78bfa',
+  'Técnico':   '#0891b2',
+  Verificador: '#f59e0b',
+  Cobrador:    '#e11d48',
+  Vendedor:    '#06b6d4',
+  Agendadora:  '#10b981',
+}
+
 export default function Login() {
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw]     = useState(false)
   const [loading, setLoading]   = useState(false)
+  const [showDemo, setShowDemo] = useState(false)
+  const [demoLoading, setDemoLoading] = useState<string | null>(null)
   const login    = useAuthStore(s => s.login)
   const navigate = useNavigate()
 
@@ -44,6 +74,22 @@ export default function Login() {
       }
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleDemoLogin = async (acc: { email: string; pw: string; label: string }) => {
+    setDemoLoading(acc.email)
+    setEmail(acc.email)
+    setPassword(acc.pw)
+    try {
+      await login(acc.email, acc.pw)
+      const role = useAuthStore.getState().user?.role
+      toast.success(`Demo: ${acc.label}`)
+      navigate(homeFor(role))
+    } catch (err: any) {
+      toast.error(err?.response?.data?.detail || 'No se pudo iniciar la cuenta demo')
+    } finally {
+      setDemoLoading(null)
     }
   }
 
@@ -247,6 +293,57 @@ export default function Login() {
             )}
           </button>
         </form>
+
+        {/* Cuentas demo — probar cada rol con un clic */}
+        <div className="mt-5">
+          <button type="button" onClick={() => setShowDemo(v => !v)}
+            className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all"
+            style={{
+              background: showDemo ? 'rgba(124,58,237,0.08)' : '#f7f5fc',
+              border: '1px solid rgba(124,58,237,0.22)',
+              color: '#7c3aed',
+            }}>
+            <span className="inline-flex items-center gap-1.5">
+              <Zap size={12} /> Cuentas demo — prueba cada rol
+            </span>
+            <span style={{ transform: showDemo ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', fontSize: 10 }}>▼</span>
+          </button>
+
+          {showDemo && (
+            <div className="mt-2.5 rounded-2xl p-2 space-y-1 overflow-y-auto"
+              style={{ maxHeight: 240, background: '#f7f5fc', border: '1px solid rgba(28,22,51,0.10)' }}>
+              {DEMO_ACCOUNTS.map(acc => {
+                const color = ROLE_COLORS[acc.role] || '#7c3aed'
+                const busy = demoLoading === acc.email
+                return (
+                  <button key={acc.email} type="button"
+                    onClick={() => handleDemoLogin(acc)}
+                    disabled={demoLoading !== null}
+                    className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left transition-all disabled:opacity-50"
+                    style={{ background: '#ffffff', border: '1px solid rgba(28,22,51,0.08)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `${color}66`; (e.currentTarget as HTMLElement).style.boxShadow = `0 2px 10px ${color}22` }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(28,22,51,0.08)'; (e.currentTarget as HTMLElement).style.boxShadow = 'none' }}>
+                    <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-[10px] font-black"
+                      style={{ background: `${color}18`, color, border: `1px solid ${color}40` }}>
+                      {busy ? '…' : acc.label.charAt(0)}
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-[11px] font-bold leading-tight truncate" style={{ color: '#1c1633' }}>{acc.label}</span>
+                      <span className="block text-[9px] leading-tight truncate" style={{ color: 'rgba(28,22,51,0.45)' }}>{acc.email}</span>
+                    </span>
+                    <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider"
+                      style={{ background: `${color}14`, color }}>
+                      {acc.role}
+                    </span>
+                  </button>
+                )
+              })}
+              <p className="text-[9px] text-center pt-1 pb-0.5" style={{ color: 'rgba(28,22,51,0.35)' }}>
+                Contraseñas: Admin2026! · Sub2026! · Tecnico2026! · resto Zelix2026!
+              </p>
+            </div>
+          )}
+        </div>
 
         {/* Aviso migración Telegram */}
         <div className="mt-5 flex items-start gap-2.5 p-3 rounded-2xl"
