@@ -101,9 +101,9 @@ def _ensure_tecnico():
     try:
         if not db.query(models.User).filter(models.User.role == "tecnico").first():
             db.add(models.User(
-                name="Técnico Sistema",
-                email="tecnico@abogadostributarios.cl",
-                password_hash=hash_password("Tecnico2024!"),
+                name="Técnico Zelix",
+                email="tecnico@zelix.cl",
+                password_hash=hash_password("Tecnico2026!"),
                 role="tecnico",
                 group_id=None,
             ))

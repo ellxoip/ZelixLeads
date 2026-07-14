@@ -14,11 +14,11 @@ def seed():
         # ── GROUPS ──────────────────────────────────────────────────
         groups = []
         group_names = [
-            ("Grupo 1", "Jonathan / Marcela"),
-            ("Grupo 2", "Nicolás J. / Aizel"),
-            ("Grupo 3", "Jorge Javier / Francisca"),
-            ("Grupo 4", "Dante Seura / Enma"),
-            ("Grupo 5", "Nicole / Stephany"),
+            ("Grupo 1", "Matías / Camila"),
+            ("Grupo 2", "Diego / Valentina"),
+            ("Grupo 3", "Felipe / Antonia"),
+            ("Grupo 4", "Ignacio / Josefa"),
+            ("Grupo 5", "Tomás / Fernanda"),
         ]
         for name, desc in group_names:
             g = models.Group(name=name, description=desc)
@@ -80,76 +80,77 @@ def seed():
                 db.add(area)
         db.flush()
 
-        # ── USERS ────────────────────────────────────────────────────
+        # ── USERS (credenciales de prueba @zelix.cl) ─────────────────
         tecnico = models.User(
-            name="Técnico Sistema",
-            email="tecnico@abogadostributarios.cl",
-            password_hash=hash_password("Tecnico2024!"),
+            name="Técnico Zelix",
+            email="tecnico@zelix.cl",
+            password_hash=hash_password("Tecnico2026!"),
             role="tecnico",
             group_id=None,
         )
         db.add(tecnico)
 
-        jorge = models.User(
-            name="Jorge Castillo",
-            email="jorge@abogadostributarios.cl",
-            password_hash=hash_password("Admin2024!"),
+        admin = models.User(
+            name="Admin Zelix",
+            email="admin@zelix.cl",
+            password_hash=hash_password("Admin2026!"),
             role="superadmin",
             group_id=None,
         )
-        nicolas_admin = models.User(
-            name="Nicolás Jiménez",
-            email="nicolas@abogadostributarios.cl",
-            password_hash=hash_password("Sub2024!"),
+        subadmin = models.User(
+            name="Sofía Rojas",
+            email="subadmin@zelix.cl",
+            password_hash=hash_password("Sub2026!"),
             role="subadmin",
             group_id=groups[1].id,
         )
-        db.add(jorge)
-        db.add(nicolas_admin)
+        db.add(admin)
+        db.add(subadmin)
 
         # Grupo 1
-        jonathan = models.User(name="Jonathan Cisternas", email="jonathan@abogadostributarios.cl",
-                               password_hash=hash_password("Pass2024!"), role="vendedor", group_id=groups[0].id)
-        marcela = models.User(name="Marcela", email="marcela@abogadostributarios.cl",
-                              password_hash=hash_password("Pass2024!"), role="agendadora", group_id=groups[0].id)
-        db.add(jonathan); db.add(marcela)
+        vendedor1 = models.User(name="Matías Vega", email="vendedor1@zelix.cl",
+                                password_hash=hash_password("Zelix2026!"), role="vendedor", group_id=groups[0].id)
+        agenda1 = models.User(name="Camila Torres", email="agenda1@zelix.cl",
+                              password_hash=hash_password("Zelix2026!"), role="agendadora", group_id=groups[0].id)
+        db.add(vendedor1); db.add(agenda1)
 
         # Grupo 2
-        nicolas_v = models.User(name="Nicolás J.", email="nicolasj@abogadostributarios.cl",
-                                password_hash=hash_password("Pass2024!"), role="vendedor", group_id=groups[1].id)
-        aizel = models.User(name="Aizel Echezuría", email="aizel@abogadostributarios.cl",
-                            password_hash=hash_password("Pass2024!"), role="agendadora", group_id=groups[1].id)
-        db.add(nicolas_v); db.add(aizel)
+        vendedor2 = models.User(name="Diego Fuentes", email="vendedor2@zelix.cl",
+                                password_hash=hash_password("Zelix2026!"), role="vendedor", group_id=groups[1].id)
+        agenda2 = models.User(name="Valentina Ruiz", email="agenda2@zelix.cl",
+                              password_hash=hash_password("Zelix2026!"), role="agendadora", group_id=groups[1].id)
+        db.add(vendedor2); db.add(agenda2)
 
         # Grupo 3
-        jorge_javier = models.User(name="Jorge Javier", email="jorgejavier@abogadostributarios.cl",
-                                   password_hash=hash_password("Pass2024!"), role="vendedor", group_id=groups[2].id)
-        francisca = models.User(name="Francisca", email="francisca@abogadostributarios.cl",
-                                password_hash=hash_password("Pass2024!"), role="agendadora", group_id=groups[2].id)
-        db.add(jorge_javier); db.add(francisca)
+        vendedor3 = models.User(name="Felipe Soto", email="vendedor3@zelix.cl",
+                                password_hash=hash_password("Zelix2026!"), role="vendedor", group_id=groups[2].id)
+        agenda3 = models.User(name="Antonia Pérez", email="agenda3@zelix.cl",
+                              password_hash=hash_password("Zelix2026!"), role="agendadora", group_id=groups[2].id)
+        db.add(vendedor3); db.add(agenda3)
 
-        # Grupo 4 — Dante es vendedor especial que ve pagos
-        dante = models.User(name="Dante Seura", email="dante@abogadostributarios.cl",
-                            password_hash=hash_password("Pass2024!"), role="verificador", group_id=groups[3].id)
-        enma = models.User(name="Enma", email="enma@abogadostributarios.cl",
-                           password_hash=hash_password("Pass2024!"), role="agendadora", group_id=groups[3].id)
-        db.add(dante); db.add(enma)
+        # Grupo 4 — verificador de pagos
+        verificador = models.User(name="Ignacio Silva", email="verificador@zelix.cl",
+                                  password_hash=hash_password("Zelix2026!"), role="verificador", group_id=groups[3].id)
+        agenda4 = models.User(name="Josefa Muñoz", email="agenda4@zelix.cl",
+                              password_hash=hash_password("Zelix2026!"), role="agendadora", group_id=groups[3].id)
+        db.add(verificador); db.add(agenda4)
 
         # Grupo 5
-        nicole = models.User(name="Nicole", email="nicole@abogadostributarios.cl",
-                             password_hash=hash_password("Pass2024!"), role="vendedor", group_id=groups[4].id)
-        stephany = models.User(name="Stephany", email="stephany@abogadostributarios.cl",
-                               password_hash=hash_password("Pass2024!"), role="agendadora", group_id=groups[4].id)
-        db.add(nicole); db.add(stephany)
+        vendedor5 = models.User(name="Tomás Herrera", email="vendedor5@zelix.cl",
+                                password_hash=hash_password("Zelix2026!"), role="vendedor", group_id=groups[4].id)
+        agenda5 = models.User(name="Fernanda Castro", email="agenda5@zelix.cl",
+                              password_hash=hash_password("Zelix2026!"), role="agendadora", group_id=groups[4].id)
+        db.add(vendedor5); db.add(agenda5)
 
         db.commit()
         print("✅ Database seeded successfully!")
-        print("\n📋 CREDENTIALS:")
-        print("  Tecnico:    tecnico@abogadostributarios.cl / Tecnico2024!")
-        print("  SuperAdmin: jorge@abogadostributarios.cl / Admin2024!")
-        print("  SubAdmin:   nicolas@abogadostributarios.cl / Sub2024!")
-        print("  Dante:      dante@abogadostributarios.cl / Pass2024!")
-        print("  All others: [email] / Pass2024!")
+        print("\n📋 CREDENCIALES DE PRUEBA:")
+        print("  Técnico:     tecnico@zelix.cl / Tecnico2026!")
+        print("  SuperAdmin:  admin@zelix.cl / Admin2026!")
+        print("  SubAdmin:    subadmin@zelix.cl / Sub2026!")
+        print("  Verificador: verificador@zelix.cl / Zelix2026!")
+        print("  Vendedores:  vendedor1..5@zelix.cl / Zelix2026!")
+        print("  Agendadoras: agenda1..5@zelix.cl / Zelix2026!")
     except Exception as e:
         db.rollback()
         print(f"❌ Seed error: {e}")

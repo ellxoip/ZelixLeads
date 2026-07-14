@@ -1173,17 +1173,17 @@ def trigger_sync(
 def seed_cobrador(db: Session):
     from ..auth import hash_password
 
-    cobrador = db.query(models.User).filter(models.User.email == "cobrador@nexio.cl").first()
+    cobrador = db.query(models.User).filter(models.User.email == "cobrador@zelix.cl").first()
     if not cobrador:
         cobrador = models.User(
-            name="Carlos Cobrador",
-            email="cobrador@nexio.cl",
-            password_hash=hash_password("Cobrador2024!"),
+            name="Cobrador Zelix",
+            email="cobrador@zelix.cl",
+            password_hash=hash_password("Zelix2026!"),
             role="cobrador",
         )
         db.add(cobrador)
         db.commit()
         db.refresh(cobrador)
-        print("✅ Cobrador user: cobrador@nexio.cl / Cobrador2024!")
+        print("✅ Cobrador user: cobrador@zelix.cl / Zelix2026!")
 
     logger.debug("Cobrador user ready.")
