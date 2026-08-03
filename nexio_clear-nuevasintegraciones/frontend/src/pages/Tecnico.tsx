@@ -878,7 +878,7 @@ Si el cliente tiene una consulta compleja o quiere hablar con una persona, dile 
                       onMouseEnter={e => {
                         (e.currentTarget as HTMLElement).style.background = '#3d4f9e'
                         ;(e.currentTarget as HTMLElement).style.borderColor = '#5a6fc2'
-                        ;(e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(124,58,237,0.45)'
+                        ;(e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(53,122,14,0.45)'
                       }}
                       onMouseLeave={e => {
                         (e.currentTarget as HTMLElement).style.background = '#2d3a6e'
@@ -2111,7 +2111,7 @@ Si el cliente tiene una consulta compleja o quiere hablar con una persona, dile 
                   <div className="flex gap-2 mt-1">
                     {([
                       { key: 'basico',     label: 'Básico',     activeBg: '#475569', activeBorder: '#64748b', activeText: '#ffffff', inactiveBg: 'rgba(71,85,105,0.15)', inactiveBorder: 'rgba(100,116,139,0.40)', inactiveText: '#94a3b8' },
-                      { key: 'pro',        label: 'Pro',        activeBg: '#7c3aed', activeBorder: '#7c3aed', activeText: '#ffffff', inactiveBg: 'rgba(124,58,237,0.12)', inactiveBorder: 'rgba(124,58,237,0.40)', inactiveText: '#a78bfa' },
+                      { key: 'pro',        label: 'Pro',        activeBg: 'var(--zx-accent-text)', activeBorder: 'var(--zx-accent-text)', activeText: '#ffffff', inactiveBg: 'rgba(53,122,14,0.12)', inactiveBorder: 'rgba(53,122,14,0.40)', inactiveText: '#a78bfa' },
                       { key: 'enterprise', label: 'Enterprise', activeBg: '#d97706', activeBorder: '#d97706', activeText: '#ffffff', inactiveBg: 'rgba(217,119,6,0.12)',  inactiveBorder: 'rgba(217,119,6,0.40)',  inactiveText: '#fbbf24' },
                     ] as const).map(({ key: p, label, activeBg, activeBorder, activeText, inactiveBg, inactiveBorder, inactiveText }) => {
                       const active = negocioForm.plan === p

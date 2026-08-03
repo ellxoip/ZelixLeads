@@ -76,13 +76,13 @@ export default function AgentIA() {
         <div>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(124,58,237,0.12)', color: '#7c3aed' }}>
+              style={{ background: 'rgba(53,122,14,0.12)', color: 'var(--zx-accent-text)' }}>
               <Bot size={16} />
             </div>
             <h1 className="text-xl font-bold" style={{ color: 'var(--text)' }}>Agente IA</h1>
             {data.count > 0 && (
               <span className="text-xs font-bold px-2.5 py-1 rounded-full"
-                style={{ background: 'rgba(124,58,237,0.12)', color: '#7c3aed' }}>
+                style={{ background: 'rgba(53,122,14,0.12)', color: 'var(--zx-accent-text)' }}>
                 {data.count} pendiente{data.count !== 1 ? 's' : ''}
               </span>
             )}
@@ -135,13 +135,13 @@ export default function AgentIA() {
       {loading ? (
         <div className="flex items-center justify-center py-24">
           <div className="w-7 h-7 border-2 rounded-full animate-spin"
-            style={{ borderColor: 'var(--border)', borderTopColor: '#7c3aed' }} />
+            style={{ borderColor: 'var(--border)', borderTopColor: 'var(--zx-accent-text)' }} />
         </div>
       ) : filtered.length === 0 ? (
         <div className="py-20 text-center rounded-2xl"
           style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}>
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
-            style={{ background: 'rgba(124,58,237,0.08)', color: '#7c3aed' }}>
+            style={{ background: 'rgba(53,122,14,0.08)', color: 'var(--zx-accent-text)' }}>
             <Bot size={28} />
           </div>
           <p className="font-bold text-base" style={{ color: 'var(--text-3)' }}>
@@ -163,15 +163,15 @@ export default function AgentIA() {
                 className="rounded-2xl overflow-hidden transition-all"
                 style={{
                   background: 'var(--surface-1)',
-                  border: isHighlighted ? '2px solid #7c3aed' : '1.5px solid rgba(124,58,237,0.18)',
-                  boxShadow: isHighlighted ? '0 0 0 4px rgba(124,58,237,0.15), 0 2px 10px rgba(124,58,237,0.12)' : '0 2px 10px rgba(124,58,237,0.06)',
+                  border: isHighlighted ? '2px solid var(--zx-accent-text)' : '1.5px solid rgba(53,122,14,0.18)',
+                  boxShadow: isHighlighted ? '0 0 0 4px rgba(53,122,14,0.15), 0 2px 10px rgba(53,122,14,0.12)' : '0 2px 10px rgba(53,122,14,0.06)',
                 }}>
 
                 {/* Header */}
                 <div className="flex items-center gap-3 px-4 py-3.5"
                   style={{ borderBottom: '1px solid var(--border)' }}>
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-base font-black"
-                    style={{ background: 'rgba(124,58,237,0.12)', color: '#7c3aed' }}>
+                    style={{ background: 'rgba(53,122,14,0.12)', color: 'var(--zx-accent-text)' }}>
                     {lead.contact?.name?.charAt(0)?.toUpperCase() ?? '?'}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -187,7 +187,7 @@ export default function AgentIA() {
                   </div>
                   <div className="flex flex-col items-end gap-1 flex-shrink-0">
                     <span className="text-[9px] font-bold px-2 py-1 rounded-lg flex items-center gap-1"
-                      style={{ background: 'rgba(124,58,237,0.10)', color: '#7c3aed', border: '1px solid rgba(124,58,237,0.16)' }}>
+                      style={{ background: 'rgba(53,122,14,0.10)', color: 'var(--zx-accent-text)', border: '1px solid rgba(53,122,14,0.16)' }}>
                       <Bot size={8} /> IA
                     </span>
                     {isAdmin && lead.group?.name && (
@@ -237,9 +237,9 @@ export default function AgentIA() {
                   <button
                     onClick={() => navigate('/leads', { state: { openLeadId: lead.id } })}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-all"
-                    style={{ background: 'rgba(124,58,237,0.09)', color: '#7c3aed', border: '1px solid rgba(124,58,237,0.18)' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(124,58,237,0.18)' }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(124,58,237,0.09)' }}>
+                    style={{ background: 'rgba(53,122,14,0.09)', color: 'var(--zx-accent-text)', border: '1px solid rgba(53,122,14,0.18)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(53,122,14,0.18)' }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(53,122,14,0.09)' }}>
                     Abrir lead <ArrowRight size={11} />
                   </button>
                 </div>

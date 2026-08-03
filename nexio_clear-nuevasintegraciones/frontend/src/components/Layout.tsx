@@ -283,7 +283,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <p className="font-black text-lg leading-none truncate"
               style={{
                 fontFamily: '"Space Grotesk", sans-serif', letterSpacing: '-0.03em',
-                background: 'linear-gradient(90deg, #a78bfa 0%, #06b6d4 100%)',
+                background: 'linear-gradient(90deg, #a78bfa 0%, var(--zx-lime) 100%)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
               }}>
               ZelixLeads
@@ -301,7 +301,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <button onClick={() => setShowSearch(true)}
           className="mx-4 mb-4 flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl text-xs font-medium transition-all flex-shrink-0"
           style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.40)' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.55)'; (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.75)' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(53,122,14,0.55)'; (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.75)' }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.09)'; (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.40)' }}>
           <Search size={13} />
           <span className="flex-1 text-left">Buscar en el CRM…</span>
@@ -357,9 +357,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         onClick={() => setMobile(false)}
                         className={`flex items-center rounded-xl transition-all duration-150 ${expanded ? 'gap-2.5 px-2.5 py-2' : 'justify-center w-10 h-10'}`}
                         style={active ? {
-                          background: 'linear-gradient(90deg, #7c3aed 0%, #06b6d4 140%)',
+                          background: 'linear-gradient(90deg, var(--zx-accent-text) 0%, var(--zx-lime) 140%)',
                           color: '#ffffff',
-                          boxShadow: '0 4px 14px rgba(124,58,237,0.35)',
+                          boxShadow: '0 4px 14px rgba(53,122,14,0.35)',
                         } : {
                           color: 'rgba(255,255,255,0.55)',
                         }}
@@ -370,7 +370,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                           <Icon size={15} style={{ color: active ? '#ffffff' : 'rgba(255,255,255,0.60)' }} />
                           {!expanded && badge > 0 && (
                             <span className="absolute -top-1.5 -right-1.5 w-2 h-2 rounded-full"
-                              style={{ background: path === '/agente-ia' ? '#06b6d4' : '#e11d48' }} />
+                              style={{ background: path === '/agente-ia' ? 'var(--zx-lime)' : '#e11d48' }} />
                           )}
                         </span>
                         {expanded && <span className="flex-1 truncate text-[12.5px] font-semibold">{label}</span>}
@@ -401,7 +401,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <div className="flex items-center gap-2.5 mb-2.5">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-black text-sm"
-                style={{ background: 'linear-gradient(135deg, #7c3aed, #06b6d4)', color: '#fff', fontFamily: '"Space Grotesk", sans-serif' }}>
+                style={{ background: 'linear-gradient(135deg, var(--zx-accent-text), var(--zx-lime))', color: '#fff', fontFamily: '"Space Grotesk", sans-serif' }}>
                 {user?.name?.charAt(0)}
               </div>
               <div className="flex-1 min-w-0">
@@ -454,12 +454,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         className={`hidden md:flex flex-col flex-shrink-0 transition-all duration-300 relative overflow-hidden ${open ? 'w-[268px]' : 'w-[72px]'}`}
         style={{
           background: 'linear-gradient(180deg, #1a1038 0%, #130d26 55%, #0e0a1d 100%)',
-          borderRight: '1px solid rgba(124,58,237,0.14)',
+          borderRight: '1px solid rgba(53,122,14,0.14)',
         }}
       >
         {/* Halo decorativo superior */}
         <div className="absolute -top-24 -left-16 w-64 h-64 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.22) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(53,122,14,0.22) 0%, transparent 70%)' }} />
         <div className="relative z-10 flex flex-col h-full">
           <SidebarContent />
         </div>
@@ -471,7 +471,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="fixed inset-0 z-40 md:hidden" style={{ background: 'rgba(10,6,20,0.70)', backdropFilter: 'blur(6px)' }}
             onClick={() => setMobile(false)} />
           <aside className="fixed left-0 top-0 h-full w-[280px] flex flex-col z-50 md:hidden overflow-hidden"
-            style={{ background: 'linear-gradient(180deg, #1a1038 0%, #130d26 55%, #0e0a1d 100%)', borderRight: '1px solid rgba(124,58,237,0.14)' }}>
+            style={{ background: 'linear-gradient(180deg, #1a1038 0%, #130d26 55%, #0e0a1d 100%)', borderRight: '1px solid rgba(53,122,14,0.14)' }}>
             <div className="absolute top-4 right-4 z-20">
               <button onClick={() => setMobile(false)}
                 className="p-1.5 rounded-lg transition-colors"
@@ -498,8 +498,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             className="md:hidden flex items-center justify-center rounded-2xl flex-shrink-0"
             style={{
               width: '42px', height: '42px',
-              background: 'linear-gradient(135deg, #7c3aed, #06b6d4)',
-              boxShadow: '0 4px 14px rgba(124,58,237,0.35)', color: '#fff',
+              background: 'linear-gradient(135deg, var(--zx-accent-text), var(--zx-lime))',
+              boxShadow: '0 4px 14px rgba(53,122,14,0.35)', color: '#fff',
             }}>
             <Menu size={19} />
           </button>
@@ -508,7 +508,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <button onClick={() => setOpen(!open)}
             className="hidden md:flex items-center justify-center rounded-xl transition-colors flex-shrink-0"
             style={{ width: '34px', height: '34px', border: '1px solid rgba(28,22,51,0.12)', background: '#ffffff', color: 'rgba(28,22,51,0.50)' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.45)'; (e.currentTarget as HTMLElement).style.color = '#7c3aed' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(53,122,14,0.45)'; (e.currentTarget as HTMLElement).style.color = 'var(--zx-accent-text)' }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(28,22,51,0.12)'; (e.currentTarget as HTMLElement).style.color = 'rgba(28,22,51,0.50)' }}>
             <Menu size={15} />
           </button>
@@ -586,14 +586,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <div className="hidden sm:flex items-center gap-2 pl-1 pr-3 py-1 rounded-full"
               style={{ background: '#ffffff', border: '1px solid rgba(28,22,51,0.12)', boxShadow: '0 1px 3px rgba(28,22,51,0.06)' }}>
               <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, #7c3aed, #06b6d4)' }}>
+                style={{ background: 'linear-gradient(135deg, var(--zx-accent-text), var(--zx-lime))' }}>
                 <span style={{ color: '#fff', fontFamily: '"Space Grotesk", sans-serif', fontWeight: 700, fontSize: '0.7rem' }}>
                   {user?.name?.charAt(0)}
                 </span>
               </div>
               <div className="leading-tight">
                 <p className="text-[11px] font-bold" style={{ color: '#1c1633' }}>{user?.name}</p>
-                <p className="text-[8px] uppercase tracking-wider font-semibold" style={{ color: 'rgba(124,58,237,0.70)' }}>{user?.role}</p>
+                <p className="text-[8px] uppercase tracking-wider font-semibold" style={{ color: 'rgba(53,122,14,0.70)' }}>{user?.role}</p>
               </div>
             </div>
           </div>
@@ -610,7 +610,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         style={{
           bottom: 'max(10px, env(safe-area-inset-bottom))',
           background: 'rgba(19,13,38,0.94)',
-          border: '1px solid rgba(124,58,237,0.22)',
+          border: '1px solid rgba(53,122,14,0.22)',
           backdropFilter: 'blur(18px)',
           WebkitBackdropFilter: 'blur(18px)',
           boxShadow: '0 10px 34px rgba(10,6,20,0.45)',
@@ -625,8 +625,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <span className="flex items-center justify-center rounded-xl transition-all"
                 style={{
                   width: '34px', height: '30px',
-                  background: active ? 'linear-gradient(135deg, #7c3aed, #06b6d4)' : 'transparent',
-                  boxShadow: active ? '0 4px 12px rgba(124,58,237,0.40)' : 'none',
+                  background: active ? 'linear-gradient(135deg, var(--zx-accent-text), var(--zx-lime))' : 'transparent',
+                  boxShadow: active ? '0 4px 12px rgba(53,122,14,0.40)' : 'none',
                 }}>
                 <Icon size={16} />
               </span>

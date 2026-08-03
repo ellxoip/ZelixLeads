@@ -154,7 +154,7 @@ export default function AsistenteSeguimiento() {
   const kpis: { label: string; value: string; sub: string; color: string; bg: string; icon: any; key: typeof modal }[] = [
     { label: 'Vencidos', value: String(leads.en_seguimiento.length), sub: 'La fecha comprometida de pago ya pasó y el cliente no ha pagado', color: '#EF4444', bg: 'rgba(239,68,68,0.10)', icon: AlertTriangle, key: 'vencidos' },
     { label: 'Próximos', value: String(leads.proximos.length), sub: 'La fecha de pago se acerca — vence en los próximos días', color: '#F59E0B', bg: 'rgba(245,158,11,0.10)', icon: Clock, key: 'proximos' },
-    { label: 'Monto en riesgo', value: fmtMoney(dash?.monto_en_riesgo ?? montoRiesgo), sub: 'Suma de honorarios de todos los compromisos aún sin pagar', color: '#7c3aed', bg: 'rgba(124,58,237,0.10)', icon: DollarSign, key: 'monto' },
+    { label: 'Monto en riesgo', value: fmtMoney(dash?.monto_en_riesgo ?? montoRiesgo), sub: 'Suma de honorarios de todos los compromisos aún sin pagar', color: 'var(--zx-accent-text)', bg: 'rgba(53,122,14,0.10)', icon: DollarSign, key: 'monto' },
     { label: 'Gestionados', value: `${contactados}/${allItems.length}`, sub: 'Clientes que ya contactaste, repactaste o pagaron, del total', color: '#10B981', bg: 'rgba(16,185,129,0.10)', icon: TrendingUp, key: 'gestionados' },
   ]
 
@@ -293,7 +293,7 @@ export default function AsistenteSeguimiento() {
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded-md" style={{ background: urgent ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)', color: urgent ? '#DC2626' : '#D97706' }}>
                             {urgent ? '¡Urgente!' : `${diasRestantes}d restantes`}
                           </span>
-                          {item.honorarios > 0 && <span className="text-xs font-bold" style={{ color: '#7c3aed' }}>{fmtMoney(item.honorarios)}</span>}
+                          {item.honorarios > 0 && <span className="text-xs font-bold" style={{ color: 'var(--zx-accent-text)' }}>{fmtMoney(item.honorarios)}</span>}
                           {wa && <a href={wa} target="_blank" rel="noopener noreferrer" className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: '#25D366', color: '#fff' }}><ExternalLink size={11} /></a>}
                         </div>
                       </div>
@@ -307,9 +307,9 @@ export default function AsistenteSeguimiento() {
                 const total = montoItems.reduce((s: number, i: any) => s + (i.honorarios ?? 0), 0)
                 return (
                   <div className="space-y-3">
-                    <div className="p-3 rounded-xl text-center mb-4" style={{ background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.15)' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-wide" style={{ color: '#7c3aed' }}>Total en riesgo</p>
-                      <p className="text-2xl font-black" style={{ color: '#7c3aed', fontFamily: '"Space Grotesk", sans-serif' }}>{fmtMoney(total)}</p>
+                    <div className="p-3 rounded-xl text-center mb-4" style={{ background: 'rgba(53,122,14,0.08)', border: '1px solid rgba(53,122,14,0.15)' }}>
+                      <p className="text-[10px] font-bold uppercase tracking-wide" style={{ color: 'var(--zx-accent-text)' }}>Total en riesgo</p>
+                      <p className="text-2xl font-black" style={{ color: 'var(--zx-accent-text)', fontFamily: '"Space Grotesk", sans-serif' }}>{fmtMoney(total)}</p>
                     </div>
                     {montoItems.map((item: any, idx: number) => {
                       const pct = total > 0 ? (item.honorarios / total) * 100 : 0
@@ -319,12 +319,12 @@ export default function AsistenteSeguimiento() {
                           <div className="flex items-center gap-2">
                             <span className="text-[10px] font-black w-5 flex-shrink-0" style={{ color: 'var(--text-muted)' }}>#{idx + 1}</span>
                             <span className="text-sm font-semibold flex-1 truncate" style={{ color: 'var(--text)' }}>{item.contact_name ?? '—'}</span>
-                            <span className="text-sm font-black" style={{ color: '#7c3aed' }}>{fmtMoney(item.honorarios)}</span>
+                            <span className="text-sm font-black" style={{ color: 'var(--zx-accent-text)' }}>{fmtMoney(item.honorarios)}</span>
                             <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{pct.toFixed(1)}%</span>
                             {wa && <a href={wa} target="_blank" rel="noopener noreferrer" className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: '#25D366', color: '#fff' }}><ExternalLink size={10} /></a>}
                           </div>
                           <div className="h-1.5 rounded-full" style={{ background: 'rgba(28,22,51,0.08)' }}>
-                            <div className="h-1.5 rounded-full transition-all" style={{ width: `${pct}%`, background: idx === 0 ? '#7c3aed' : idx === 1 ? '#8B5CF6' : idx === 2 ? '#10B981' : '#94A3B8' }} />
+                            <div className="h-1.5 rounded-full transition-all" style={{ width: `${pct}%`, background: idx === 0 ? 'var(--zx-accent-text)' : idx === 1 ? '#8B5CF6' : idx === 2 ? '#10B981' : '#94A3B8' }} />
                           </div>
                         </div>
                       )
@@ -365,7 +365,7 @@ export default function AsistenteSeguimiento() {
                                 <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{item.contact_phone ?? '—'} · {item.vendor_name ?? '—'}</p>
                               </div>
                               <div className="flex items-center gap-2 flex-shrink-0">
-                                {item.honorarios > 0 && <span className="text-xs font-bold" style={{ color: '#7c3aed' }}>{fmtMoney(item.honorarios)}</span>}
+                                {item.honorarios > 0 && <span className="text-xs font-bold" style={{ color: 'var(--zx-accent-text)' }}>{fmtMoney(item.honorarios)}</span>}
                                 {stInfo && <span className="text-[10px] font-bold px-2 py-0.5 rounded-md" style={{ background: stInfo.bg, color: stInfo.color }}>{stInfo.label}</span>}
                                 {wa && <a href={wa} target="_blank" rel="noopener noreferrer" className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: '#25D366', color: '#fff' }}><ExternalLink size={11} /></a>}
                               </div>
@@ -510,7 +510,7 @@ export default function AsistenteSeguimiento() {
                             ? { background: 'rgba(14,165,233,0.10)', color: '#0369a1' }
                             : item.current_stage === 'pago_comprometido'
                               ? { background: 'rgba(16,185,129,0.10)', color: '#059669' }
-                              : { background: 'rgba(139,92,246,0.10)', color: '#7c3aed' }}>
+                              : { background: 'rgba(139,92,246,0.10)', color: 'var(--zx-accent-text)' }}>
                           {item.current_stage === 'pago_pendiente' ? 'Pago Pendiente'
                             : item.current_stage === 'pago_comprometido' ? 'Pago Comprometido'
                             : 'Altamente Interesado'}
@@ -578,9 +578,9 @@ export default function AsistenteSeguimiento() {
                           </button>
                           <button onClick={() => { setCompromisoFecha(''); setCompromisoNota(''); setCompromisoModal({ lead: item }) }} title="Cliente pagará otro día — repactar fecha"
                             className="h-8 px-2.5 rounded-lg flex items-center gap-1.5 text-[10px] font-bold flex-shrink-0 transition-colors"
-                            style={{ background: 'rgba(124,58,237,0.08)', color: '#7c3aed', border: '1px solid rgba(124,58,237,0.22)' }}
-                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(124,58,237,0.16)')}
-                            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(124,58,237,0.08)')}>
+                            style={{ background: 'rgba(53,122,14,0.08)', color: 'var(--zx-accent-text)', border: '1px solid rgba(53,122,14,0.22)' }}
+                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(53,122,14,0.16)')}
+                            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(53,122,14,0.08)')}>
                             <CalendarDays size={12} /> Nueva fecha
                           </button>
                           <div className="relative">
@@ -747,8 +747,8 @@ export default function AsistenteSeguimiento() {
             {/* Header */}
             <div className="px-5 py-4 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(28,22,51,0.08)' }}>
               <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: 'rgba(124,58,237,0.10)' }}>
-                <CalendarDays size={16} style={{ color: '#7c3aed' }} />
+                style={{ background: 'rgba(53,122,14,0.10)' }}>
+                <CalendarDays size={16} style={{ color: 'var(--zx-accent-text)' }} />
               </div>
               <div>
                 <p className="font-black text-sm" style={{ color: 'var(--text)', fontFamily: '"Space Grotesk", sans-serif' }}>Repactar fecha de pago</p>
@@ -794,7 +794,7 @@ export default function AsistenteSeguimiento() {
               </button>
               <button onClick={confirmarCompromiso} disabled={!compromisoFecha || updatingId !== null}
                 className="flex-1 py-2.5 rounded-xl text-sm font-bold"
-                style={{ background: compromisoFecha ? '#7c3aed' : 'rgba(124,58,237,0.3)', color: '#fff', opacity: !compromisoFecha ? 0.6 : 1 }}>
+                style={{ background: compromisoFecha ? 'var(--zx-accent-text)' : 'rgba(53,122,14,0.3)', color: '#fff', opacity: !compromisoFecha ? 0.6 : 1 }}>
                 Confirmar
               </button>
             </div>

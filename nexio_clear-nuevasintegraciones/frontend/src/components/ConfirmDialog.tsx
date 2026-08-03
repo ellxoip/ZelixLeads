@@ -39,10 +39,10 @@ export function ConfirmDialog({ title, message, confirmLabel = 'Confirmar', dang
             className="text-sm px-4 py-2 rounded-xl font-semibold transition-colors"
             style={danger
               ? { background: 'rgba(225,29,72,0.15)', border: '1px solid rgba(225,29,72,0.35)', color: '#e11d48' }
-              : { background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.35)', color: '#7c3aed' }
+              : { background: 'rgba(53,122,14,0.15)', border: '1px solid rgba(53,122,14,0.35)', color: 'var(--zx-accent-text)' }
             }
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = danger ? 'rgba(225,29,72,0.25)' : 'rgba(124,58,237,0.25)' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = danger ? 'rgba(225,29,72,0.15)' : 'rgba(124,58,237,0.15)' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = danger ? 'rgba(225,29,72,0.25)' : 'rgba(53,122,14,0.25)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = danger ? 'rgba(225,29,72,0.15)' : 'rgba(53,122,14,0.15)' }}
           >
             {confirmLabel}
           </button>

@@ -10,8 +10,8 @@ import {
   Users, UserCheck, CalendarCheck, Target, Award, ThumbsUp, Clock, Search,
 } from 'lucide-react'
 
-const PALETTE = ['#7c3aed', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#ef4444', '#84cc16']
-const AGING_COLORS = ['#7c3aed', '#10b981', '#f59e0b', '#ef4444']
+const PALETTE = ['var(--zx-accent-text)', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', 'var(--zx-lime)', '#ef4444', '#84cc16']
+const AGING_COLORS = ['var(--zx-accent-text)', '#10b981', '#f59e0b', '#ef4444']
 const AGING_BUCKETS = [
   { rango: '1 a 30 días', lo: 1, hi: 30 },
   { rango: '31 a 60 días', lo: 31, hi: 60 },
@@ -97,8 +97,8 @@ const STAGE_LABEL_V: Record<string, string> = {
   pagado_reunion: 'Validando Pago', pagado_confirmado: 'Confirmado ✓',
 }
 const STAGE_COLOR_V: Record<string, string> = {
-  lead: '#94a3b8', reunion: '#7c3aed', recuperacion_lead: '#8b5cf6', recuperacion_reunion: '#7c3aed',
-  altamente_interesado: '#06b6d4', recuperacion_altamente_interesado: '#0891b2',
+  lead: '#94a3b8', reunion: 'var(--zx-accent-text)', recuperacion_lead: '#8b5cf6', recuperacion_reunion: 'var(--zx-accent-text)',
+  altamente_interesado: 'var(--zx-lime)', recuperacion_altamente_interesado: '#0891b2',
   cierre: '#f59e0b', recuperacion_cierre: '#d97706',
   pago_pendiente: '#10b981', pago_comprometido: '#059669', pagado_reunion: '#34d399', pagado_confirmado: '#065f46',
 }
@@ -217,7 +217,7 @@ function DashboardVendedores() {
   const totConf  = res.total_honorarios_confirmados ?? 0
   const totConf2 = vendedores.reduce((s,v)=>s+v.confirmados,0)
   const totLeads = res.total_leads_periodo ?? 0
-  const PALETTE2 = ['#7c3aed','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#ef4444','#84cc16']
+  const PALETTE2 = ['var(--zx-accent-text)','#10b981','#f59e0b','#ec4899','#8b5cf6','var(--zx-lime)','#ef4444','#84cc16']
   const colorOf  = (i: number) => PALETTE2[i % PALETTE2.length]
 
   function ModalBodyV({ tipo, vendedorId }: { tipo: string; vendedorId?: number }) {
@@ -228,7 +228,7 @@ function DashboardVendedores() {
     if (tipo === 'vendedor' && v) {
       const rows: any[] = v.leads_detalle ?? []
       return <>
-        <div className="p-3 rounded-xl mb-4 text-xs" style={{ background:'rgba(124,58,237,0.06)', border:'1px solid rgba(124,58,237,0.15)', color:'var(--text)', lineHeight:1.6 }}>
+        <div className="p-3 rounded-xl mb-4 text-xs" style={{ background:'rgba(53,122,14,0.06)', border:'1px solid rgba(53,122,14,0.15)', color:'var(--text)', lineHeight:1.6 }}>
           <strong>{v.name}</strong> · {v.group}<br/>
           • <strong>{v.total_periodo} leads</strong> creados en período · <strong>{v.activos} activos</strong> en proceso actualmente<br/>
           • Pipeline: {v.en_reunion} en reunión · {v.altamente_interesado} alt. interesado · {v.cierre} cierre · {v.en_pago} en pago · <strong style={{color:'#10b981'}}>{v.confirmados} confirmados</strong><br/>
@@ -262,7 +262,7 @@ function DashboardVendedores() {
   }
 
   const KPIS_V = [
-    { tipo:'leads', label:'LEADS DEL PERÍODO', value:String(totLeads), sub:`creados ${data.period?.from} – ${data.period?.to}`, icon:Users, color:'#7c3aed', bg:'rgba(124,58,237,0.10)', desc:'Total de leads registrados por vendedores en el rango' },
+    { tipo:'leads', label:'LEADS DEL PERÍODO', value:String(totLeads), sub:`creados ${data.period?.from} – ${data.period?.to}`, icon:Users, color:'var(--zx-accent-text)', bg:'rgba(53,122,14,0.10)', desc:'Total de leads registrados por vendedores en el rango' },
     { tipo:'en_pago', label:'HONORARIOS COMPROMETIDOS', value:fmt(totHon), sub:`${vendedores.reduce((s,v)=>s+v.en_pago,0)} leads en proceso de pago`, icon:DollarSign, color:'#f59e0b', bg:'rgba(245,158,11,0.10)', desc:'Honorarios de leads en pago (Comprometido+Pendiente+Validando) — click para ver el listado' },
     { tipo:'confirmados', label:'HONORARIOS CONFIRMADOS', value:fmt(totConf), sub:`${totConf2} leads con pago verificado`, icon:CheckSquare, color:'#10b981', bg:'rgba(16,185,129,0.10)', desc:'Honorarios de leads con pago confirmado por el verificador — click para ver el listado' },
     { tipo:'reuniones', label:'REUNIONES DEL PERÍODO', value:String(vendedores.reduce((s,v)=>s+v.reuniones_asignadas,0)), sub:`${vendedores.reduce((s,v)=>s+v.reuniones_exitosas,0)} exitosas · ${vendedores.reduce((s,v)=>s+(v.reuniones_no_show??0),0)} no asistieron`, icon:CalendarCheck, color:'#8b5cf6', bg:'rgba(139,92,246,0.10)', desc:'Reuniones asignadas a vendedores en el período' },
@@ -347,7 +347,7 @@ function DashboardVendedores() {
                   <td className="py-2" style={{ color: 'var(--text-muted)' }}>{v.group}</td>
                   <td className="py-2 text-right">{v.total_periodo}</td>
                   <td className="py-2 text-right">{v.activos}</td>
-                  <td className="py-2 text-right" style={{color:'#7c3aed'}}>{v.en_reunion}</td>
+                  <td className="py-2 text-right" style={{color:'var(--zx-accent-text)'}}>{v.en_reunion}</td>
                   <td className="py-2 text-right" style={{color:'#8b5cf6'}}>{v.altamente_interesado}</td>
                   <td className="py-2 text-right" style={{color:'#f59e0b'}}>{v.cierre}</td>
                   <td className="py-2 text-right font-bold" style={{color:'#10b981'}}>{v.en_pago}</td>
@@ -367,7 +367,7 @@ function DashboardVendedores() {
                   <td className="py-2" colSpan={2}>TOTAL GENERAL</td>
                   <td className="py-2 text-right">{vendedores.reduce((s,v)=>s+v.total_periodo,0)}</td>
                   <td className="py-2 text-right">{vendedores.reduce((s,v)=>s+v.activos,0)}</td>
-                  <td className="py-2 text-right" style={{color:'#7c3aed'}}>{vendedores.reduce((s,v)=>s+v.en_reunion,0)}</td>
+                  <td className="py-2 text-right" style={{color:'var(--zx-accent-text)'}}>{vendedores.reduce((s,v)=>s+v.en_reunion,0)}</td>
                   <td className="py-2 text-right" style={{color:'#8b5cf6'}}>{vendedores.reduce((s,v)=>s+v.altamente_interesado,0)}</td>
                   <td className="py-2 text-right" style={{color:'#f59e0b'}}>{vendedores.reduce((s,v)=>s+v.cierre,0)}</td>
                   <td className="py-2 text-right" style={{color:'#10b981'}}>{vendedores.reduce((s,v)=>s+v.en_pago,0)}</td>
@@ -398,7 +398,7 @@ function DashboardVendedores() {
                 <XAxis type="number" tick={{ fontSize: 10, fill: '#94a3b8' }} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: 'var(--text)' }} width={100} />
                 <Tooltip />
-                <Bar dataKey="en_reunion" name="Reunión" fill="#7c3aed" stackId="a" />
+                <Bar dataKey="en_reunion" name="Reunión" fill="var(--zx-accent-text)" stackId="a" />
                 <Bar dataKey="altamente_interesado" name="Alt. Interesado" fill="#8b5cf6" stackId="a" />
                 <Bar dataKey="cierre" name="Cierre" fill="#f59e0b" stackId="a" />
                 <Bar dataKey="en_pago" name="En pago" fill="#10b981" stackId="a" />
@@ -407,7 +407,7 @@ function DashboardVendedores() {
             </ResponsiveContainer>
           </div>
           <div className="flex flex-wrap gap-3 mt-2">
-            {[{label:'Reunión',color:'#7c3aed'},{label:'Alt.Int.',color:'#8b5cf6'},{label:'Cierre',color:'#f59e0b'},{label:'En pago',color:'#10b981'},{label:'Confirmados',color:'#059669'}]
+            {[{label:'Reunión',color:'var(--zx-accent-text)'},{label:'Alt.Int.',color:'#8b5cf6'},{label:'Cierre',color:'#f59e0b'},{label:'En pago',color:'#10b981'},{label:'Confirmados',color:'#059669'}]
               .map(l=><span key={l.label} className="inline-flex items-center gap-1 text-[10px]" style={{color:'var(--text-muted)'}}><span className="w-2 h-2 rounded-full" style={{background:l.color}}/>{l.label}</span>)}
           </div>
         </div>
@@ -467,7 +467,7 @@ function DashboardAgendadoras() {
   if (!data) return <div className="p-6 text-sm" style={{ color: 'var(--text-muted)' }}>Sin datos.</div>
 
   const agendadoras: any[] = data.agendadoras ?? []
-  const PALETTE2 = ['#7c3aed','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4','#ef4444','#84cc16']
+  const PALETTE2 = ['var(--zx-accent-text)','#10b981','#f59e0b','#ec4899','#8b5cf6','var(--zx-lime)','#ef4444','#84cc16']
   const colorOf  = (i: number) => PALETTE2[i % PALETTE2.length]
   const totalReuniones = agendadoras.reduce((s,a)=>s+a.reuniones_agendadas,0)
   const totalExitosas  = agendadoras.reduce((s,a)=>s+a.reuniones_exitosas,0)
@@ -484,7 +484,7 @@ function DashboardAgendadoras() {
       const rows: any[] = a.leads_detalle ?? []
       const totalAsignados = a.leads_activos + a.leads_convertidos
       return <>
-        <div className="p-3 rounded-xl mb-4 text-xs" style={{background:'rgba(124,58,237,0.06)',border:'1px solid rgba(124,58,237,0.15)',color:'var(--text)',lineHeight:1.6}}>
+        <div className="p-3 rounded-xl mb-4 text-xs" style={{background:'rgba(53,122,14,0.06)',border:'1px solid rgba(53,122,14,0.15)',color:'var(--text)',lineHeight:1.6}}>
           <strong>{a.name}</strong> · {a.group}<br/>
           • Leads creados en período: <strong>{a.leads_creados}</strong> · Leads activos: <strong>{a.leads_activos}</strong> · Convertidos a pago: <strong style={{color:'#059669'}}>{a.leads_convertidos}</strong> · Total asignados (activos+pago): <strong>{totalAsignados}</strong><br/>
           • Reuniones agendadas: <strong>{a.reuniones_agendadas}</strong> → Exitosas: <strong style={{color:'#10b981'}}>{a.reuniones_exitosas}</strong> · Sin éxito: <span style={{color:'#f59e0b'}}>{a.reuniones_sin_exito}</span> · No asistió: <span style={{color:'#ef4444'}}>{a.reuniones_no_show}</span> · Pendientes: {a.reuniones_pendientes}<br/>
@@ -503,7 +503,7 @@ function DashboardAgendadoras() {
     }
     if (tipo==='global') {
       return <>
-        <div className="p-3 rounded-xl mb-4 text-xs" style={{background:'rgba(124,58,237,0.06)',border:'1px solid rgba(124,58,237,0.15)',color:'var(--text)',lineHeight:1.6}}>
+        <div className="p-3 rounded-xl mb-4 text-xs" style={{background:'rgba(53,122,14,0.06)',border:'1px solid rgba(53,122,14,0.15)',color:'var(--text)',lineHeight:1.6}}>
           <strong>Resumen global — todos los agendadores</strong><br/>
           • Leads creados en período: <strong>{totalLeads}</strong> · Convertidos a pago: <strong style={{color:'#059669'}}>{totalConv}</strong><br/>
           • Reuniones agendadas: <strong>{totalReuniones}</strong> → Exitosas: <strong style={{color:'#10b981'}}>{totalExitosas}</strong> · No asistió: <strong style={{color:'#ef4444'}}>{totalNoShow}</strong><br/>
@@ -562,7 +562,7 @@ function DashboardAgendadoras() {
   }
 
   const KPIS_A = [
-    { tipo:'global', label:'LEADS CREADOS EN PERÍODO', value:String(totalLeads), sub:'por todos los agendadores', icon:Users, color:'#7c3aed', bg:'rgba(124,58,237,0.10)', desc:'Leads nuevos registrados en el sistema por agendadores en el período' },
+    { tipo:'global', label:'LEADS CREADOS EN PERÍODO', value:String(totalLeads), sub:'por todos los agendadores', icon:Users, color:'var(--zx-accent-text)', bg:'rgba(53,122,14,0.10)', desc:'Leads nuevos registrados en el sistema por agendadores en el período' },
     { tipo:'global', label:'REUNIONES AGENDADAS', value:String(totalReuniones), sub:`${agendadoras.reduce((s,a)=>s+a.reuniones_pendientes,0)} pendientes de resultado`, icon:CalendarCheck, color:'#8b5cf6', bg:'rgba(139,92,246,0.10)', desc:'Total de reuniones creadas y asignadas por agendadores en el período' },
     { tipo:'global', label:'REUNIONES EXITOSAS', value:String(totalExitosas), sub:`${totalNoShow} no asistió · ${agendadoras.reduce((s,a)=>s+a.reuniones_sin_exito,0)} sin éxito`, icon:ThumbsUp, color:'#10b981', bg:'rgba(16,185,129,0.10)', desc:'Reuniones donde el cliente avanzó (Alt.Interesado o pagó en reunión)' },
     { tipo:'global', label:'% EFECTIVIDAD GLOBAL', value:pct(totalReuniones>0?totalExitosas/totalReuniones*100:0), sub:'exitosas ÷ agendadas', icon:Target, color:'#f59e0b', bg:'rgba(245,158,11,0.10)', desc:'% de reuniones exitosas sobre el total agendadas — mide calidad del agendamiento' },
@@ -888,7 +888,7 @@ function CobranzaDashboard() {
     }
 
     const Formula = ({ children }: any) => (
-      <div className="p-3 rounded-xl mb-4 text-xs" style={{ background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.15)', color: 'var(--text)', lineHeight: 1.6 }}>
+      <div className="p-3 rounded-xl mb-4 text-xs" style={{ background: 'rgba(53,122,14,0.06)', border: '1px solid rgba(53,122,14,0.15)', color: 'var(--text)', lineHeight: 1.6 }}>
         {children}
       </div>
     )
@@ -992,10 +992,10 @@ function CobranzaDashboard() {
   const abrir = (ctx: ModalCtx) => setModal(ctx)
 
   const KPIS = [
-    { tipo: 'cuotas-periodo', label: 'TOTAL CUOTAS DEL PERÍODO', value: String(k.totalCuotas ?? 0), sub: `Esperado ${fmt(k.montoEsperado)}`, icon: Layers, color: 'var(--primary-tx)', bg: 'rgba(124,58,237,0.10)', desc: 'Cuotas que vencen en el rango de fechas elegido' },
+    { tipo: 'cuotas-periodo', label: 'TOTAL CUOTAS DEL PERÍODO', value: String(k.totalCuotas ?? 0), sub: `Esperado ${fmt(k.montoEsperado)}`, icon: Layers, color: 'var(--primary-tx)', bg: 'rgba(53,122,14,0.10)', desc: 'Cuotas que vencen en el rango de fechas elegido' },
     { tipo: 'cartera', label: 'CARTERA TOTAL', value: fmt(k.totalCartera), sub: `${totClientes} clientes asignados`, icon: DollarSign, color: '#10b981', bg: 'rgba(16,185,129,0.10)', desc: 'Deuda total de todos los clientes en cartera' },
     { tipo: 'vencidas', label: 'CUOTAS VENCIDAS', value: String(k.cuotasVencidas ?? 0), sub: `${pct(k.pctVencidas)} del período`, subColor: '#ef4444', icon: AlertCircle, color: '#ef4444', bg: 'rgba(239,68,68,0.10)', desc: 'Cuotas del período pendientes y atrasadas' },
-    { tipo: 'liquidadas', label: 'CUOTAS LIQUIDADAS', value: String(k.cuotasLiquidadas ?? 0), sub: `${pct(k.pctLiquidadas)} del período`, subColor: '#7c3aed', icon: CheckSquare, color: 'var(--primary-tx)', bg: 'rgba(124,58,237,0.10)', desc: 'Cuotas del período ya pagadas' },
+    { tipo: 'liquidadas', label: 'CUOTAS LIQUIDADAS', value: String(k.cuotasLiquidadas ?? 0), sub: `${pct(k.pctLiquidadas)} del período`, subColor: 'var(--zx-accent-text)', icon: CheckSquare, color: 'var(--primary-tx)', bg: 'rgba(53,122,14,0.10)', desc: 'Cuotas del período ya pagadas' },
     { tipo: 'recuperacion', label: '% RECUPERACIÓN', value: pct(k.pctRecuperacion), sub: `${fmt(k.totalRecuperado)} recuperado`, subColor: '#10b981', icon: TrendingUp, color: '#10b981', bg: 'rgba(16,185,129,0.10)', desc: 'Monto liquidado ÷ monto esperado del período' },
   ]
 

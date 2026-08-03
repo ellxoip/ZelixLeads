@@ -48,7 +48,7 @@ const TYPE_CONFIG: Record<string, { icon: any; color: string; bg: string; label:
   pago_confirmado: { icon: CheckCheck,  color: '#16a34a', bg: '#f0fdf4', label: 'Pago confirmado' },
   pago:            { icon: DollarSign,  color: '#0891b2', bg: '#ecfeff', label: 'Pago' },
   etapa:           { icon: GitBranch,   color: '#d97706', bg: '#fffbeb', label: 'Etapa' },
-  lead_nuevo:      { icon: Users,       color: '#7c3aed', bg: '#faf5ff', label: 'Nuevo lead' },
+  lead_nuevo:      { icon: Users,       color: 'var(--zx-accent-text)', bg: '#faf5ff', label: 'Nuevo lead' },
   pago_rechazado:  { icon: AlertCircle, color: '#dc2626', bg: '#fef2f2', label: 'Pago rechazado' },
   general:         { icon: Bell,        color: '#475569', bg: '#faf9fd', label: 'Notificación' },
 }

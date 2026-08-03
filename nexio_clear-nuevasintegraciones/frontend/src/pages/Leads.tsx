@@ -273,8 +273,8 @@ export default function Leads() {
       </div>
 
       {/* ══ DESCRIPCIÓN ═══════════════════════════════════ */}
-      <div className="hidden sm:flex items-start gap-3 rounded-xl px-4 py-3 mb-4 text-xs" style={{ background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.16)', color: 'rgba(52,81,199,0.90)' }}>
-        <Info size={15} className="flex-shrink-0 mt-0.5" style={{ color: 'rgba(124,58,237,0.9)' }} />
+      <div className="hidden sm:flex items-start gap-3 rounded-xl px-4 py-3 mb-4 text-xs" style={{ background: 'rgba(53,122,14,0.07)', border: '1px solid rgba(53,122,14,0.16)', color: 'rgba(52,81,199,0.90)' }}>
+        <Info size={15} className="flex-shrink-0 mt-0.5" style={{ color: 'rgba(53,122,14,0.9)' }} />
         <p>Aquí están todos sus clientes. Haga clic en cualquier carta para abrir el expediente completo, donde podrá enviar mensajes, agregar notas, agendar reuniones y avanzar el caso.</p>
       </div>
 
@@ -409,7 +409,7 @@ export default function Leads() {
                 lead:                 { dot: '#94a3b8', badge: '#f1f5f9', badgeText: '#64748b', border: '#94a3b8' },
                 reunion:              { dot: '#f59e0b', badge: '#fffbeb', badgeText: '#d97706', border: '#f59e0b' },
                 altamente_interesado: { dot: '#f59e0b', badge: '#fffbeb', badgeText: '#d97706', border: '#f59e0b' },
-                cierre:               { dot: '#7c3aed', badge: '#eef2ff', badgeText: '#7c3aed', border: '#7c3aed' },
+                cierre:               { dot: 'var(--zx-accent-text)', badge: '#eef2ff', badgeText: 'var(--zx-accent-text)', border: 'var(--zx-accent-text)' },
                 pago_comprometido:    { dot: '#22c55e', badge: '#f0fdf4', badgeText: '#16a34a', border: '#22c55e' },
                 pagado_confirmado:    { dot: '#22c55e', badge: '#f0fdf4', badgeText: '#16a34a', border: '#22c55e' },
                 recuperacion_lead:    { dot: '#ef4444', badge: '#fff1f2', badgeText: '#dc2626', border: '#ef4444' },
@@ -426,8 +426,8 @@ export default function Leads() {
               const isVeryRecent = lastUpdateMs < 3600000 * 3
               const recLabel = recMins < 1 ? 'ahora' : recMins < 60 ? `hace ${recMins} min` : recMins < 120 ? 'hace 1 hora' : recMins < 1440 ? `hace ${Math.floor(recMins/60)} horas` : recMins < 2880 ? 'hace 1 día' : recMins < 10080 ? `hace ${Math.floor(recMins/1440)} días` : recMins < 20160 ? 'hace 1 semana' : `hace ${Math.floor(recMins/10080)} semanas`
               const AVATAR_COLORS = [
-                { bg: 'rgba(124,58,237,0.12)',  fg: '#7c3aed' },
-                { bg: 'rgba(124,58,237,0.12)', fg: '#7c3aed' },
+                { bg: 'rgba(53,122,14,0.12)',  fg: 'var(--zx-accent-text)' },
+                { bg: 'rgba(53,122,14,0.12)', fg: 'var(--zx-accent-text)' },
                 { bg: 'rgba(8,145,178,0.12)',  fg: '#0891b2' },
                 { bg: 'rgba(5,150,105,0.12)',  fg: '#059669' },
                 { bg: 'rgba(217,119,6,0.12)',  fg: '#d97706' },
@@ -503,7 +503,7 @@ export default function Leads() {
                 lead: { dot: '#94a3b8', badge: '#f1f5f9', badgeText: '#64748b', border: '#94a3b8' },
                 reunion: { dot: '#f59e0b', badge: '#fffbeb', badgeText: '#d97706', border: '#f59e0b' },
                 altamente_interesado: { dot: '#f59e0b', badge: '#fffbeb', badgeText: '#d97706', border: '#f59e0b' },
-                cierre: { dot: '#7c3aed', badge: '#eef2ff', badgeText: '#7c3aed', border: '#7c3aed' },
+                cierre: { dot: 'var(--zx-accent-text)', badge: '#eef2ff', badgeText: 'var(--zx-accent-text)', border: 'var(--zx-accent-text)' },
                 pago_comprometido: { dot: '#22c55e', badge: '#f0fdf4', badgeText: '#16a34a', border: '#22c55e' },
                 pagado_confirmado: { dot: '#22c55e', badge: '#f0fdf4', badgeText: '#16a34a', border: '#22c55e' },
                 recuperacion_lead: { dot: '#ef4444', badge: '#fff1f2', badgeText: '#dc2626', border: '#ef4444' },
@@ -525,8 +525,8 @@ export default function Leads() {
               const recLabel = recMins < 60 ? `${recMins}m` : recMins < 1440 ? `${Math.floor(recMins/60)}h` : ''
 
               const AVATAR_COLORS = [
-                { bg: 'rgba(124,58,237,0.12)',  fg: '#7c3aed' },
-                { bg: 'rgba(124,58,237,0.12)', fg: '#7c3aed' },
+                { bg: 'rgba(53,122,14,0.12)',  fg: 'var(--zx-accent-text)' },
+                { bg: 'rgba(53,122,14,0.12)', fg: 'var(--zx-accent-text)' },
                 { bg: 'rgba(8,145,178,0.12)',  fg: '#0891b2' },
                 { bg: 'rgba(5,150,105,0.12)',  fg: '#059669' },
                 { bg: 'rgba(217,119,6,0.12)',  fg: '#d97706' },
@@ -542,9 +542,9 @@ export default function Leads() {
                   style={{
                     animationDelay: hasUnread ? `${(lead.id % 7) * 0.5}s` : undefined,
                     background: '#ffffff',
-                    border: active ? '1.5px solid #7c3aed' : '1px solid rgba(28,22,51,0.08)',
+                    border: active ? '1.5px solid var(--zx-accent-text)' : '1px solid rgba(28,22,51,0.08)',
                     boxShadow: active
-                      ? '0 0 0 3px rgba(124,58,237,0.10), 0 4px 12px rgba(124,58,237,0.10)'
+                      ? '0 0 0 3px rgba(53,122,14,0.10), 0 4px 12px rgba(53,122,14,0.10)'
                       : '0 1px 3px rgba(28,22,51,0.05)',
                   }}
                   onMouseEnter={e => {
@@ -567,7 +567,7 @@ export default function Leads() {
 
                   {/* Stage accent bar */}
                   <div className="h-1 w-full flex-shrink-0"
-                    style={{ background: active ? '#7c3aed' : isCold ? (daysSince >= 5 ? '#ef4444' : '#f59e0b') : sa.dot }} />
+                    style={{ background: active ? 'var(--zx-accent-text)' : isCold ? (daysSince >= 5 ? '#ef4444' : '#f59e0b') : sa.dot }} />
 
                   <div className="p-4 flex flex-col gap-3 flex-1">
 
@@ -587,7 +587,7 @@ export default function Leads() {
                       ) : null}
                       <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-base flex-shrink-0"
                         style={{
-                          background: active ? '#7c3aed' : avatarColor.bg,
+                          background: active ? 'var(--zx-accent-text)' : avatarColor.bg,
                           color: active ? '#ffffff' : avatarColor.fg,
                           display: lead.contact?.avatar_url ? 'none' : 'flex',
                         }}>
@@ -632,7 +632,7 @@ export default function Leads() {
                     {isAdmin && lead.group?.name && (
                       <div>
                         <span className="text-[9px] font-bold px-2 py-0.5 rounded-full"
-                          style={{ background: '#eef2ff', color: '#7c3aed', border: '1px solid #c7d2fe' }}>
+                          style={{ background: '#eef2ff', color: 'var(--zx-accent-text)', border: '1px solid #c7d2fe' }}>
                           {lead.group.name}
                         </span>
                       </div>
@@ -697,14 +697,14 @@ export default function Leads() {
                     <div className="mt-auto pt-0.5">
                       <div className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all"
                         style={active ? {
-                          background: '#7c3aed',
+                          background: 'var(--zx-accent-text)',
                           color: '#ffffff',
-                          border: '1px solid #7c3aed',
-                          boxShadow: '0 2px 8px rgba(124,58,237,0.28)',
+                          border: '1px solid var(--zx-accent-text)',
+                          boxShadow: '0 2px 8px rgba(53,122,14,0.28)',
                         } : {
-                          background: 'rgba(124,58,237,0.09)',
-                          color: '#7c3aed',
-                          border: '1px solid rgba(124,58,237,0.22)',
+                          background: 'rgba(53,122,14,0.09)',
+                          color: 'var(--zx-accent-text)',
+                          border: '1px solid rgba(53,122,14,0.22)',
                         }}>
                         {active ? 'Lead abierto' : 'Abrir lead'}
                       </div>

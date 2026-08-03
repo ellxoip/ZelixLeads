@@ -44,7 +44,7 @@ export default function InstallPWA({ variant = 'button' }: Props) {
         </div>
         <button onClick={handleInstall}
           className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg flex-shrink-0 transition-opacity hover:opacity-80"
-          style={{ background: '#7c3aed', color: '#ffffff' }}>
+          style={{ background: 'var(--zx-accent-text)', color: '#ffffff' }}>
           <Download size={12} /> Instalar
         </button>
       </div>

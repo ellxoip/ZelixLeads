@@ -113,9 +113,9 @@ export function MoveLeadModal({ lead, targetStage, labels, onConfirm, onClose, c
     s.startsWith('recuperacion') ? 'bg-red-500' :
     s === 'papelera' ? 'bg-gray-500' :
     s === 'pago_pendiente' ? 'bg-amber-400' :
-    s === 'pago_comprometido' ? 'bg-cyan-500' :
-    s === 'cierre' ? 'bg-cyan-400' :
-    s === 'altamente_interesado' ? 'bg-violet-500' :
+    s === 'pago_comprometido' ? 'bg-brand-500' :
+    s === 'cierre' ? 'bg-brand-400' :
+    s === 'altamente_interesado' ? 'bg-brand-500' :
     s === 'reunion' ? 'bg-blue-400' : 'bg-slate-400'
 
   const isReady = confirmText.trim().toLowerCase() === 'confirmar'
@@ -130,7 +130,7 @@ export function MoveLeadModal({ lead, targetStage, labels, onConfirm, onClose, c
           style={{ borderBottom: '1px solid var(--border)' }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{ background: 'var(--primary-dim)', border: '1px solid rgba(124,58,237,0.25)' }}>
+              style={{ background: 'var(--primary-dim)', border: '1px solid rgba(53,122,14,0.25)' }}>
               <ArrowRight size={15} style={{ color: 'var(--primary)' }} />
             </div>
             <h3 className="text-base font-bold" style={{ color: 'var(--text)' }}>Mover Lead</h3>
@@ -174,11 +174,11 @@ export function MoveLeadModal({ lead, targetStage, labels, onConfirm, onClose, c
 
           {blockedReunionNoSchedule && !blockedAdvanceFromReunion && (
             <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl"
-              style={{ background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.25)' }}>
-              <CalendarClock size={13} style={{ color: '#7c3aed', flexShrink: 0, marginTop: 1 }} />
+              style={{ background: 'rgba(53,122,14,0.07)', border: '1px solid rgba(53,122,14,0.25)' }}>
+              <CalendarClock size={13} style={{ color: 'var(--zx-accent-text)', flexShrink: 0, marginTop: 1 }} />
               <div>
-                <p className="text-xs font-bold" style={{ color: '#7c3aed' }}>Reunión no agendada</p>
-                <p className="text-[10px] mt-0.5" style={{ color: 'rgba(124,58,237,0.80)' }}>
+                <p className="text-xs font-bold" style={{ color: 'var(--zx-accent-text)' }}>Reunión no agendada</p>
+                <p className="text-[10px] mt-0.5" style={{ color: 'rgba(53,122,14,0.80)' }}>
                   Agenda primero la reunión en el Calendario para poder mover este lead a la etapa Reunión.
                 </p>
               </div>
@@ -234,9 +234,9 @@ export function MoveLeadModal({ lead, targetStage, labels, onConfirm, onClose, c
                         disabled={isBlocked}
                         className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-left text-xs transition-all"
                         style={{
-                          background: isBlocked ? 'rgba(225,29,72,0.04)' : active ? (isRec ? 'rgba(225,29,72,0.07)' : 'rgba(124,58,237,0.08)') : 'var(--surface-1)',
-                          border: isBlocked ? '1px solid rgba(225,29,72,0.25)' : active ? (isRec ? '1.5px solid rgba(225,29,72,0.45)' : '1.5px solid #7c3aed') : '1px solid #e6e1f0',
-                          color: isBlocked ? '#dc2626' : active ? (isRec ? '#dc2626' : '#7c3aed') : '#374151',
+                          background: isBlocked ? 'rgba(225,29,72,0.04)' : active ? (isRec ? 'rgba(225,29,72,0.07)' : 'rgba(53,122,14,0.08)') : 'var(--surface-1)',
+                          border: isBlocked ? '1px solid rgba(225,29,72,0.25)' : active ? (isRec ? '1.5px solid rgba(225,29,72,0.45)' : '1.5px solid var(--zx-accent-text)') : '1px solid #e6e1f0',
+                          color: isBlocked ? '#dc2626' : active ? (isRec ? '#dc2626' : 'var(--zx-accent-text)') : '#374151',
                           opacity: isBlocked ? 0.65 : 1,
                           cursor: isBlocked ? 'not-allowed' : 'pointer',
                           fontWeight: active ? 700 : 500,
@@ -246,7 +246,7 @@ export function MoveLeadModal({ lead, targetStage, labels, onConfirm, onClose, c
                           ? <Lock size={9} className="flex-shrink-0" />
                           : <span className={`w-2 h-2 rounded-full flex-shrink-0 ${stageDot(s)}`} />}
                         <span className="truncate">{labels[s] ?? s}</span>
-                        {active && !isBlocked && <CheckCircle size={12} className="ml-auto flex-shrink-0" style={{ color: isRec ? '#dc2626' : '#7c3aed' }} />}
+                        {active && !isBlocked && <CheckCircle size={12} className="ml-auto flex-shrink-0" style={{ color: isRec ? '#dc2626' : 'var(--zx-accent-text)' }} />}
                       </button>
                     )
                   })}
@@ -308,9 +308,9 @@ export function MoveLeadModal({ lead, targetStage, labels, onConfirm, onClose, c
               className="w-full rounded-xl px-4 py-3 text-sm font-medium outline-none transition-all"
               style={{
                 background: '#faf9fd',
-                border: isReady ? '2px solid #7c3aed' : '1.5px solid #d1d5db',
-                color: isReady ? '#7c3aed' : '#1c1633',
-                boxShadow: isReady ? '0 0 0 3px rgba(124,58,237,0.10)' : 'none',
+                border: isReady ? '2px solid var(--zx-accent-text)' : '1.5px solid #d1d5db',
+                color: isReady ? 'var(--zx-accent-text)' : '#1c1633',
+                boxShadow: isReady ? '0 0 0 3px rgba(53,122,14,0.10)' : 'none',
                 fontWeight: 600,
               }}
             />
@@ -318,10 +318,10 @@ export function MoveLeadModal({ lead, targetStage, labels, onConfirm, onClose, c
 
           {selectedStage && (() => {
             const destructive = selectedStage === 'papelera' || selectedStage.startsWith('recuperacion')
-            const accent = destructive ? '#dc2626' : '#7c3aed'
+            const accent = destructive ? '#dc2626' : 'var(--zx-accent-text)'
             return (
               <div className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                style={{ background: destructive ? 'rgba(225,29,72,0.05)' : '#f0f4ff', border: `1.5px solid ${destructive ? 'rgba(225,29,72,0.20)' : 'rgba(124,58,237,0.18)'}` }}>
+                style={{ background: destructive ? 'rgba(225,29,72,0.05)' : '#f0f4ff', border: `1.5px solid ${destructive ? 'rgba(225,29,72,0.20)' : 'rgba(53,122,14,0.18)'}` }}>
                 <span className="text-xs font-semibold" style={{ color: '#6b7280' }}>
                   {labels[lead.current_stage] ?? lead.current_stage}
                 </span>

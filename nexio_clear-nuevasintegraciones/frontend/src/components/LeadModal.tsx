@@ -254,14 +254,14 @@ export default function LeadModal({ onClose, onSuccess }: Props) {
                             onClick={() => { set('contact_id', String(c.id)); setShowContactDrop(false); setContactSearch('') }}
                             className="w-full text-left px-3 py-2.5 flex items-center gap-2.5 transition-colors"
                             style={{
-                              background: String(c.id) === form.contact_id ? 'rgba(124,58,237,0.10)' : 'transparent',
-                              color: String(c.id) === form.contact_id ? '#7c3aed' : '#1c1633',
+                              background: String(c.id) === form.contact_id ? 'rgba(53,122,14,0.10)' : 'transparent',
+                              color: String(c.id) === form.contact_id ? 'var(--zx-accent-text)' : '#1c1633',
                             }}
                             onMouseEnter={e => { if (String(c.id) !== form.contact_id) (e.currentTarget as HTMLElement).style.background = '#faf9fd' }}
                             onMouseLeave={e => { if (String(c.id) !== form.contact_id) (e.currentTarget as HTMLElement).style.background = 'transparent' }}
                           >
                             <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold"
-                              style={{ background: 'rgba(124,58,237,0.12)', color: '#7c3aed' }}>
+                              style={{ background: 'rgba(53,122,14,0.12)', color: 'var(--zx-accent-text)' }}>
                               {c.name?.charAt(0)?.toUpperCase() ?? '?'}
                             </div>
                             <div className="min-w-0">

@@ -34,7 +34,7 @@ const COL_STYLE: Record<string, { dot: string; accent: string; count: string }> 
   lead:                 { dot: 'bg-green-400',   accent: 'border-l-green-400',   count: 'bg-surface-2 text-white' },
   reunion:              { dot: 'bg-orange-400',  accent: 'border-l-orange-400',  count: 'bg-surface-2 text-white' },
   altamente_interesado: { dot: 'bg-blue-400',    accent: 'border-l-blue-400',    count: 'bg-surface-2 text-white' },
-  cierre:               { dot: 'bg-violet-400',  accent: 'border-l-violet-400',  count: 'bg-surface-2 text-white' },
+  cierre:               { dot: 'bg-brand-400',  accent: 'border-l-violet-400',  count: 'bg-surface-2 text-white' },
   pago_pendiente:       { dot: 'bg-amber-400',   accent: 'border-l-amber-400',   count: 'bg-surface-2 text-white' },
   pago_comprometido:    { dot: 'bg-red-400',     accent: 'border-l-red-400',     count: 'bg-surface-2 text-white' },
   pagado_reunion:       { dot: 'bg-orange-300',  accent: 'border-l-orange-300',  count: 'bg-surface-2 text-white' },
@@ -158,8 +158,8 @@ function LeadCard({ lead, canMove, showGroup, labels, canConfirmPago, onMoved, u
   const priorityColor = lead.priority === 'high' ? '#dc2626' : lead.priority === 'normal' ? '#60a5fa' : 'var(--text-muted)'
 
   const AVATAR_COLORS = [
-    { bg: 'rgba(124,58,237,0.12)',  fg: '#7c3aed' },
-    { bg: 'rgba(124,58,237,0.12)', fg: '#7c3aed' },
+    { bg: 'rgba(53,122,14,0.12)',  fg: 'var(--zx-accent-text)' },
+    { bg: 'rgba(53,122,14,0.12)', fg: 'var(--zx-accent-text)' },
     { bg: 'rgba(8,145,178,0.12)',  fg: '#0891b2' },
     { bg: 'rgba(5,150,105,0.12)',  fg: '#059669' },
     { bg: 'rgba(217,119,6,0.12)',  fg: '#d97706' },
@@ -821,7 +821,7 @@ function SeguimientoTab({ items }: { items: any[] }) {
                 <button
                   onClick={() => navigate('/leads', { state: { openLeadId: item.lead_id } })}
                   className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-[12px] font-bold transition-all"
-                  style={{ background: 'var(--primary-dim)', color: 'var(--primary)', border: '1px solid rgba(124,58,237,0.20)' }}
+                  style={{ background: 'var(--primary-dim)', color: 'var(--primary)', border: '1px solid rgba(53,122,14,0.20)' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--primary)'; (e.currentTarget as HTMLElement).style.color = '#fff' }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--primary-dim)'; (e.currentTarget as HTMLElement).style.color = 'var(--primary)' }}>
                   <CalendarPlus size={13} /> Reagendar
@@ -905,7 +905,7 @@ function PapeleraTab({ leads, count, labels, onRestore, canDelete, onDelete }: {
                 <div className="flex flex-col gap-1.5">
                   {lead.area?.name && (
                     <span className="text-[11px] font-semibold px-2 py-0.5 rounded self-start"
-                      style={{ background: 'rgba(124,58,237,0.12)', color: '#7c3aed' }}>
+                      style={{ background: 'rgba(53,122,14,0.12)', color: 'var(--zx-accent-text)' }}>
                       {lead.area.name}
                     </span>
                   )}
@@ -925,9 +925,9 @@ function PapeleraTab({ leads, count, labels, onRestore, canDelete, onDelete }: {
                 <div className="flex gap-2 mt-auto pt-1">
                   <button onClick={() => onRestore(lead)}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[11px] font-bold transition-all"
-                    style={{ background: 'rgba(124,58,237,0.15)', color: '#818cf8', border: '1px solid rgba(124,58,237,0.25)' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(124,58,237,0.28)' }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(124,58,237,0.15)' }}>
+                    style={{ background: 'rgba(53,122,14,0.15)', color: '#818cf8', border: '1px solid rgba(53,122,14,0.25)' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(53,122,14,0.28)' }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(53,122,14,0.15)' }}>
                     <RotateCcw size={11} /> Recuperar
                   </button>
                   {onDelete && (
@@ -1063,7 +1063,7 @@ function InactiveWarningPopup({ leads, onMoveAll, onClose }: {
             return (
               <div key={l.id} className="flex items-center gap-3 px-5 py-2.5 hover:bg-black/[0.02] transition-colors">
                 <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-                  style={{ background: 'rgba(124,58,237,0.10)', color: '#7c3aed' }}>
+                  style={{ background: 'rgba(53,122,14,0.10)', color: 'var(--zx-accent-text)' }}>
                   {name.trim().charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -1490,7 +1490,7 @@ export default function Pipeline() {
                 }}
                 className="text-[11px] px-2.5 h-8 rounded-lg border transition-colors whitespace-nowrap flex-shrink-0"
                 style={active
-                  ? { background: 'var(--primary-dim)', borderColor: 'rgba(124,58,237,0.35)', color: 'var(--primary)', fontWeight: 700 }
+                  ? { background: 'var(--primary-dim)', borderColor: 'rgba(53,122,14,0.35)', color: 'var(--primary)', fontWeight: 700 }
                   : { background: 'var(--surface-2)', borderColor: 'var(--border)', color: 'var(--text-3)' }}>
                 {preset.label}
               </button>
@@ -1550,11 +1550,11 @@ export default function Pipeline() {
             const count = summary[s]?.count ?? 0
             const label = effectiveLabels[s] ?? s
             const isRec = s.startsWith('recuperacion')
-            const col = isRec ? '#ef4444' : s === 'lead' ? '#64748b' : s === 'reunion' ? '#f59e0b' : s === 'altamente_interesado' ? '#f59e0b' : s === 'cierre' ? '#7c3aed' : s === 'pago_comprometido' ? '#22c55e' : s === 'pagado_confirmado' ? '#22c55e' : '#64748b'
+            const col = isRec ? '#ef4444' : s === 'lead' ? '#64748b' : s === 'reunion' ? '#f59e0b' : s === 'altamente_interesado' ? '#f59e0b' : s === 'cierre' ? 'var(--zx-accent-text)' : s === 'pago_comprometido' ? '#22c55e' : s === 'pagado_confirmado' ? '#22c55e' : '#64748b'
             const totalHon = leads.reduce((acc, l) => acc + (l.honorarios ? Number(l.honorarios) : 0), 0)
             const FLAT_AVATARS = [
-              { bg: 'rgba(124,58,237,0.12)',  fg: '#7c3aed' },
-              { bg: 'rgba(124,58,237,0.12)', fg: '#7c3aed' },
+              { bg: 'rgba(53,122,14,0.12)',  fg: 'var(--zx-accent-text)' },
+              { bg: 'rgba(53,122,14,0.12)', fg: 'var(--zx-accent-text)' },
               { bg: 'rgba(8,145,178,0.12)',  fg: '#0891b2' },
               { bg: 'rgba(5,150,105,0.12)',  fg: '#059669' },
               { bg: 'rgba(217,119,6,0.12)',  fg: '#d97706' },

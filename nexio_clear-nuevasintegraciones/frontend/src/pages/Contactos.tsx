@@ -18,9 +18,9 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 // ── Avatar color helper ───────────────────────────────────────────────────────
 const AVATAR_COLORS = [
-  { bg: 'rgba(124,58,237,0.13)',  text: '#7c3aed' },
+  { bg: 'rgba(53,122,14,0.13)',  text: 'var(--zx-accent-text)' },
   { bg: 'rgba(34,197,94,0.13)',  text: '#16a34a' },
-  { bg: 'rgba(139,92,246,0.13)', text: '#7c3aed' },
+  { bg: 'rgba(139,92,246,0.13)', text: 'var(--zx-accent-text)' },
   { bg: 'rgba(245,158,11,0.13)', text: '#d97706' },
   { bg: 'rgba(239,68,68,0.13)',  text: '#dc2626' },
   { bg: 'rgba(20,184,166,0.13)', text: '#0d9488' },
@@ -181,7 +181,7 @@ function ImportModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
         </div>
 
         <div className="px-6 py-5 space-y-4">
-          <div className="rounded-xl p-3 text-xs space-y-1" style={{ background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.18)', color: 'rgba(147,168,255,0.85)' }}>
+          <div className="rounded-xl p-3 text-xs space-y-1" style={{ background: 'rgba(53,122,14,0.08)', border: '1px solid rgba(53,122,14,0.18)', color: 'rgba(147,168,255,0.85)' }}>
             <p className="font-semibold">Columnas requeridas:</p>
             <p><strong>nombre</strong>, <strong>telefono</strong> (con código país, ej: +56912345678)</p>
             <p style={{ color: 'rgba(147,168,255,0.60)' }}>Opcionales: email, rut_persona, rut_empresa, razon_social, ciudad</p>
@@ -273,7 +273,7 @@ function Checkbox({ checked, indeterminate, onChange }: { checked: boolean; inde
       checked={checked}
       onChange={onChange}
       onClick={e => e.stopPropagation()}
-      className="w-4 h-4 rounded cursor-pointer accent-[#7c3aed]"
+      className="w-4 h-4 rounded cursor-pointer accent-[var(--zx-accent-text)]"
     />
   )
 }
@@ -437,7 +437,7 @@ export default function Contactos() {
             {isAdmin && (
               <span className="text-xs font-bold px-2.5 py-1 rounded-lg" style={
                 groupFilter
-                  ? { background: 'rgba(124,58,237,0.10)', color: '#7c3aed', border: '1px solid rgba(124,58,237,0.25)' }
+                  ? { background: 'rgba(53,122,14,0.10)', color: 'var(--zx-accent-text)', border: '1px solid rgba(53,122,14,0.25)' }
                   : { background: 'rgba(245,158,11,0.10)', color: '#d97706', border: '1px solid rgba(245,158,11,0.30)' }
               }>
                 {groupFilter
@@ -587,7 +587,7 @@ export default function Contactos() {
       }}>
         {loading ? (
           <div className="flex items-center justify-center h-48">
-            <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#7c3aed', borderTopColor: 'transparent' }} />
+            <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--zx-accent-text)', borderTopColor: 'transparent' }} />
           </div>
         ) : contacts.length === 0 ? (
           <div className="text-center py-16">
@@ -609,9 +609,9 @@ export default function Contactos() {
                     key={c.id}
                     className="flex items-center gap-3 px-4 py-3 transition-colors"
                     style={{
-                      background: selected ? 'rgba(124,58,237,0.06)' : 'transparent',
+                      background: selected ? 'rgba(53,122,14,0.06)' : 'transparent',
                       borderBottom: idx < contacts.length - 1 ? '1px solid rgba(28,22,51,0.07)' : 'none',
-                      borderLeft: selected ? '3px solid #7c3aed' : '3px solid transparent',
+                      borderLeft: selected ? '3px solid var(--zx-accent-text)' : '3px solid transparent',
                     }}
                   >
                     {canDelete && (
@@ -689,9 +689,9 @@ export default function Contactos() {
                         key={c.id}
                         className="group transition-colors"
                         style={{
-                          background: selected ? 'rgba(124,58,237,0.06)' : 'transparent',
+                          background: selected ? 'rgba(53,122,14,0.06)' : 'transparent',
                           borderBottom: idx < contacts.length - 1 ? '1px solid rgba(28,22,51,0.06)' : 'none',
-                          borderLeft: selected ? '3px solid #7c3aed' : '3px solid transparent',
+                          borderLeft: selected ? '3px solid var(--zx-accent-text)' : '3px solid transparent',
                         }}
                         onMouseEnter={e => { if (!selected) (e.currentTarget as HTMLElement).style.background = 'rgba(28,22,51,0.025)' }}
                         onMouseLeave={e => { if (!selected) (e.currentTarget as HTMLElement).style.background = 'transparent' }}
@@ -809,7 +809,7 @@ export default function Contactos() {
                     onClick={() => setPage(p as number)}
                     className="min-w-[30px] h-[30px] rounded-lg text-xs font-semibold transition-colors"
                     style={p === page
-                      ? { background: '#7c3aed', color: '#ffffff' }
+                      ? { background: 'var(--zx-accent-text)', color: '#ffffff' }
                       : { border: '1px solid rgba(28,22,51,0.12)', color: 'rgba(28,22,51,0.55)' }}>
                     {p}
                   </button>

@@ -1101,17 +1101,17 @@ export function WorkOrderModal({ leadId, onClose, onSaved, autoOpen, honorarios,
       headerRight={
         <button onClick={() => setStep('select')}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-          style={{ background: '#7c3aed', color: '#fff', boxShadow: '0 2px 8px rgba(124,58,237,0.25)' }}
+          style={{ background: 'var(--zx-accent-text)', color: '#fff', boxShadow: '0 2px 8px rgba(53,122,14,0.25)' }}
           onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#3451d1'}
-          onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = '#7c3aed'}>
+          onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'var(--zx-accent-text)'}>
           <Plus size={12} /> Nueva OT
         </button>
       }>
       {otList.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 gap-4">
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
-            style={{ background: 'rgba(124,58,237,0.07)', border: '1.5px solid rgba(124,58,237,0.15)' }}>
-            <FileText size={28} style={{ color: '#7c3aed', opacity: 0.55 }} />
+            style={{ background: 'rgba(53,122,14,0.07)', border: '1.5px solid rgba(53,122,14,0.15)' }}>
+            <FileText size={28} style={{ color: 'var(--zx-accent-text)', opacity: 0.55 }} />
           </div>
           <div className="text-center">
             <p className="font-semibold" style={{ color: '#1c1633', fontSize: '15px' }}>Sin órdenes de trabajo</p>
@@ -1135,10 +1135,10 @@ export function WorkOrderModal({ leadId, onClose, onSaved, autoOpen, honorarios,
                 onClick={() => openExisting(wo)}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{
-                    background: isOriginal ? 'rgba(100,116,139,0.10)' : 'rgba(124,58,237,0.10)',
-                    border: `1.5px solid ${isOriginal ? 'rgba(100,116,139,0.20)' : 'rgba(124,58,237,0.20)'}`,
+                    background: isOriginal ? 'rgba(100,116,139,0.10)' : 'rgba(53,122,14,0.10)',
+                    border: `1.5px solid ${isOriginal ? 'rgba(100,116,139,0.20)' : 'rgba(53,122,14,0.20)'}`,
                   }}>
-                  <FileText size={18} style={{ color: isOriginal ? '#64748b' : '#7c3aed' }} />
+                  <FileText size={18} style={{ color: isOriginal ? '#64748b' : 'var(--zx-accent-text)' }} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold truncate" style={{ color: '#1c1633' }}>{wo.ot_label}</p>
@@ -1153,7 +1153,7 @@ export function WorkOrderModal({ leadId, onClose, onSaved, autoOpen, honorarios,
                       </span>
                     ) : (
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-                        style={{ background: 'rgba(124,58,237,0.10)', color: '#7c3aed', border: '1px solid rgba(124,58,237,0.20)' }}>
+                        style={{ background: 'rgba(53,122,14,0.10)', color: 'var(--zx-accent-text)', border: '1px solid rgba(53,122,14,0.20)' }}>
                         ✏️ Copia editable
                       </span>
                     )}
@@ -1162,7 +1162,7 @@ export function WorkOrderModal({ leadId, onClose, onSaved, autoOpen, honorarios,
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button onClick={e => { e.stopPropagation(); openExisting(wo) }}
                     className="p-2 rounded-lg transition-all"
-                    style={{ color: isOriginal ? '#64748b' : '#7c3aed', background: isOriginal ? 'rgba(100,116,139,0.08)' : 'rgba(124,58,237,0.08)', border: `1px solid ${isOriginal ? 'rgba(100,116,139,0.15)' : 'rgba(124,58,237,0.15)'}` }}
+                    style={{ color: isOriginal ? '#64748b' : 'var(--zx-accent-text)', background: isOriginal ? 'rgba(100,116,139,0.08)' : 'rgba(53,122,14,0.08)', border: `1px solid ${isOriginal ? 'rgba(100,116,139,0.15)' : 'rgba(53,122,14,0.15)'}` }}
                     title={isOriginal ? 'Ver original' : 'Abrir OT'}>
                     {isOriginal ? <Eye size={13} /> : <Download size={13} />}
                   </button>
@@ -1195,7 +1195,7 @@ export function WorkOrderModal({ leadId, onClose, onSaved, autoOpen, honorarios,
       }>
       {loadingNew ? (
         <div className="flex flex-col items-center justify-center py-12 gap-3">
-          <Loader2 size={24} className="animate-spin" style={{ color: '#7c3aed' }} />
+          <Loader2 size={24} className="animate-spin" style={{ color: 'var(--zx-accent-text)' }} />
           <p className="text-sm font-medium" style={{ color: 'rgba(28,22,51,0.55)' }}>Creando orden de trabajo...</p>
         </div>
       ) : (
@@ -1206,8 +1206,8 @@ export function WorkOrderModal({ leadId, onClose, onSaved, autoOpen, honorarios,
               style={{ background: '#faf9fd', border: '1.5px solid #e8ecf4' }}
               onMouseEnter={e => {
                 (e.currentTarget as HTMLElement).style.background = '#eef2ff'
-                ;(e.currentTarget as HTMLElement).style.borderColor = 'rgba(124,58,237,0.35)'
-                ;(e.currentTarget as HTMLElement).style.boxShadow = '0 4px 14px rgba(124,58,237,0.12)'
+                ;(e.currentTarget as HTMLElement).style.borderColor = 'rgba(53,122,14,0.35)'
+                ;(e.currentTarget as HTMLElement).style.boxShadow = '0 4px 14px rgba(53,122,14,0.12)'
               }}
               onMouseLeave={e => {
                 (e.currentTarget as HTMLElement).style.background = '#faf9fd'
@@ -1215,7 +1215,7 @@ export function WorkOrderModal({ leadId, onClose, onSaved, autoOpen, honorarios,
                 ;(e.currentTarget as HTMLElement).style.boxShadow = ''
               }}>
               <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-2.5 text-xl"
-                style={{ background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.14)' }}>
+                style={{ background: 'rgba(53,122,14,0.08)', border: '1px solid rgba(53,122,14,0.14)' }}>
                 {type.icon}
               </div>
               <p className="text-xs font-bold leading-snug" style={{ color: '#1c1633' }}>{type.label}</p>
@@ -1247,7 +1247,7 @@ export function WorkOrderModal({ leadId, onClose, onSaved, autoOpen, honorarios,
           ? <span className="text-[10px] font-bold px-2.5 py-1 rounded-full"
               style={isReadOnly
                 ? { background: 'rgba(100,116,139,0.12)', color: '#64748b', border: '1px solid rgba(100,116,139,0.25)' }
-                : { background: 'rgba(124,58,237,0.10)', color: '#7c3aed', border: '1px solid rgba(124,58,237,0.25)' }}>
+                : { background: 'rgba(53,122,14,0.10)', color: 'var(--zx-accent-text)', border: '1px solid rgba(53,122,14,0.25)' }}>
               {isReadOnly ? '🔒 Original' : '✏️ Copia editable'}
             </span>
           : undefined}

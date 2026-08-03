@@ -16,15 +16,18 @@
   --border-2:     rgba(28,22,51,0.18);
   --bg:           #f5f3fa;
   --surface:      #ffffff;
-  --primary:      #7c3aed;
-  --primary-dim:  rgba(124,58,237,0.10);
-  --primary-glow: rgba(124,58,237,0.30);
-  --secondary:    #06b6d4;
-  --secondary-dim:rgba(6,182,212,0.10);
-  --danger:       #e11d48;
-  --danger-dim:   rgba(225,29,72,0.10);
-  --warn:         #f59e0b;
-  --warn-dim:     rgba(245,158,11,0.10);
+  /* Acento de marca Zelix. `--primary` se usa como color de TEXTO, así que
+     apunta al verde legible (4.84:1 sobre el fondo #f5f3fa de este proyecto).
+     El lima daría 1.52:1 aquí: no sirve como texto. */
+  --primary:      var(--zx-accent-text);
+  --primary-dim:  var(--zx-accent-soft);
+  --primary-glow: rgba(118,225,48,0.30);
+  --secondary:    var(--zx-purple);
+  --secondary-dim:rgba(109,63,143,0.10);
+  --danger:       var(--zx-negative);
+  --danger-dim:   rgba(217,45,78,0.10);
+  --warn:         var(--zx-warning);
+  --warn-dim:     rgba(194,101,16,0.10);
   --text:         #1c1633;
   --text-2:       rgba(28,22,51,0.80);
   --text-3:       rgba(28,22,51,0.60);
@@ -69,7 +72,7 @@
   }
   .btn-primary:hover {
     filter: brightness(1.08);
-    box-shadow: 0 2px 6px rgba(124,58,237,0.30);
+    box-shadow: 0 2px 6px rgba(53,122,14,0.30);
   }
   .btn-secondary {
     @apply btn;
@@ -92,7 +95,7 @@
   .btn-success {
     @apply btn;
     color: var(--primary);
-    border: 1px solid rgba(124,58,237,0.30);
+    border: 1px solid rgba(53,122,14,0.30);
     background: transparent;
   }
   .btn-success:hover { background: var(--primary-dim); }
@@ -379,14 +382,14 @@
   --fc-page-bg-color:             #ffffff;
   --fc-neutral-bg-color:          #faf9fd;
   --fc-neutral-text-color:        rgba(28,22,51,0.55);
-  --fc-today-bg-color:            rgba(124,58,237,0.06);
-  --fc-highlight-color:           rgba(124,58,237,0.08);
-  --fc-event-bg-color:            #7c3aed;
-  --fc-event-border-color:        #7c3aed;
+  --fc-today-bg-color:            rgba(53,122,14,0.06);
+  --fc-highlight-color:           rgba(53,122,14,0.08);
+  --fc-event-bg-color:            var(--zx-accent-text);
+  --fc-event-border-color:        var(--zx-accent-text);
   --fc-event-text-color:          #ffffff;
   --fc-event-selected-overlay-color: rgba(0,0,0,0.15);
   --fc-non-business-color:        rgba(28,22,51,0.03);
-  --fc-bg-event-color:            rgba(124,58,237,0.10);
+  --fc-bg-event-color:            rgba(53,122,14,0.10);
   --fc-bg-event-opacity:          1;
   --fc-list-event-hover-bg-color: rgba(28,22,51,0.03);
   --fc-small-font-size:           0.7rem;
@@ -431,10 +434,10 @@
 }
 
 /* ── Today ── */
-.fc .fc-day-today { background: rgba(124,58,237,0.05) !important; }
-.fc .fc-timegrid-col.fc-day-today { background: rgba(124,58,237,0.05) !important; }
+.fc .fc-day-today { background: rgba(53,122,14,0.05) !important; }
+.fc .fc-timegrid-col.fc-day-today { background: rgba(53,122,14,0.05) !important; }
 .fc .fc-day-today .fc-daygrid-day-number {
-  background: #7c3aed !important;
+  background: var(--zx-accent-text) !important;
   color: #fff !important;
   border-radius: 50% !important;
   width: 28px !important;
@@ -447,7 +450,7 @@
   margin: 4px auto 0 !important;
   line-height: 1 !important;
 }
-.fc .fc-day-today .fc-col-header-cell-cushion { color: #7c3aed !important; }
+.fc .fc-day-today .fc-col-header-cell-cushion { color: var(--zx-accent-text) !important; }
 
 /* ── Day numbers ── */
 .fc .fc-daygrid-day-top { justify-content: center !important; }
@@ -471,14 +474,14 @@
 
 /* ── Events ── */
 .fc .fc-event {
-  background-color: var(--fc-event-bg-color, #7c3aed) !important;
-  border-color: var(--fc-event-border-color, #7c3aed) !important;
+  background-color: var(--fc-event-bg-color, var(--zx-accent-text)) !important;
+  border-color: var(--fc-event-border-color, var(--zx-accent-text)) !important;
   border-radius: 6px !important; font-size: 0.72rem;
   font-weight: 600; border: none !important;
-  box-shadow: 0 1px 4px rgba(124,58,237,0.20) !important;
+  box-shadow: 0 1px 4px rgba(53,122,14,0.20) !important;
   cursor: pointer !important; transition: transform 0.1s !important;
 }
-.fc .fc-event:hover { transform: translateY(-1px) !important; box-shadow: 0 3px 10px rgba(124,58,237,0.28) !important; }
+.fc .fc-event:hover { transform: translateY(-1px) !important; box-shadow: 0 3px 10px rgba(53,122,14,0.28) !important; }
 .fc .fc-event-main { color: #ffffff !important; }
 .fc .fc-event-title { color: #ffffff !important; font-size: 0.72rem !important; font-weight: 600 !important; }
 .fc .fc-event-time { color: rgba(255,255,255,0.85) !important; font-size: 0.68rem !important; }
@@ -505,9 +508,9 @@
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
-.fc .fc-daygrid-dot-event { background-color: var(--fc-event-bg-color, #7c3aed) !important; }
+.fc .fc-daygrid-dot-event { background-color: var(--fc-event-bg-color, var(--zx-accent-text)) !important; }
 .fc .fc-daygrid-event-dot { border-color: #ffffff !important; }
-.fc .fc-daygrid-more-link { color: #7c3aed !important; font-weight: 600 !important; font-size: 0.72rem !important; }
+.fc .fc-daygrid-more-link { color: var(--zx-accent-text) !important; font-weight: 600 !important; font-size: 0.72rem !important; }
 
 /* ── Toolbar ── */
 .fc .fc-toolbar {
@@ -537,21 +540,21 @@
 }
 .fc .fc-button-active,
 .fc .fc-button-primary:not(:disabled).fc-button-active {
-  background-color: #7c3aed !important;
-  border-color: #7c3aed !important;
+  background-color: var(--zx-accent-text) !important;
+  border-color: var(--zx-accent-text) !important;
   color: #ffffff !important; font-weight: 700;
-  box-shadow: 0 2px 8px rgba(124,58,237,0.30) !important;
+  box-shadow: 0 2px 8px rgba(53,122,14,0.30) !important;
 }
 .fc .fc-today-button:not(:disabled) {
-  background-color: rgba(124,58,237,0.08) !important;
-  border-color: rgba(124,58,237,0.25) !important;
-  color: #7c3aed !important;
+  background-color: rgba(53,122,14,0.08) !important;
+  border-color: rgba(53,122,14,0.25) !important;
+  color: var(--zx-accent-text) !important;
 }
 .fc .fc-today-button:disabled { opacity: 0.40 !important; }
 
 /* ── Now indicator ── */
-.fc .fc-timegrid-now-indicator-line { border-color: #7c3aed !important; border-width: 2px !important; }
-.fc .fc-timegrid-now-indicator-arrow { border-top-color: #7c3aed !important; border-bottom-color: #7c3aed !important; }
+.fc .fc-timegrid-now-indicator-line { border-color: var(--zx-accent-text) !important; border-width: 2px !important; }
+.fc .fc-timegrid-now-indicator-arrow { border-top-color: var(--zx-accent-text) !important; border-bottom-color: var(--zx-accent-text) !important; }
 
 /* ── All-day row (week/day views) ── */
 .fc .fc-scrollgrid-section-all-day { display: none !important; }

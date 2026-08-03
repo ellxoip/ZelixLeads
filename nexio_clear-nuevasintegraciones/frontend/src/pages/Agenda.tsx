@@ -23,8 +23,8 @@ const GC_CSS = `
 .fc {
   font-family: 'Manrope', system-ui, sans-serif !important;
   --fc-border-color: rgba(28,22,51,0.08) !important;
-  --fc-today-bg-color: rgba(124,58,237,0.05) !important;
-  --fc-highlight-color: rgba(124,58,237,0.10) !important;
+  --fc-today-bg-color: rgba(53,122,14,0.05) !important;
+  --fc-highlight-color: rgba(53,122,14,0.10) !important;
   --fc-non-business-color: rgba(0,0,0,0.02) !important;
 }
 /* Transparent containers so the card background shows uniformly —
@@ -58,13 +58,13 @@ const GC_CSS = `
 .fc .fc-button:focus { box-shadow: none !important; outline: none !important; }
 .fc .fc-button-active,
 .fc .fc-button-primary:not(:disabled).fc-button-active {
-  background: rgba(124,58,237,0.10) !important;
-  color: #7c3aed !important;
-  border-color: rgba(124,58,237,0.28) !important;
+  background: rgba(53,122,14,0.10) !important;
+  color: var(--zx-accent-text) !important;
+  border-color: rgba(53,122,14,0.28) !important;
   font-weight: 700 !important;
 }
-.fc .fc-today-button { color: #7c3aed !important; border-color: rgba(124,58,237,0.35) !important; font-weight: 700 !important; }
-.fc .fc-today-button:hover { background: rgba(124,58,237,0.07) !important; }
+.fc .fc-today-button { color: var(--zx-accent-text) !important; border-color: rgba(53,122,14,0.35) !important; font-weight: 700 !important; }
+.fc .fc-today-button:hover { background: rgba(53,122,14,0.07) !important; }
 .fc .fc-prev-button, .fc .fc-next-button {
   width: 30px !important; height: 30px !important; padding: 0 !important;
   display: inline-flex !important; align-items: center !important; justify-content: center !important;
@@ -77,18 +77,18 @@ const GC_CSS = `
 .fc .fc-col-header-cell-cushion { padding: 0 !important; text-decoration: none !important; width: 100% !important; }
 /* Day grid */
 .fc .fc-daygrid-day-number { color: rgba(28,22,51,0.65) !important; font-size: 12px !important; font-weight: 400 !important; padding: 6px 8px !important; text-decoration: none !important; }
-.fc .fc-day-today .fc-daygrid-day-number { background: #7c3aed !important; color: #fff !important; border-radius: 50% !important; width: 26px !important; height: 26px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 4px auto 0 !important; padding: 0 !important; }
+.fc .fc-day-today .fc-daygrid-day-number { background: var(--zx-accent-text) !important; color: #fff !important; border-radius: 50% !important; width: 26px !important; height: 26px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 4px auto 0 !important; padding: 0 !important; }
 .fc .fc-daygrid-day-top { justify-content: center !important; }
-.fc .fc-daygrid-day.fc-day-today { background: rgba(124,58,237,0.04) !important; }
+.fc .fc-daygrid-day.fc-day-today { background: rgba(53,122,14,0.04) !important; }
 .fc .fc-daygrid-event { border-radius: 4px !important; margin: 1px 2px !important; }
 .fc .fc-daygrid-event .fc-event-title { font-size: 11px !important; }
-.fc .fc-daygrid-more-link { color: #7c3aed !important; font-size: 11px !important; font-weight: 600 !important; text-decoration: none !important; }
+.fc .fc-daygrid-more-link { color: var(--zx-accent-text) !important; font-size: 11px !important; font-weight: 600 !important; text-decoration: none !important; }
 /* Time grid */
 .fc .fc-timegrid-slot { height: 48px !important; border-color: rgba(28,22,51,0.05) !important; }
 .fc .fc-timegrid-slot-minor { border-top-color: rgba(28,22,51,0.025) !important; }
 .fc .fc-timegrid-axis { border-color: rgba(28,22,51,0.07) !important; width: 52px !important; }
 .fc .fc-timegrid-axis-cushion { color: rgba(28,22,51,0.40) !important; font-size: 10px !important; font-weight: 500 !important; padding-right: 6px !important; letter-spacing: 0.03em !important; }
-.fc .fc-day-today.fc-timegrid-col { background: rgba(124,58,237,0.03) !important; }
+.fc .fc-day-today.fc-timegrid-col { background: rgba(53,122,14,0.03) !important; }
 .fc .fc-timegrid-now-indicator-line { border-color: #e11d48 !important; border-width: 2px !important; z-index: 10 !important; }
 .fc .fc-timegrid-now-indicator-arrow { border-top-color: #e11d48 !important; border-bottom-color: #e11d48 !important; border-width: 5px !important; left: -1px !important; }
 /* Events */
@@ -97,7 +97,7 @@ const GC_CSS = `
 .fc .fc-timegrid-event { border-radius: 8px !important; padding: 4px 8px !important; min-height: 26px !important; }
 .fc .fc-event-title { color: #fff !important; font-size: 12px !important; font-weight: 600 !important; line-height: 1.3 !important; }
 .fc .fc-event-time { color: rgba(255,255,255,0.85) !important; font-size: 10.5px !important; }
-.fc .fc-highlight { background: rgba(124,58,237,0.10) !important; border-radius: 4px !important; }
+.fc .fc-highlight { background: rgba(53,122,14,0.10) !important; border-radius: 4px !important; }
 .fc .fc-scroller::-webkit-scrollbar { width: 5px !important; }
 .fc .fc-scroller::-webkit-scrollbar-track { background: transparent !important; }
 .fc .fc-scroller::-webkit-scrollbar-thumb { background: rgba(28,22,51,0.15) !important; border-radius: 3px !important; }
@@ -818,7 +818,7 @@ export default function Agenda() {
                 return (
                   <div className="py-2 text-center">
                     <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em',
-                      color: isToday ? '#7c3aed' : '#70757a' }}>
+                      color: isToday ? 'var(--zx-accent-text)' : '#70757a' }}>
                       {dayName}
                     </span>
                   </div>
@@ -827,14 +827,14 @@ export default function Agenda() {
               return (
                 <div className="flex flex-col items-center py-2 gap-1">
                   <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em',
-                    color: isToday ? '#7c3aed' : '#70757a' }}>
+                    color: isToday ? 'var(--zx-accent-text)' : '#70757a' }}>
                     {dayName}
                   </span>
                   <span style={{
                     width: 32, height: 32, borderRadius: '50%', display: 'flex',
                     alignItems: 'center', justifyContent: 'center', fontSize: '14px',
                     fontWeight: isToday ? 700 : 400,
-                    background: isToday ? '#7c3aed' : 'transparent',
+                    background: isToday ? 'var(--zx-accent-text)' : 'transparent',
                     color: isToday ? '#fff' : '#3c4043',
                   }}>
                     {dayNum}

@@ -847,7 +847,7 @@ function DetailPanel({ lead, onUpdate, onClose }: {
           </button>
         )}
         <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-base text-white"
-          style={{ background: `${STAGES[lead.stage]?.dot ?? '#7c3aed'}33`, border: `1.5px solid ${STAGES[lead.stage]?.dot ?? '#7c3aed'}55` }}>
+          style={{ background: `${STAGES[lead.stage]?.dot ?? 'var(--zx-accent-text)'}33`, border: `1.5px solid ${STAGES[lead.stage]?.dot ?? 'var(--zx-accent-text)'}55` }}>
           {lead.nombre.charAt(0).toUpperCase()}
         </div>
         <div className="flex-1 min-w-0">
@@ -1010,7 +1010,7 @@ function DetailPanel({ lead, onUpdate, onClose }: {
                       disabled={markingContactado}
                       className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all hover:scale-[1.01] active:scale-[0.99]"
                       style={{
-                        background: 'linear-gradient(135deg, rgba(124,58,237,0.20) 0%, rgba(99,102,241,0.12) 100%)',
+                        background: 'linear-gradient(135deg, rgba(53,122,14,0.20) 0%, rgba(99,102,241,0.12) 100%)',
                         color: '#818cf8',
                         border: '1.5px solid rgba(99,102,241,0.30)',
                       }}>
@@ -1091,7 +1091,7 @@ function DetailPanel({ lead, onUpdate, onClose }: {
                     <button onClick={handleSendEmail}
                       disabled={sendingEmail || !emailSubject.trim() || !emailBody.trim() || !emailDest.trim()}
                       className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-bold transition-all"
-                      style={{ background: 'rgba(124,58,237,0.18)', color: '#818cf8', border: '1.5px solid rgba(124,58,237,0.35)', opacity: !emailSubject.trim() || !emailBody.trim() || !emailDest.trim() ? 0.4 : 1 }}>
+                      style={{ background: 'rgba(53,122,14,0.18)', color: '#818cf8', border: '1.5px solid rgba(53,122,14,0.35)', opacity: !emailSubject.trim() || !emailBody.trim() || !emailDest.trim() ? 0.4 : 1 }}>
                       {sendingEmail
                         ? <div className="w-3.5 h-3.5 border-2 rounded-full animate-spin" style={{ borderColor: 'transparent', borderTopColor: '#818cf8' }} />
                         : <><Mail size={12} />Enviar Correo</>}
@@ -1116,7 +1116,7 @@ function DetailPanel({ lead, onUpdate, onClose }: {
                 style={{ minHeight: 180 }} />
               <button onClick={handleSaveNotes} disabled={savingNotes || notes === (lead.notes ?? '')}
                 className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2"
-                style={{ background: notes === (lead.notes ?? '') ? 'rgba(124,58,237,0.08)' : 'rgba(124,58,237,0.20)', color: '#818cf8', border: '1px solid rgba(124,58,237,0.30)', opacity: notes === (lead.notes ?? '') ? 0.5 : 1 }}>
+                style={{ background: notes === (lead.notes ?? '') ? 'rgba(53,122,14,0.08)' : 'rgba(53,122,14,0.20)', color: '#818cf8', border: '1px solid rgba(53,122,14,0.30)', opacity: notes === (lead.notes ?? '') ? 0.5 : 1 }}>
                 {savingNotes && <div className="w-3.5 h-3.5 border-2 rounded-full animate-spin" style={{ borderColor: 'transparent', borderTopColor: '#818cf8' }} />}
                 Guardar Notas
               </button>
@@ -1431,7 +1431,7 @@ export default function CobradoresCartera() {
                         <p className="text-[13px] font-bold truncate leading-tight" style={{ color: '#1c1633' }}>{lead.nombre}</p>
                         {lead.is_new && (
                           <span className="flex-shrink-0 text-[9px] font-black px-1.5 py-0.5 rounded-full animate-pulse"
-                            style={{ background: '#7c3aed', color: '#fff' }}>
+                            style={{ background: 'var(--zx-accent-text)', color: '#fff' }}>
                             NUEVO
                           </span>
                         )}
@@ -1534,7 +1534,7 @@ export default function CobradoresCartera() {
 
             {/* Accent line */}
             <div className="h-0.5 flex-shrink-0"
-              style={{ background: `linear-gradient(90deg, ${STAGES[selected.stage]?.dot ?? '#7c3aed'} 0%, rgba(124,58,237,0.35) 100%)` }} />
+              style={{ background: `linear-gradient(90deg, ${STAGES[selected.stage]?.dot ?? 'var(--zx-accent-text)'} 0%, rgba(53,122,14,0.35) 100%)` }} />
 
             <DetailPanel
               key={selected.id}

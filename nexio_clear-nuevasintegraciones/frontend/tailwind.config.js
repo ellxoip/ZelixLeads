@@ -7,6 +7,21 @@ export default {
   theme: {
     extend: {
       colors: {
+        brand: {
+          50: 'var(--zx-brand-50)',
+          100: 'var(--zx-brand-100)',
+          200: 'var(--zx-brand-200)',
+          300: 'var(--zx-brand-300)',
+          400: 'var(--zx-brand-400)',
+          500: 'var(--zx-brand-500)',
+          600: 'var(--zx-brand-600)',
+          700: 'var(--zx-brand-700)',
+          800: 'var(--zx-brand-800)',
+          900: 'var(--zx-brand-900)',
+          950: 'var(--zx-brand-950)',
+        },
+      },
+      colors: {
         // Light professional surfaces
         surface: {
           0: '#f5f3fa',   // body bg — light gray

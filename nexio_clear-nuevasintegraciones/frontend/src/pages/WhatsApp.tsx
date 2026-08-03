@@ -61,7 +61,7 @@ function renderLinkified(text: string): React.ReactNode[] {
         href={href}
         target="_blank"
         rel="noreferrer"
-        className="underline underline-offset-2 text-sky-300 hover:text-sky-200"
+        className="underline underline-offset-2 text-brand-300 hover:text-brand-200"
         onClick={(e) => e.stopPropagation()}
       >
         {href}
@@ -233,7 +233,7 @@ function WaFillContactModal({ messages, conv, onClose }: {
                 <p className="text-center text-xs py-4" style={{color:'rgba(28,22,51,0.40)'}}>Sin mensajes</p>
               ) : messages.map((m: any) => {
                 const isOut = m.direction === 'out'
-                const bubbleBg = isOut ? '#7c3aed' : '#ffffff'
+                const bubbleBg = isOut ? 'var(--zx-accent-text)' : '#ffffff'
                 return (
                   <div key={m.id} className={`flex ${isOut ? 'justify-end' : 'justify-start'} mb-0.5`}>
                     <div className="relative max-w-[80%]"
@@ -250,7 +250,7 @@ function WaFillContactModal({ messages, conv, onClose }: {
                           backgroundColor: bubbleBg,
                           borderRadius: isOut ? '7.5px 7.5px 0 7.5px' : '7.5px 7.5px 7.5px 0',
                           padding: '4px 8px 6px 8px',
-                          boxShadow: isOut ? '0 1px 3px rgba(124,58,237,0.2)' : '0 1px 3px rgba(0,0,0,0.08)',
+                          boxShadow: isOut ? '0 1px 3px rgba(53,122,14,0.2)' : '0 1px 3px rgba(0,0,0,0.08)',
                           position: 'relative', zIndex: 1,
                           color: isOut ? '#ffffff' : 'var(--text)',
                           border: isOut ? 'none' : '1px solid rgba(28,22,51,0.10)',
@@ -690,7 +690,7 @@ export default function WhatsApp() {
 
       {/* Descripción */}
       {configs.length > 0 && (
-        <div className="flex items-start gap-3 rounded-xl px-4 py-3 text-xs flex-shrink-0" style={{ background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.18)', color: 'rgba(124,58,237,0.90)' }}>
+        <div className="flex items-start gap-3 rounded-xl px-4 py-3 text-xs flex-shrink-0" style={{ background: 'rgba(53,122,14,0.08)', border: '1px solid rgba(53,122,14,0.18)', color: 'rgba(53,122,14,0.90)' }}>
           <Info size={15} className="flex-shrink-0 mt-0.5" />
           <p>Aquí puede ver y responder los mensajes de WhatsApp de sus clientes. Seleccione una conversación de la lista izquierda para abrir el chat. Puede escribir mensajes, enviar archivos y ver el historial completo de cada cliente.</p>
         </div>
@@ -748,7 +748,7 @@ export default function WhatsApp() {
         <div className="flex flex-col items-center justify-center flex-1 py-20 rounded-2xl space-y-4"
           style={{ background: 'rgba(255,255,255,0.02)', border: '1.5px dashed rgba(255,255,255,0.08)' }}>
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
-            style={{ background: 'rgba(124,58,237,0.10)', border: '1px solid rgba(124,58,237,0.22)' }}>
+            style={{ background: 'rgba(53,122,14,0.10)', border: '1px solid rgba(53,122,14,0.22)' }}>
             <MessageSquare size={28} style={{ color: 'var(--primary)' }} />
           </div>
           <div className="text-center">
@@ -757,7 +757,7 @@ export default function WhatsApp() {
           </div>
           <Link to="/mis-whatsapp"
             className="flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-xl transition-all"
-            style={{ background: 'var(--primary)', color: '#ffffff', boxShadow: '0 4px 16px rgba(124,58,237,0.25)' }}>
+            style={{ background: 'var(--primary)', color: '#ffffff', boxShadow: '0 4px 16px rgba(53,122,14,0.25)' }}>
             Ir a Mis WhatsApp →
           </Link>
         </div>
@@ -905,7 +905,7 @@ export default function WhatsApp() {
                 {selectedConv.lead_id ? (
                   <Link to="/leads" state={{ openLeadId: selectedConv.lead_id }}
                     className="text-xs py-1.5 px-3 rounded-lg font-medium transition-colors"
-                    style={{color:'var(--primary)', backgroundColor:'var(--primary-dim)', border:'1px solid rgba(124,58,237,0.20)'}}>
+                    style={{color:'var(--primary)', backgroundColor:'var(--primary-dim)', border:'1px solid rgba(53,122,14,0.20)'}}>
                     Ver Lead →
                   </Link>
                 ) : (
@@ -936,7 +936,7 @@ export default function WhatsApp() {
                   <div className="py-4 px-[3%] space-y-1">
                     {messages.map((m: any, idx: number) => {
                       const isOut = m.direction === 'out'
-                      const bubbleBg = isOut ? '#7c3aed' : '#ffffff'
+                      const bubbleBg = isOut ? 'var(--zx-accent-text)' : '#ffffff'
                       const prev = messages[idx - 1]
                       const showSep = !prev || !isSameDay(parseAsUTC(m.created_at), parseAsUTC(prev.created_at))
                       return (
@@ -972,7 +972,7 @@ export default function WhatsApp() {
                                   backgroundColor: bubbleBg,
                                   borderRadius: isOut ? '7.5px 7.5px 0 7.5px' : '7.5px 7.5px 7.5px 0',
                                   padding: '6px 9px 8px 9px',
-                                  boxShadow: isOut ? '0 1px 3px rgba(124,58,237,0.2)' : '0 1px 3px rgba(0,0,0,0.08)',
+                                  boxShadow: isOut ? '0 1px 3px rgba(53,122,14,0.2)' : '0 1px 3px rgba(0,0,0,0.08)',
                                   color: isOut ? '#ffffff' : 'var(--text)', position: 'relative', zIndex: 1, cursor: 'default',
                                   overflow: 'hidden',
                                   wordBreak: 'break-word',

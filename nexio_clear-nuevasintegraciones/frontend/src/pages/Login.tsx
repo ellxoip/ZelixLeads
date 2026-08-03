@@ -31,12 +31,12 @@ const DEMO_ACCOUNTS: { label: string; role: string; email: string; pw: string }[
 ]
 
 const ROLE_COLORS: Record<string, string> = {
-  SuperAdmin:  '#7c3aed',
+  SuperAdmin:  'var(--zx-accent-text)',
   SubAdmin:    '#a78bfa',
   'Técnico':   '#0891b2',
   Verificador: '#f59e0b',
   Cobrador:    '#e11d48',
-  Vendedor:    '#06b6d4',
+  Vendedor:    'var(--zx-lime)',
   Agendadora:  '#10b981',
 }
 
@@ -101,14 +101,14 @@ export default function Login() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute rounded-full" style={{
           top: '-18%', right: '-10%', width: 560, height: 560,
-          background: 'radial-gradient(circle, rgba(124,58,237,0.16) 0%, transparent 68%)',
+          background: 'radial-gradient(circle, rgba(53,122,14,0.16) 0%, transparent 68%)',
         }} />
         <div className="absolute rounded-full" style={{
           bottom: '-20%', left: '-12%', width: 620, height: 620,
           background: 'radial-gradient(circle, rgba(6,182,212,0.14) 0%, transparent 68%)',
         }} />
         <div className="absolute inset-0" style={{
-          backgroundImage: 'linear-gradient(rgba(124,58,237,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,0.045) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(53,122,14,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(53,122,14,0.045) 1px, transparent 1px)',
           backgroundSize: '56px 56px',
         }} />
 
@@ -139,8 +139,8 @@ export default function Login() {
               {!rtl && (
                 <span className="flex items-center justify-center w-6 h-6 rounded-full flex-shrink-0"
                   style={{
-                    background: 'linear-gradient(135deg, #7c3aed, #06b6d4)',
-                    boxShadow: '0 3px 10px rgba(124,58,237,0.35)',
+                    background: 'linear-gradient(135deg, var(--zx-accent-text), var(--zx-lime))',
+                    boxShadow: '0 3px 10px rgba(53,122,14,0.35)',
                   }}>
                   <Send size={11} color="#fff" />
                 </span>
@@ -149,8 +149,8 @@ export default function Login() {
                 style={{
                   width: w,
                   background: 'rgba(255,255,255,0.82)',
-                  border: '1px solid rgba(124,58,237,0.20)',
-                  boxShadow: '0 10px 26px rgba(124,58,237,0.14), inset 0 1px 0 rgba(255,255,255,0.9)',
+                  border: '1px solid rgba(53,122,14,0.20)',
+                  boxShadow: '0 10px 26px rgba(53,122,14,0.14), inset 0 1px 0 rgba(255,255,255,0.9)',
                   backdropFilter: 'blur(5px)',
                   borderBottomLeftRadius: rtl ? 16 : 4,
                   borderBottomRightRadius: rtl ? 4 : 16,
@@ -160,7 +160,7 @@ export default function Login() {
                     width: '82%',
                     background: rtl
                       ? 'linear-gradient(90deg, rgba(6,182,212,0.55), rgba(6,182,212,0.20))'
-                      : 'linear-gradient(90deg, rgba(124,58,237,0.50), rgba(124,58,237,0.18))',
+                      : 'linear-gradient(90deg, rgba(53,122,14,0.50), rgba(53,122,14,0.18))',
                   }} />
                 {lines > 1 && (
                   <div className="h-1.5 rounded-full"
@@ -170,7 +170,7 @@ export default function Login() {
               {rtl && (
                 <span className="flex items-center justify-center w-6 h-6 rounded-full flex-shrink-0"
                   style={{
-                    background: 'linear-gradient(135deg, #06b6d4, #7c3aed)',
+                    background: 'linear-gradient(135deg, var(--zx-lime), var(--zx-accent-text))',
                     boxShadow: '0 3px 10px rgba(6,182,212,0.35)',
                   }}>
                   <Send size={11} color="#fff" style={{ transform: 'scaleX(-1)' }} />
@@ -187,7 +187,7 @@ export default function Login() {
         <h1 className="mt-3 text-3xl font-black tracking-tight leading-none"
           style={{
             fontFamily: '"Space Grotesk", sans-serif', letterSpacing: '-0.03em',
-            background: 'linear-gradient(90deg, #7c3aed 0%, #06b6d4 100%)',
+            background: 'linear-gradient(90deg, var(--zx-accent-text) 0%, var(--zx-lime) 100%)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
           }}>
           ZelixLeads
@@ -202,8 +202,8 @@ export default function Login() {
       <div className="relative z-10 w-full max-w-[400px] rounded-3xl p-7 sm:p-8"
         style={{
           background: '#ffffff',
-          border: '1px solid rgba(124,58,237,0.14)',
-          boxShadow: '0 24px 60px rgba(28,22,51,0.14), 0 4px 16px rgba(124,58,237,0.08)',
+          border: '1px solid rgba(53,122,14,0.14)',
+          boxShadow: '0 24px 60px rgba(28,22,51,0.14), 0 4px 16px rgba(53,122,14,0.08)',
         }}>
 
         <h2 className="text-xl font-black leading-tight mb-1"
@@ -232,7 +232,7 @@ export default function Login() {
                 required
                 className="w-full pl-11 pr-4 py-3 text-sm rounded-xl transition-all focus:outline-none"
                 style={{ background: '#f7f5fc', border: '1px solid rgba(28,22,51,0.14)', color: '#1c1633' }}
-                onFocus={e => { e.currentTarget.style.borderColor = '#7c3aed'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(124,58,237,0.14)' }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--zx-accent-text)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(53,122,14,0.14)' }}
                 onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(28,22,51,0.14)'; e.currentTarget.style.boxShadow = 'none' }}
                 placeholder="tu@empresa.com"
               />
@@ -255,7 +255,7 @@ export default function Login() {
                 required
                 className="w-full pl-11 pr-12 py-3 text-sm rounded-xl transition-all focus:outline-none"
                 style={{ background: '#f7f5fc', border: '1px solid rgba(28,22,51,0.14)', color: '#1c1633' }}
-                onFocus={e => { e.currentTarget.style.borderColor = '#7c3aed'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(124,58,237,0.14)' }}
+                onFocus={e => { e.currentTarget.style.borderColor = 'var(--zx-accent-text)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(53,122,14,0.14)' }}
                 onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(28,22,51,0.14)'; e.currentTarget.style.boxShadow = 'none' }}
                 placeholder="••••••••"
               />
@@ -273,13 +273,13 @@ export default function Login() {
             disabled={loading}
             className="w-full py-3.5 rounded-xl text-sm font-bold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
-              background: 'linear-gradient(90deg, #7c3aed 0%, #06b6d4 130%)',
+              background: 'linear-gradient(90deg, var(--zx-accent-text) 0%, var(--zx-lime) 130%)',
               color: '#ffffff',
-              boxShadow: '0 8px 24px rgba(124,58,237,0.35)',
+              boxShadow: '0 8px 24px rgba(53,122,14,0.35)',
               fontFamily: '"Space Grotesk", sans-serif',
             }}
-            onMouseEnter={e => { if (!loading) { (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 32px rgba(124,58,237,0.50)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)' } }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(124,58,237,0.35)'; (e.currentTarget as HTMLElement).style.transform = '' }}
+            onMouseEnter={e => { if (!loading) { (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 32px rgba(53,122,14,0.50)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)' } }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(53,122,14,0.35)'; (e.currentTarget as HTMLElement).style.transform = '' }}
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2.5">
@@ -299,9 +299,9 @@ export default function Login() {
           <button type="button" onClick={() => setShowDemo(v => !v)}
             className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all"
             style={{
-              background: showDemo ? 'rgba(124,58,237,0.08)' : '#f7f5fc',
-              border: '1px solid rgba(124,58,237,0.22)',
-              color: '#7c3aed',
+              background: showDemo ? 'rgba(53,122,14,0.08)' : '#f7f5fc',
+              border: '1px solid rgba(53,122,14,0.22)',
+              color: 'var(--zx-accent-text)',
             }}>
             <span className="inline-flex items-center gap-1.5">
               <Zap size={12} /> Cuentas demo — prueba cada rol
@@ -313,7 +313,7 @@ export default function Login() {
             <div className="mt-2.5 rounded-2xl p-2 space-y-1 overflow-y-auto"
               style={{ maxHeight: 240, background: '#f7f5fc', border: '1px solid rgba(28,22,51,0.10)' }}>
               {DEMO_ACCOUNTS.map(acc => {
-                const color = ROLE_COLORS[acc.role] || '#7c3aed'
+                const color = ROLE_COLORS[acc.role] || 'var(--zx-accent-text)'
                 const busy = demoLoading === acc.email
                 return (
                   <button key={acc.email} type="button"
@@ -349,7 +349,7 @@ export default function Login() {
         <div className="mt-5 flex items-start gap-2.5 p-3 rounded-2xl"
           style={{ background: 'rgba(6,182,212,0.07)', border: '1px solid rgba(6,182,212,0.22)' }}>
           <span className="flex items-center justify-center w-7 h-7 rounded-lg flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #06b6d4, #7c3aed)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--zx-lime), var(--zx-accent-text))' }}>
             <Send size={13} color="#fff" />
           </span>
           <p className="text-[11px] leading-snug" style={{ color: 'rgba(28,22,51,0.60)' }}>
@@ -368,7 +368,7 @@ export default function Login() {
         {PERKS.map(({ icon: Icon, text }) => (
           <span key={text} className="inline-flex items-center gap-1.5 text-[11px] font-semibold"
             style={{ color: 'rgba(28,22,51,0.48)' }}>
-            <Icon size={12} style={{ color: '#7c3aed' }} /> {text}
+            <Icon size={12} style={{ color: 'var(--zx-accent-text)' }} /> {text}
           </span>
         ))}
       </div>

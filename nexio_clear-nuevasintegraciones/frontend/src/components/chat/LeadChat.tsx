@@ -167,8 +167,8 @@ function FillContactSplit({ messages, lead, onSave, onClose }: {
               </div>
             ) : messages.filter((m: any) => m.content || m.media_url).map((m: any) => {
               const out = m.direction === 'out'
-              const bubbleBg = out ? '#7c3aed' : '#ffffff'
-              const bubbleBorder = out ? 'rgba(124,58,237,0.30)' : 'rgba(28,22,51,0.10)'
+              const bubbleBg = out ? 'var(--zx-accent-text)' : '#ffffff'
+              const bubbleBorder = out ? 'rgba(53,122,14,0.30)' : 'rgba(28,22,51,0.10)'
               return (
                 <div key={m.id} className={`flex ${out ? 'justify-end' : 'justify-start'} mb-0.5`}>
                   <div className="relative max-w-[80%]"
@@ -179,7 +179,7 @@ function FillContactSplit({ messages, lead, onSave, onClose }: {
                       border: `1px solid ${bubbleBorder}`,
                       borderRadius: out ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
                       padding: '6px 10px 8px 10px',
-                      boxShadow: out ? '0 1px 3px rgba(124,58,237,0.20)' : '0 1px 3px rgba(0,0,0,0.06)',
+                      boxShadow: out ? '0 1px 3px rgba(53,122,14,0.20)' : '0 1px 3px rgba(0,0,0,0.06)',
                       position: 'relative', zIndex: 1,
                       color: out ? '#ffffff' : 'var(--text)',
                     }}>
@@ -338,8 +338,8 @@ function ChatMsgContent({ m, out = false }: { m: any; out?: boolean }) {
   return (
     <p className="leading-relaxed whitespace-pre-wrap text-[13px]" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
       {renderLinkified(m.content, out
-        ? 'underline underline-offset-2 text-sky-300 hover:text-sky-200'
-        : 'underline underline-offset-2 text-[#7c3aed] hover:opacity-80')}
+        ? 'underline underline-offset-2 text-brand-300 hover:text-brand-200'
+        : 'underline underline-offset-2 text-[var(--zx-accent-text)] hover:opacity-80')}
     </p>
   )
 }

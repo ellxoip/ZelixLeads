@@ -82,7 +82,7 @@ export default function Telegram() {
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #06b6d4)', boxShadow: '0 4px 14px rgba(124,58,237,0.30)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--zx-accent-text), var(--zx-lime))', boxShadow: '0 4px 14px rgba(53,122,14,0.30)' }}>
             <Send size={20} color="#fff" />
           </div>
           <div>

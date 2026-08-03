@@ -11,8 +11,8 @@ export function NexioLogo({ size = 36 }: { size?: number }) {
     >
       <defs>
         <linearGradient id="nexioG" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#7c3aed"/>
-          <stop offset="100%" stopColor="#06b6d4"/>
+          <stop offset="0%" stopColor="var(--zx-accent-text)"/>
+          <stop offset="100%" stopColor="var(--zx-lime)"/>
         </linearGradient>
       </defs>
 

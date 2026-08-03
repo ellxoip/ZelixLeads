@@ -140,7 +140,7 @@ function QRModal({ session, onClose, onConnected }: {
           style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid rgba(124,58,237,0.25)' }}>
+              style={{ background: 'rgba(53,122,14,0.15)', border: '1px solid rgba(53,122,14,0.25)' }}>
               <QrCode size={15} style={{ color: '#7c87f5' }} />
             </div>
             <div>
@@ -270,7 +270,7 @@ function QRModal({ session, onClose, onConnected }: {
           {/* Instructions */}
           {status === 'qr_ready' && (
             <div className="rounded-xl p-3 space-y-1.5"
-              style={{ background: 'rgba(124,58,237,0.10)', border: '1px solid rgba(124,58,237,0.22)' }}>
+              style={{ background: 'rgba(53,122,14,0.10)', border: '1px solid rgba(53,122,14,0.22)' }}>
               <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'rgba(147,168,255,0.90)' }}>Instrucciones</p>
               {[
                 'Abre WhatsApp en tu teléfono',
@@ -298,7 +298,7 @@ function QRModal({ session, onClose, onConnected }: {
           <button onClick={onClose}
             className={`py-2.5 rounded-xl text-sm font-bold transition-all ${status === 'connected' ? 'flex-1' : 'px-4'}`}
             style={status === 'connected'
-              ? { background: '#7c3aed', color: '#ffffff' }
+              ? { background: 'var(--zx-accent-text)', color: '#ffffff' }
               : { background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.14)', color: 'rgba(255,255,255,0.70)' }}>
             {status === 'connected' ? 'Listo' : 'Cerrar'}
           </button>
@@ -330,12 +330,12 @@ function SessionCard({ session, onQR, onDelete, onRename, onRefresh }: {
 
   return (
     <div className="rounded-2xl p-4 space-y-3"
-      style={{ background: 'var(--surface)', border: `1px solid ${isConnected ? 'rgba(124,58,237,0.25)' : 'var(--border)'}`, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+      style={{ background: 'var(--surface)', border: `1px solid ${isConnected ? 'rgba(53,122,14,0.25)' : 'var(--border)'}`, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
 
       {/* Top row */}
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{ background: isConnected ? 'var(--primary-dim)' : 'var(--surface-3)', border: `1px solid ${isConnected ? 'rgba(124,58,237,0.25)' : 'var(--border)'}` }}>
+          style={{ background: isConnected ? 'var(--primary-dim)' : 'var(--surface-3)', border: `1px solid ${isConnected ? 'rgba(53,122,14,0.25)' : 'var(--border)'}` }}>
           <Smartphone size={18} style={{ color: isConnected ? 'var(--primary)' : 'var(--text-muted)' }} />
         </div>
         <div className="flex-1 min-w-0">
@@ -395,8 +395,8 @@ function SessionCard({ session, onQR, onDelete, onRename, onRefresh }: {
       <button onClick={onQR}
         className="w-full py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all"
         style={isConnected
-          ? { background: 'var(--primary-dim)', border: '1px solid rgba(124,58,237,0.25)', color: 'var(--primary)' }
-          : { background: 'var(--primary)', color: '#ffffff', boxShadow: '0 4px 16px rgba(124,58,237,0.25)' }
+          ? { background: 'var(--primary-dim)', border: '1px solid rgba(53,122,14,0.25)', color: 'var(--primary)' }
+          : { background: 'var(--primary)', color: '#ffffff', boxShadow: '0 4px 16px rgba(53,122,14,0.25)' }
         }>
         {isConnected ? <><Wifi size={14} /> Reconectar / Ver estado</> : <><QrCode size={14} /> Vincular con QR</>}
       </button>
@@ -508,8 +508,8 @@ export default function MisWhatsApp() {
 
       {/* Info banner */}
       <div className="flex items-start gap-3 rounded-xl px-4 py-3 text-xs"
-        style={{ background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.16)', color: 'rgba(52,81,199,0.90)' }}>
-        <Info size={14} className="flex-shrink-0 mt-0.5" style={{ color: '#7c3aed' }} />
+        style={{ background: 'rgba(53,122,14,0.07)', border: '1px solid rgba(53,122,14,0.16)', color: 'rgba(52,81,199,0.90)' }}>
+        <Info size={14} className="flex-shrink-0 mt-0.5" style={{ color: 'var(--zx-accent-text)' }} />
         <p>
           Vincula hasta <strong>{maxLabel === 'ilimitados' ? 'números ilimitados' : `${maxLabel} número${maxLabel === 1 ? '' : 's'} de WhatsApp`}</strong> con tu cuenta.
           Los mensajes entrantes aparecerán automáticamente en el chat de cada lead.
@@ -526,7 +526,7 @@ export default function MisWhatsApp() {
         <div className="flex flex-col items-center justify-center py-16 rounded-2xl space-y-4"
           style={{ background: 'rgba(255,255,255,0.02)', border: '1.5px dashed rgba(255,255,255,0.08)' }}>
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-            style={{ background: 'rgba(124,58,237,0.10)', border: '1px solid rgba(124,58,237,0.22)' }}>
+            style={{ background: 'rgba(53,122,14,0.10)', border: '1px solid rgba(53,122,14,0.22)' }}>
             <Smartphone size={24} style={{ color: 'var(--primary)' }} />
           </div>
           <div className="text-center">

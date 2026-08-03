@@ -221,7 +221,7 @@ function EventRow({ ev, onClick }: { ev: any; onClick?: () => void }) {
         <span className="text-[9px] font-bold text-warn bg-warn/15 border border-warn/25 px-1.5 py-0.5 rounded-full flex-shrink-0" title="La reunión ya pasó pero aún no registras el resultado">Sin marcar</span>
       )}
       {!ev.vendor_status && !isPast && !isNow && (
-        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'rgba(6,182,212,0.10)', color: '#06b6d4', border: '1px solid rgba(6,182,212,0.30)' }} title="Reunión agendada que aún no ocurre">Programada</span>
+        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'rgba(6,182,212,0.10)', color: 'var(--zx-lime)', border: '1px solid rgba(6,182,212,0.30)' }} title="Reunión agendada que aún no ocurre">Programada</span>
       )}
     </div>
   )
@@ -250,12 +250,12 @@ function AlertBanner({ icon: Icon, title, sub, to, color = 'warn', state }: { ic
 const PIPELINE_STAGES = [
   { stage: 'lead',                 dot: 'bg-slate-400',     bar: '#94a3b8', label_color: 'text-white/65' },
   { stage: 'reunion',              dot: 'bg-blue-400',      bar: '#60a5fa', label_color: 'text-white/65' },
-  { stage: 'altamente_interesado', dot: 'bg-violet-400',    bar: '#a78bfa', label_color: 'text-white/65' },
-  { stage: 'cierre',               dot: 'bg-cyan-500',      bar: '#06b6d4', label_color: 'text-white/65' },
-  { stage: 'pago_pendiente',       dot: 'bg-sky-400',       bar: '#0ea5e9', label_color: 'text-white/65' },
+  { stage: 'altamente_interesado', dot: 'bg-brand-400',    bar: '#a78bfa', label_color: 'text-white/65' },
+  { stage: 'cierre',               dot: 'bg-brand-500',      bar: 'var(--zx-lime)', label_color: 'text-white/65' },
+  { stage: 'pago_pendiente',       dot: 'bg-brand-400',       bar: '#0ea5e9', label_color: 'text-white/65' },
   { stage: 'pago_comprometido',    dot: 'bg-emerald-500',   bar: '#10b981', label_color: 'text-white/65' },
   { stage: 'pagado_reunion',       dot: 'bg-orange-400',    bar: '#f97316', label_color: 'text-white/65' },
-  { stage: 'pagado_confirmado',    dot: 'bg-lime',          bar: '#7c3aed', label_color: 'text-white/65' },
+  { stage: 'pagado_confirmado',    dot: 'bg-lime',          bar: 'var(--zx-accent-text)', label_color: 'text-white/65' },
 ]
 
 type Period = 'day' | 'week' | 'month'
@@ -308,7 +308,7 @@ function HoyHeader({ todayLabel, lastRefresh, loading, onRefresh, view, onView }
 }
 
 const INBOX_TONES: Record<string, { bg: string; fg: string }> = {
-  primary: { bg: 'rgba(124,58,237,0.08)',  fg: '#7c3aed' },
+  primary: { bg: 'rgba(53,122,14,0.08)',  fg: 'var(--zx-accent-text)' },
   warn:    { bg: 'rgba(245,158,11,0.10)', fg: '#d97706' },
   danger:  { bg: 'rgba(239,68,68,0.09)',  fg: '#ef4444' },
   ok:      { bg: 'rgba(16,185,129,0.09)', fg: '#10b981' },
@@ -727,12 +727,12 @@ export default function Dashboard() {
               action: 'Click para verlos en Mi Pipeline',
             },
             {
-              to: '/mi-pipeline', label: 'Altamente Interesado', value: _visibleCount(vendorPipeline?.altamente_interesado ?? []), icon: ThumbsUp, color: '#7c3aed', dim: 'rgba(124,58,237,0.12)',
+              to: '/mi-pipeline', label: 'Altamente Interesado', value: _visibleCount(vendorPipeline?.altamente_interesado ?? []), icon: ThumbsUp, color: 'var(--zx-accent-text)', dim: 'rgba(53,122,14,0.12)',
               sub: 'Tuvieron su reunión y quieren avanzar — hay que cerrarlos',
               action: 'Click para verlos en Mi Pipeline',
             },
             {
-              to: '/agenda', label: 'Reuniones hoy', value: todayList.length, icon: CalendarDays, color: '#06b6d4', dim: 'rgba(6,182,212,0.12)',
+              to: '/agenda', label: 'Reuniones hoy', value: todayList.length, icon: CalendarDays, color: 'var(--zx-lime)', dim: 'rgba(6,182,212,0.12)',
               sub: 'Reuniones agendadas para hoy en tu agenda',
               action: 'Click para ir a la agenda',
             },
@@ -774,9 +774,9 @@ export default function Dashboard() {
                 {[
                   { key: 'espera_cliente',       label: 'En proceso de reunión', dot: 'bg-warn',        count: _visibleCount(vendorPipeline?.espera_cliente ?? []), desc: 'Reunión agendada, aún no se realiza' },
                   { key: 'altamente_interesado', label: 'Altamente Interesado',  dot: 'bg-lime',        count: _visibleCount(vendorPipeline?.altamente_interesado ?? []), desc: 'Tuvo su reunión y quiere avanzar — ciérralo' },
-                  { key: 'cierre',               label: 'Cierre',                dot: 'bg-cyan-400',    count: vendorPipeline?.cierre?.length ?? 0, desc: 'Negociando el contrato y la forma de pago' },
+                  { key: 'cierre',               label: 'Cierre',                dot: 'bg-brand-400',    count: vendorPipeline?.cierre?.length ?? 0, desc: 'Negociando el contrato y la forma de pago' },
                   { key: 'pago_comprometido',    label: 'Pago Comprometido',     dot: 'bg-neon',        count: vendorPipeline?.pago_comprometido?.length ?? 0, desc: 'Se comprometió a pagar en una fecha' },
-                  { key: 'pago_pendiente',       label: 'Pago Pendiente',        dot: 'bg-sky-400',     count: vendorPipeline?.pago_pendiente?.length ?? 0, desc: 'Cerró el servicio, falta que pague' },
+                  { key: 'pago_pendiente',       label: 'Pago Pendiente',        dot: 'bg-brand-400',     count: vendorPipeline?.pago_pendiente?.length ?? 0, desc: 'Cerró el servicio, falta que pague' },
                   { key: 'pagado_reunion',       label: 'Validando Pago Reunión', dot: 'bg-emerald-400', count: vendorPipeline?.pagado_reunion?.length ?? 0, desc: 'Declaró su pago, en validación' },
                 ].map(row => (
                   <Link key={row.key} to="/mi-pipeline" title={row.desc} className="block px-3 py-2 rounded-xl bg-surface-0 border border-white/[0.07] hover:bg-surface-2 transition-colors">
@@ -873,7 +873,7 @@ export default function Dashboard() {
                 {/* Leyenda de estados */}
                 <div className="mt-3 pt-3 flex items-center gap-x-3 gap-y-1 flex-wrap border-t border-white/[0.07]">
                   <p className="text-[9px] font-bold uppercase tracking-wide text-white/38">Qué significa cada estado:</p>
-                  <span className="text-[10px] text-white/52"><span className="font-bold" style={{ color: '#06b6d4' }}>Programada</span> = aún no ocurre</span>
+                  <span className="text-[10px] text-white/52"><span className="font-bold" style={{ color: 'var(--zx-lime)' }}>Programada</span> = aún no ocurre</span>
                   <span className="text-[10px] text-white/52"><span className="font-bold text-lime">Exitosa</span> = cliente quiere avanzar</span>
                   <span className="text-[10px] text-white/52"><span className="font-bold text-danger">Sin éxito</span> = no cerró</span>
                   <span className="text-[10px] text-white/52"><span className="font-bold text-warn">Sin marcar</span> = falta registrar resultado</span>
@@ -996,7 +996,7 @@ export default function Dashboard() {
               >
                 <div className="flex items-center gap-2">
                   {isViewingToday && (
-                    <span className="text-xs font-bold px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(6,182,212,0.12)', color: '#06b6d4' }}>Hoy</span>
+                    <span className="text-xs font-bold px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(6,182,212,0.12)', color: 'var(--zx-lime)' }}>Hoy</span>
                   )}
                   <span className="text-sm font-semibold capitalize" style={{ color: 'var(--text)' }}>
                     {format(parseISO(agendaDate), "EEEE d 'de' MMMM", { locale: es })}
@@ -1027,7 +1027,7 @@ export default function Dashboard() {
               <button
                 onClick={() => setAgendaDate(todayStr)}
                 className="px-3 py-2.5 rounded-xl text-xs font-bold text-white transition-all hover:opacity-90 flex-shrink-0"
-                style={{ background: '#06b6d4' }}
+                style={{ background: 'var(--zx-lime)' }}
               >
                 Ir a hoy
               </button>
@@ -1055,10 +1055,10 @@ export default function Dashboard() {
               onClick: () => setAgDetail({ metric: 'active', title: 'Total de leads en el sistema', subtitle: 'todos los clientes registrados', dateFrom: '2000-01-01', dateTo: todayStr }),
             },
             {
-              label: 'Nuevos hoy', value: stats.today_leads ?? 0, icon: TrendingUp, numColor: '#7c3aed',
+              label: 'Nuevos hoy', value: stats.today_leads ?? 0, icon: TrendingUp, numColor: 'var(--zx-accent-text)',
               sub: 'Leads que ingresaron hoy y aún no tienen reunión',
               action: 'Click para ver quiénes son',
-              iconBg: 'rgba(124,58,237,0.12)', iconColor: '#7c3aed',
+              iconBg: 'rgba(53,122,14,0.12)', iconColor: 'var(--zx-accent-text)',
               onClick: () => setAgDetail({ metric: 'active', title: 'Leads nuevos de hoy', subtitle: `ingresaron el ${format(now, "d 'de' MMMM", { locale: es })}`, dateFrom: todayStr, dateTo: todayStr }),
             },
             {
@@ -1069,10 +1069,10 @@ export default function Dashboard() {
               onClick: () => setAgDetail({ metric: 'recovery', title: 'Leads en recuperación', subtitle: 'necesitan una nueva reunión', dateFrom: '2000-01-01', dateTo: todayStr }),
             },
             {
-              label: 'Reuniones hoy', value: todayList.length, icon: CalendarDays, numColor: '#06b6d4',
+              label: 'Reuniones hoy', value: todayList.length, icon: CalendarDays, numColor: 'var(--zx-lime)',
               sub: `Reuniones agendadas para ${isViewingToday ? 'hoy' : 'el día seleccionado'} en tu agenda`,
               action: 'Click para ir a la agenda',
-              iconBg: 'rgba(6,182,212,0.12)', iconColor: '#06b6d4',
+              iconBg: 'rgba(6,182,212,0.12)', iconColor: 'var(--zx-lime)',
               onClick: () => agendaSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
             },
           ].map(({ label, value, icon: Icon, numColor, sub, action, iconBg, iconColor, onClick }) => (
@@ -1105,14 +1105,14 @@ export default function Dashboard() {
             <div className="divide-y" style={{ borderColor: 'var(--border)' }}>
               {agentQueueCount > 0 && (
                 <Link to="/agente-ia" className="flex items-center gap-4 px-5 py-4 hover:bg-black/[0.03] transition-colors group">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(124,58,237,0.14)' }}>
-                    <Bot size={18} style={{ color: '#7c3aed' }} />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(53,122,14,0.14)' }}>
+                    <Bot size={18} style={{ color: 'var(--zx-accent-text)' }} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold" style={{ color: 'var(--text)' }}>{agentQueueCount} lead{agentQueueCount > 1 ? 's' : ''} del Agente IA esperando</p>
                     <p className="text-xs mt-0.5" style={{ color: 'var(--text-3)' }}>Clientes atendidos fuera de horario — dar seguimiento</p>
                   </div>
-                  <span className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg text-white flex-shrink-0" style={{ background: '#7c3aed' }}>
+                  <span className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg text-white flex-shrink-0" style={{ background: 'var(--zx-accent-text)' }}>
                     Revisar <ArrowRight size={12} />
                   </span>
                 </Link>
@@ -1124,13 +1124,13 @@ export default function Dashboard() {
                   className="flex items-center gap-4 px-5 py-4 hover:bg-black/[0.03] transition-colors group"
                 >
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(6,182,212,0.14)' }}>
-                    <MessageSquare size={18} style={{ color: '#06b6d4' }} />
+                    <MessageSquare size={18} style={{ color: 'var(--zx-lime)' }} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold" style={{ color: 'var(--text)' }}>{unreadMessages} mensaje{unreadMessages > 1 ? 's' : ''} sin leer</p>
                     <p className="text-xs mt-0.5" style={{ color: 'var(--text-3)' }}>Clientes esperando respuesta en WhatsApp</p>
                   </div>
-                  <span className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg text-white flex-shrink-0" style={{ background: '#06b6d4' }}>
+                  <span className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg text-white flex-shrink-0" style={{ background: 'var(--zx-lime)' }}>
                     Responder <ArrowRight size={12} />
                   </span>
                 </Link>
@@ -1192,7 +1192,7 @@ export default function Dashboard() {
               <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(6,182,212,0.14)' }}>
-                    <CalendarDays size={17} style={{ color: '#06b6d4' }} />
+                    <CalendarDays size={17} style={{ color: 'var(--zx-lime)' }} />
                   </div>
                   <div>
                     <h2 className="text-base font-bold leading-tight" style={{ color: 'var(--text)' }}>
@@ -1213,7 +1213,7 @@ export default function Dashboard() {
                 <Link
                   to="/calendario"
                   className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all hover:opacity-90"
-                  style={{ background: '#06b6d4', color: '#fff', border: '1.5px solid #06b6d4' }}
+                  style={{ background: 'var(--zx-lime)', color: '#fff', border: '1.5px solid var(--zx-lime)' }}
                 >
                   <Calendar size={13} /> Ver calendario
                 </Link>
@@ -1241,7 +1241,7 @@ export default function Dashboard() {
                     const isFail = ev.vendor_status === 'sin_exito'
                     const isNoShow = ev.vendor_status === 'no_show'
                     const isUnmarked = isPastEv && !ev.vendor_status
-                    const accent = isNowEv ? '#06b6d4' : isSuccess ? '#7c3aed' : (isFail || isNoShow) ? '#e11d48' : isPastEv ? 'rgba(28,22,51,0.25)' : '#7c3aed'
+                    const accent = isNowEv ? 'var(--zx-lime)' : isSuccess ? 'var(--zx-accent-text)' : (isFail || isNoShow) ? '#e11d48' : isPastEv ? 'rgba(28,22,51,0.25)' : 'var(--zx-accent-text)'
                     return (
                       <div
                         key={ev.id}
@@ -1252,14 +1252,14 @@ export default function Dashboard() {
                       >
                         <div className="w-1.5 h-14 rounded-full flex-shrink-0" style={{ background: accent }} />
                         <div className="w-16 text-center flex-shrink-0">
-                          <p className="text-xl font-black leading-tight" style={{ color: isNowEv ? '#06b6d4' : 'var(--text)' }}>
+                          <p className="text-xl font-black leading-tight" style={{ color: isNowEv ? 'var(--zx-lime)' : 'var(--text)' }}>
                             {format(start, 'HH:mm')}
                           </p>
                           <p className="text-[10px] font-semibold" style={{ color: 'var(--text-muted)' }}>
                             hasta {format(end, 'HH:mm')}
                           </p>
                           {isNowEv && (
-                            <span className="text-[10px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded-full" style={{ background: '#06b6d4', color: '#fff' }}>AHORA</span>
+                            <span className="text-[10px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded-full" style={{ background: 'var(--zx-lime)', color: '#fff' }}>AHORA</span>
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -1278,7 +1278,7 @@ export default function Dashboard() {
                           {isFail && <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-danger/20 text-danger border border-danger/40" title="La reunión se realizó pero el cliente no cerró">Sin éxito</span>}
                           {isNoShow && <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-warn/20 text-warn border border-warn/40" title="El cliente no se conectó a la reunión">No se conectó</span>}
                           {isUnmarked && <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-warn/20 text-warn border border-warn/40" title="La reunión ya pasó pero el vendedor aún no registra el resultado">Sin marcar</span>}
-                          {!isPastEv && !isNowEv && !ev.vendor_status && <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'rgba(6,182,212,0.10)', color: '#06b6d4', border: '1px solid rgba(6,182,212,0.30)' }} title="Reunión agendada que aún no ocurre">Programada</span>}
+                          {!isPastEv && !isNowEv && !ev.vendor_status && <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'rgba(6,182,212,0.10)', color: 'var(--zx-lime)', border: '1px solid rgba(6,182,212,0.30)' }} title="Reunión agendada que aún no ocurre">Programada</span>}
                           <ChevronRight size={15} style={{ color: 'var(--text-muted)' }} />
                         </div>
                       </div>
@@ -1288,7 +1288,7 @@ export default function Dashboard() {
                 {/* Leyenda de estados */}
                 <div className="px-5 py-3 flex items-center gap-x-4 gap-y-1 flex-wrap" style={{ borderTop: '1px solid var(--border)', background: 'var(--surface-2)' }}>
                   <p className="text-[10px] font-bold uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>Qué significa cada estado:</p>
-                  <span className="text-[11px]" style={{ color: 'var(--text-3)' }}><span className="font-bold" style={{ color: '#06b6d4' }}>Programada</span> = aún no ocurre</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-3)' }}><span className="font-bold" style={{ color: 'var(--zx-lime)' }}>Programada</span> = aún no ocurre</span>
                   <span className="text-[11px]" style={{ color: 'var(--text-3)' }}><span className="font-bold text-lime">Exitosa</span> = cliente quiere avanzar</span>
                   <span className="text-[11px]" style={{ color: 'var(--text-3)' }}><span className="font-bold text-danger">Sin éxito</span> = no cerró</span>
                   <span className="text-[11px]" style={{ color: 'var(--text-3)' }}><span className="font-bold text-warn">Sin marcar</span> = vendedor no registró resultado</span>
@@ -1412,8 +1412,8 @@ export default function Dashboard() {
               <p className="text-xs mt-0.5 mb-4" style={{ color: 'var(--text-3)' }}>Atajos a tus tareas más frecuentes</p>
               <div className="space-y-2">
                 {[
-                  { to: '/calendario', icon: CalendarPlus, label: 'Nueva reunión', sub: 'Agendar cita con cliente', accent: '#7c3aed', bg: 'rgba(124,58,237,0.08)', border: 'rgba(124,58,237,0.28)', iconBg: 'rgba(124,58,237,0.14)' },
-                  { to: '/whatsapp', icon: MessageSquare, label: 'WhatsApp', sub: unreadMessages > 0 ? `${unreadMessages} mensajes sin leer` : 'Chat con clientes', accent: '#06b6d4', bg: 'rgba(6,182,212,0.08)', border: 'rgba(6,182,212,0.28)', iconBg: 'rgba(6,182,212,0.14)', badge: unreadMessages > 0 ? unreadMessages : 0 },
+                  { to: '/calendario', icon: CalendarPlus, label: 'Nueva reunión', sub: 'Agendar cita con cliente', accent: 'var(--zx-accent-text)', bg: 'rgba(53,122,14,0.08)', border: 'rgba(53,122,14,0.28)', iconBg: 'rgba(53,122,14,0.14)' },
+                  { to: '/whatsapp', icon: MessageSquare, label: 'WhatsApp', sub: unreadMessages > 0 ? `${unreadMessages} mensajes sin leer` : 'Chat con clientes', accent: 'var(--zx-lime)', bg: 'rgba(6,182,212,0.08)', border: 'rgba(6,182,212,0.28)', iconBg: 'rgba(6,182,212,0.14)', badge: unreadMessages > 0 ? unreadMessages : 0 },
                   { to: '/agente-ia', icon: Bot, label: 'Agente IA', sub: agentQueueCount > 0 ? `${agentQueueCount} leads pendientes` : 'Leads fuera de horario', accent: '#6366f1', bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.28)', iconBg: 'rgba(99,102,241,0.14)', badge: agentQueueCount > 0 ? agentQueueCount : 0 },
                   { to: '/leads', icon: Users, label: 'Ver todos los leads', sub: `${totalAll} leads en total`, accent: 'var(--text)', bg: 'var(--surface-2)', border: 'var(--border-2)', iconBg: 'var(--surface-3)' },
                   { to: '/pipeline', icon: GitBranch, label: 'Pipeline del grupo', sub: 'Ver embudo de ventas', accent: 'var(--text)', bg: 'var(--surface-2)', border: 'var(--border-2)', iconBg: 'var(--surface-3)' },
@@ -1549,7 +1549,7 @@ export default function Dashboard() {
           <p className="text-xs text-white/62 mt-0.5">
             <span className="capitalize">{todayLabel}</span> · Actualizado {format(lastRefresh, 'HH:mm')} · Visión general de todos los grupos: leads, ventas, pagos y reuniones
             {(customFrom || customTo) && (
-              <span className="ml-2 px-2 py-0.5 rounded-md text-[10px] font-bold" style={{ background: 'var(--primary-dim)', color: 'var(--primary)', border: '1px solid rgba(124,58,237,0.25)' }}>
+              <span className="ml-2 px-2 py-0.5 rounded-md text-[10px] font-bold" style={{ background: 'var(--primary-dim)', color: 'var(--primary)', border: '1px solid rgba(53,122,14,0.25)' }}>
                 {customFrom && customTo ? `${customFrom.slice(5)} → ${customTo.slice(5)}` : customFrom || customTo}
               </span>
             )}
@@ -1620,7 +1620,7 @@ export default function Dashboard() {
               title="Filtra los KPIs por fecha de ingreso del lead"
               className="text-[11px] px-2.5 h-8 rounded-lg border transition-colors whitespace-nowrap flex-shrink-0"
               style={active
-                ? { background: 'var(--primary-dim)', borderColor: 'rgba(124,58,237,0.35)', color: 'var(--primary)', fontWeight: 700 }
+                ? { background: 'var(--primary-dim)', borderColor: 'rgba(53,122,14,0.35)', color: 'var(--primary)', fontWeight: 700 }
                 : { background: 'var(--surface-2)', borderColor: 'var(--border)', color: 'var(--text-3)' }}>
               {p.label}
             </button>
@@ -1698,8 +1698,8 @@ export default function Dashboard() {
       {/* KPIs principales */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { onClick: () => setDetailModal('active'), label: 'Leads del período', value: total, icon: Users, color: '#7c3aed', iconBg: 'rgba(124,58,237,0.12)', sub: `Leads que ingresaron en el período filtrado — hoy entraron ${stats.today_leads ?? 0}, en todo el sistema hay ${totalAll}`, action: 'Click para ver quiénes son', big: true },
-          { onClick: () => setDetailModal('convertidos'), label: 'Conversión', value: `${stats.conversion_rate ?? 0}%`, icon: TrendingUp, color: '#06b6d4', iconBg: 'rgba(6,182,212,0.12)', sub: `% de leads del período que llegaron a Cierre o Pago — ${stats.cierre_sin_abono ?? 0} en cierre y ${stats.cierre_abonado ?? 0} en proceso de pago`, action: 'Click para ver los convertidos', big: true },
+          { onClick: () => setDetailModal('active'), label: 'Leads del período', value: total, icon: Users, color: 'var(--zx-accent-text)', iconBg: 'rgba(53,122,14,0.12)', sub: `Leads que ingresaron en el período filtrado — hoy entraron ${stats.today_leads ?? 0}, en todo el sistema hay ${totalAll}`, action: 'Click para ver quiénes son', big: true },
+          { onClick: () => setDetailModal('convertidos'), label: 'Conversión', value: `${stats.conversion_rate ?? 0}%`, icon: TrendingUp, color: 'var(--zx-lime)', iconBg: 'rgba(6,182,212,0.12)', sub: `% de leads del período que llegaron a Cierre o Pago — ${stats.cierre_sin_abono ?? 0} en cierre y ${stats.cierre_abonado ?? 0} en proceso de pago`, action: 'Click para ver los convertidos', big: true },
           { onClick: () => setDetailModal('cuotas'), label: 'Total cuotas', value: fmt(stats.total_cuotas ?? 0), icon: CreditCard, color: 'var(--text)', iconBg: 'rgba(28,22,51,0.07)', sub: 'Suma de los planes de cuotas pactados por clientes que pagan en cuotas', action: 'Click para ver el detalle por cliente', big: false },
           { onClick: () => setDetailModal('honorarios'), label: 'Monto Total', value: fmt(stats.total_honorarios ?? 0), icon: DollarSign, color: 'var(--text)', iconBg: 'rgba(28,22,51,0.07)', sub: 'Honorarios totales comprometidos por clientes en Cierre o en etapas de pago', action: 'Click para ver el detalle por cliente', big: false },
         ].map(({ onClick, label, value, icon: Icon, color, iconBg, sub, action, big }) => (
@@ -1816,7 +1816,7 @@ export default function Dashboard() {
               </div>
               <div className="mt-3 pt-3 flex items-center gap-x-3 gap-y-1 flex-wrap border-t border-white/[0.07]">
                 <p className="text-[9px] font-bold uppercase tracking-wide text-white/38">Qué significa cada estado:</p>
-                <span className="text-[10px] text-white/52"><span className="font-bold" style={{ color: '#06b6d4' }}>Programada</span> = aún no ocurre</span>
+                <span className="text-[10px] text-white/52"><span className="font-bold" style={{ color: 'var(--zx-lime)' }}>Programada</span> = aún no ocurre</span>
                 <span className="text-[10px] text-white/52"><span className="font-bold text-lime">Exitosa</span> = cliente quiere avanzar</span>
                 <span className="text-[10px] text-white/52"><span className="font-bold text-danger">Sin éxito</span> = no cerró</span>
                 <span className="text-[10px] text-white/52"><span className="font-bold text-warn">Sin marcar</span> = vendedor no registró resultado</span>
@@ -1848,7 +1848,7 @@ export default function Dashboard() {
                         <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{g.total} lead{g.total !== 1 ? 's' : ''}</span>
                         {g.pagado > 0 && (
                           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md" title="Leads que llegaron a la etapa Pago Confirmado"
-                            style={{ background: 'rgba(124,58,237,0.10)', color: '#7c3aed' }}>
+                            style={{ background: 'rgba(53,122,14,0.10)', color: 'var(--zx-accent-text)' }}>
                             {g.pagado} en Pago Confirmado
                           </span>
                         )}
@@ -1859,7 +1859,7 @@ export default function Dashboard() {
                       <div className="h-full rounded-full transition-all duration-700"
                         style={{
                           width: total > 0 ? `${Math.max(Math.round(g.total / total * 100), g.total > 0 ? 4 : 0)}%` : '0%',
-                          background: 'linear-gradient(90deg, #7c3aed, #06b6d4)'
+                          background: 'linear-gradient(90deg, var(--zx-accent-text), var(--zx-lime))'
                         }} />
                     </div>
                   </button>
@@ -1886,8 +1886,8 @@ export default function Dashboard() {
                     className="w-full flex items-center gap-3 p-2.5 bg-surface-0 rounded-xl border border-white/[0.07] hover:border-white/12 transition-colors text-left cursor-pointer">
                     <span className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black flex-shrink-0"
                       style={{
-                        background: i === 0 ? 'rgba(124,58,237,0.14)' : i === 2 ? 'rgba(245,158,11,0.14)' : 'var(--surface-3)',
-                        color: i === 0 ? '#7c3aed' : i === 2 ? '#f59e0b' : 'var(--text-muted)',
+                        background: i === 0 ? 'rgba(53,122,14,0.14)' : i === 2 ? 'rgba(245,158,11,0.14)' : 'var(--surface-3)',
+                        color: i === 0 ? 'var(--zx-accent-text)' : i === 2 ? '#f59e0b' : 'var(--text-muted)',
                       }}>
                       {i + 1}
                     </span>
@@ -1896,7 +1896,7 @@ export default function Dashboard() {
                       <p className="text-[9px] text-white/52 truncate">{v.group} · {v.total} lead{v.total !== 1 ? 's' : ''} en el período</p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="text-sm font-black leading-none" style={{ color: i === 0 ? '#7c3aed' : 'var(--text-2)' }}>{v.closed}</p>
+                      <p className="text-sm font-black leading-none" style={{ color: i === 0 ? 'var(--zx-accent-text)' : 'var(--text-2)' }}>{v.closed}</p>
                       <p className="text-[8px] text-white/45 mt-0.5">pagos conf.</p>
                     </div>
                     <ChevronRight size={11} className="text-white/40 flex-shrink-0" />

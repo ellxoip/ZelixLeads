@@ -1,0 +1,141 @@
+/* ════════════════════════════════════════════════════════════════════════
+   ZELIX — TOKENS CORPORATIVOS · FUENTE ÚNICA DE VERDAD
+
+   NO EDITAR LAS COPIAS DENTRO DE CADA PROYECTO.
+   Este archivo es el original; las copias se generan con:
+
+       node zelix-brand/sync-tokens.mjs          # instala en los 4 proyectos
+       node zelix-brand/sync-tokens.mjs --check  # falla si alguna divergió
+
+   Consumidores: ZelixContabilidad · ZelixLawyer · ZelixPay · zelixLeads
+
+   ── Colores fuente (muestreados del logotipo y las piezas publicitarias) ──
+     lima marca     #76E130   la X del logotipo, el color de acción
+     lima glow      #A7FC29   destellos y halos
+     verde wordmark #429818   verde medio del wordmark "ZELIX"
+     azul petróleo  #001829   fondo del póster
+     negro verdoso  #00060F   fondo del banner
+     púrpura mimo   #6D3F8F   mascota "El Pulpo Mimo" — decorativo
+
+   ── LA REGLA QUE GOBIERNA TODO ESTE ARCHIVO (medida, no estimada) ────────
+     El lima #76E130 como TEXTO sobre superficie clara da 1.51–1.67:1 según
+     el proyecto. Falla WCAG en todas. Sobre el negro de marca da 12.18:1.
+
+     Por eso el acento se parte en tres roles y NO en un color:
+       --zx-accent          relleno/marca. Lima en oscuro, verde en claro.
+       --zx-accent-text     texto y bordes. SIEMPRE legible (≥4.8:1).
+       --zx-accent-contrast tinta que va ENCIMA de un relleno lima (12.18:1).
+
+     Si alguna vez necesitas "el verde de Zelix" para un texto, es
+     --zx-accent-text. Nunca --zx-accent.
+   ════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Rampa cruda. No usar directo en componentes: usa los roles de abajo. */
+  --zx-lime: #76e130;
+  --zx-lime-glow: #a7fc29;
+  --zx-lime-strong: #5cc51e;
+  --zx-green: #429818;
+  --zx-green-text: #357a0e;
+  --zx-green-deep: #2e6b0c;
+  --zx-petrol: #001829;
+  --zx-black: #00060f;
+  --zx-purple: #6d3f8f;
+  --zx-purple-soft: #a271c4;
+
+  /* ── Roles semánticos — TEMA CLARO ─────────────────────────────────────
+     En claro el relleno también usa el verde: un bloque lima sobre blanco
+     no se distingue del fondo. El lima queda para acentos pequeños sobre
+     superficies oscuras (barras de navegación, píldoras, el logotipo). */
+  --zx-accent: #3e8e12;
+  --zx-accent-text: #357a0e;
+  --zx-accent-strong: #2e6b0c;
+  --zx-accent-contrast: #00060f;
+  --zx-accent-soft: rgba(118, 225, 48, 0.14);
+  --zx-accent-border: rgba(53, 122, 14, 0.42);
+  --zx-accent-glow: 0 8px 24px rgba(62, 142, 18, 0.24);
+
+  /* Superficies oscuras de marca, iguales en ambos temas: son la identidad
+     (barra lateral, cabeceras, pantalla de acceso). */
+  --zx-surface-dark: #001829;
+  --zx-surface-darker: #00060f;
+
+  /* Estados. El positivo comparte familia con la marca pero más oscuro,
+     para no competir con el acento de acción ni fallar contraste. */
+  --zx-positive: #357a0e;
+  --zx-negative: #d92d4e;
+  --zx-warning: #c26510;
+
+  /* ── Series de gráficos ────────────────────────────────────────────────
+     Paleta CATEGÓRICA validada con el validador de la skill `dataviz`:
+     banda de luminosidad, piso de croma, separación CVD deutan ΔE 9.1,
+     visión normal ΔE 25.3 y contraste ≥3:1. Todas PASS.
+     No cambiar a ojo: volver a correr el validador. */
+  --zx-chart-1: #3e8e12;
+  --zx-chart-2: #b02a8f;
+  --zx-chart-3: #0e7bc4;
+  --zx-chart-grid: rgba(61, 85, 102, 0.18);
+
+  /* Marca de UNA sola serie. Al no competir con otros slots no le aplica la
+     banda de luminosidad, así que puede llevar el verde de marca. */
+  --zx-chart-mark: #3e8e12;
+
+  /* ── Rampa de marca ────────────────────────────────────────────────────
+     Reemplaza las escalas de paleta que cada proyecto traía por su cuenta
+     (indigo en ZelixPay, violet/cyan/sky en zelixLeads). Generada en OKLCH
+     sobre el matiz verde de Zelix (135°), no elegida a ojo.
+
+     Contraste MEDIDO de cada paso (texto sobre fondo):
+        paso   sobre blanco   sobre #001829
+         50       1.08           16.70 AA
+        100       1.17           15.42 AA
+        200       1.39           12.97 AA
+        300       1.73           10.44 AA
+        400       2.28            7.93 AA
+        500       2.93            6.16 AA
+        600       4.03            4.48      ← no pasa en ninguno
+        700       5.65 AA         3.20
+        800       7.75 AA         2.33
+        900      10.42 AA         1.73
+        950      14.25 AA         1.27
+
+     Regla: texto sobre CLARO usa 700+; texto sobre OSCURO usa 500 o menor.
+     El 600 es la zona muerta — sirve como relleno, no como texto. */
+  --zx-brand-50: #edfae6;
+  --zx-brand-100: #daf5cd;
+  --zx-brand-200: #bbe7a4;
+  --zx-brand-300: #99d576;
+  --zx-brand-400: #76be46;
+  --zx-brand-500: #5da920;
+  --zx-brand-600: #498f00;
+  --zx-brand-700: #397500;
+  --zx-brand-800: #2c5e00;
+  --zx-brand-900: #204900;
+  --zx-brand-950: #163101;
+}
+
+/* ── TEMA OSCURO ───────────────────────────────────────────────────────────
+   Derivado aparte y validado contra la superficie #001829. NO es un volteo
+   automático del tema claro: sobre oscuro el lima SÍ es legible como texto
+   (12.18:1), así que el acento de texto vuelve a ser el lima de marca. */
+:root.dark,
+:root[data-theme="dark"],
+.dark {
+  --zx-accent: #76e130;
+  --zx-accent-text: #76e130;
+  --zx-accent-strong: #5cc51e;
+  --zx-accent-contrast: #00060f;
+  --zx-accent-soft: rgba(118, 225, 48, 0.2);
+  --zx-accent-border: rgba(118, 225, 48, 0.42);
+  --zx-accent-glow: 0 0 24px rgba(118, 225, 48, 0.28);
+
+  --zx-positive: #76e130;
+  --zx-negative: #ff6b85;
+  --zx-warning: #ffa34d;
+
+  --zx-chart-1: #61a82d;
+  --zx-chart-2: #ca66c3;
+  --zx-chart-3: #2896f5;
+  --zx-chart-grid: rgba(143, 163, 174, 0.16);
+  --zx-chart-mark: #76e130;
+}

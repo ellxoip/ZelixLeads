@@ -17,8 +17,8 @@ import KanbanBoard from '../components/kanban/KanbanBoard'
 function fmt(n: number) { return `$${Math.round(n).toLocaleString('es-CL')}` }
 
 const AVATAR_COLORS = [
-  { bg: 'rgba(124,58,237,0.12)',  fg: '#7c3aed' },
-  { bg: 'rgba(124,58,237,0.12)', fg: '#7c3aed' },
+  { bg: 'rgba(53,122,14,0.12)',  fg: 'var(--zx-accent-text)' },
+  { bg: 'rgba(53,122,14,0.12)', fg: 'var(--zx-accent-text)' },
   { bg: 'rgba(8,145,178,0.12)',  fg: '#0891b2' },
   { bg: 'rgba(5,150,105,0.12)',  fg: '#059669' },
   { bg: 'rgba(217,119,6,0.12)',  fg: '#d97706' },
@@ -32,10 +32,10 @@ function LeadPipelineCard({ lead, onOT }: { lead: any; onOT: (leadId: number) =>
   const isPendiente = stage === 'pago_pendiente'
   const isCierre    = stage === 'cierre'
 
-  const borderColor = isPagado ? '#34d399' : isPago ? '#22c55e' : isPendiente ? '#0ea5e9' : '#7c3aed'
-  const accent      = isPagado ? '#059669' : isPago ? '#16a34a' : isPendiente ? '#0369a1' : '#7c3aed'
-  const tagBg       = isPagado ? 'rgba(52,211,153,0.12)' : isPago ? 'rgba(34,197,94,0.12)' : isPendiente ? 'rgba(14,165,233,0.12)' : 'rgba(124,58,237,0.12)'
-  const tagColor    = isPagado ? '#059669' : isPago ? '#16a34a' : isPendiente ? '#0369a1' : '#7c3aed'
+  const borderColor = isPagado ? '#34d399' : isPago ? '#22c55e' : isPendiente ? '#0ea5e9' : 'var(--zx-accent-text)'
+  const accent      = isPagado ? '#059669' : isPago ? '#16a34a' : isPendiente ? '#0369a1' : 'var(--zx-accent-text)'
+  const tagBg       = isPagado ? 'rgba(52,211,153,0.12)' : isPago ? 'rgba(34,197,94,0.12)' : isPendiente ? 'rgba(14,165,233,0.12)' : 'rgba(53,122,14,0.12)'
+  const tagColor    = isPagado ? '#059669' : isPago ? '#16a34a' : isPendiente ? '#0369a1' : 'var(--zx-accent-text)'
   const tagLabel    = isPagado ? 'Validando Pago' : isPago ? 'Pago Comprometido' : isPendiente ? 'Pago Pendiente' : 'Cierre'
 
   const daysIn = lead.created_at
@@ -177,12 +177,12 @@ function LeadPipelineCard({ lead, onOT }: { lead: any; onOT: (leadId: number) =>
             <button onClick={() => onOT(lead.lead_id)}
               className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-[10px] font-bold transition-colors"
               style={{
-                background: lead.has_ot ? 'rgba(34,197,94,0.10)' : '#7c3aed',
+                background: lead.has_ot ? 'rgba(34,197,94,0.10)' : 'var(--zx-accent-text)',
                 color: lead.has_ot ? '#16a34a' : '#ffffff',
-                border: `1px solid ${lead.has_ot ? 'rgba(34,197,94,0.25)' : '#7c3aed'}`,
+                border: `1px solid ${lead.has_ot ? 'rgba(34,197,94,0.25)' : 'var(--zx-accent-text)'}`,
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = lead.has_ot ? 'rgba(34,197,94,0.18)' : '#3651d4' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = lead.has_ot ? 'rgba(34,197,94,0.10)' : '#7c3aed' }}>
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = lead.has_ot ? 'rgba(34,197,94,0.10)' : 'var(--zx-accent-text)' }}>
               {lead.has_ot ? <CheckCircle size={11} /> : <ClipboardList size={11} />}
               {lead.has_ot ? 'Ver / Editar OT' : 'Agregar OT'}
             </button>
@@ -420,10 +420,10 @@ function EventCard({ ev, onMark, onEdit, onOTRequired, onOT, onBeginMeeting, isE
 
   const leftColor = ev.vendor_status === 'sin_exito' ? '#e11d48'  // danger
     : ev.vendor_status === 'no_show' ? '#e11d48'                  // danger (misma columna)
-    : ev.vendor_status === 'altamente_interesado' ? '#7c3aed'     // lime (azul)
-    : ev.vendor_status === 'con_exito_pagada' ? '#7c3aed'         // lime
+    : ev.vendor_status === 'altamente_interesado' ? 'var(--zx-accent-text)'     // lime (azul)
+    : ev.vendor_status === 'con_exito_pagada' ? 'var(--zx-accent-text)'         // lime
     : isEsperaCliente ? '#f59e0b'                                 // warn (naranja)
-    : '#7c3aed'
+    : 'var(--zx-accent-text)'
 
   return (
     <div className="rounded-xl overflow-hidden transition-shadow duration-200"
@@ -483,11 +483,11 @@ function EventCard({ ev, onMark, onEdit, onOTRequired, onOT, onBeginMeeting, isE
         {/* Honorarios */}
         {ev.honorarios > 0 && (
           <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg"
-            style={{ background: 'rgba(124,58,237,0.05)', border: '1px solid rgba(124,58,237,0.10)' }}>
+            style={{ background: 'rgba(53,122,14,0.05)', border: '1px solid rgba(53,122,14,0.10)' }}>
             <span className="text-[9px] font-bold uppercase tracking-wide flex items-center gap-1" style={{ color: 'rgba(28,22,51,0.42)' }}>
               <Banknote size={9} />Honorarios
             </span>
-            <span className="text-[13px] font-black" style={{ color: '#7c3aed' }}>{fmt(ev.honorarios)}</span>
+            <span className="text-[13px] font-black" style={{ color: 'var(--zx-accent-text)' }}>{fmt(ev.honorarios)}</span>
           </div>
         )}
 
@@ -513,7 +513,7 @@ function EventCard({ ev, onMark, onEdit, onOTRequired, onOT, onBeginMeeting, isE
               <>
                 <p className="whitespace-pre-wrap">{ev.notes}</p>
                 <button onClick={() => setExpanded(false)} className="text-[10px] font-semibold mt-0.5"
-                  style={{ color: '#7c3aed' }}>menos ▲</button>
+                  style={{ color: 'var(--zx-accent-text)' }}>menos ▲</button>
               </>
             ) : (
               <button onClick={() => setExpanded(true)}

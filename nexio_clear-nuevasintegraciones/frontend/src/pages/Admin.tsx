@@ -67,7 +67,7 @@ export default function Admin() {
   const [labelsSaving, setLabelsSaving] = useState(false)
   const [pipelineStages, setPipelineStages] = useState<any[]>([])
   const [stagesLoading, setStagesLoading] = useState(false)
-  const [stageForm, setStageForm] = useState({ key: '', name: '', color: '#7c3aed', order: 0 })
+  const [stageForm, setStageForm] = useState({ key: '', name: '', color: 'var(--zx-accent-text)', order: 0 })
   const [editingStage, setEditingStage] = useState<any | null>(null)
   const [showStageModal, setShowStageModal] = useState(false)
 
@@ -492,7 +492,7 @@ export default function Admin() {
       }
       setShowStageModal(false)
       setEditingStage(null)
-      setStageForm({ key: '', name: '', color: '#7c3aed', order: 0 })
+      setStageForm({ key: '', name: '', color: 'var(--zx-accent-text)', order: 0 })
     } catch (e: any) {
       toast.error(e?.response?.data?.detail || 'Error al guardar etapa')
     } finally { setSaving(false) }
@@ -811,7 +811,7 @@ Reglas:
         const HeaderIcon = meta.icon
         return (
           <div className="flex items-start gap-3.5">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(124,58,237,0.14)' }}>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(53,122,14,0.14)' }}>
               <HeaderIcon size={21} style={{ color: '#6366f1' }} />
             </div>
             <div className="min-w-0">
@@ -1116,7 +1116,7 @@ Reglas:
                               <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
                                 style={{
                                   background: u.role === 'agendadora' ? '#ede9fe' : '#dcfce7',
-                                  color: u.role === 'agendadora' ? '#7c3aed' : '#16a34a',
+                                  color: u.role === 'agendadora' ? 'var(--zx-accent-text)' : '#16a34a',
                                 }}>
                                 {u.name.charAt(0).toUpperCase()}
                               </div>
@@ -1124,7 +1124,7 @@ Reglas:
                               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0"
                                 style={{
                                   background: u.role === 'agendadora' ? '#ede9fe' : '#dcfce7',
-                                  color: u.role === 'agendadora' ? '#7c3aed' : '#16a34a',
+                                  color: u.role === 'agendadora' ? 'var(--zx-accent-text)' : '#16a34a',
                                 }}>
                                 {u.role === 'agendadora' ? 'Agend.' : u.role === 'vendedor' ? 'Vend.' : u.role.slice(0,5)}
                               </span>
@@ -1173,7 +1173,7 @@ Reglas:
                                   <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
                                     style={{
                                       background: u.role === 'agendadora' ? '#ede9fe' : '#dcfce7',
-                                      color: u.role === 'agendadora' ? '#7c3aed' : '#16a34a',
+                                      color: u.role === 'agendadora' ? 'var(--zx-accent-text)' : '#16a34a',
                                     }}>
                                     {u.name.charAt(0).toUpperCase()}
                                   </div>
@@ -1181,7 +1181,7 @@ Reglas:
                                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0"
                                     style={{
                                       background: u.role === 'agendadora' ? '#ede9fe' : '#dcfce7',
-                                      color: u.role === 'agendadora' ? '#7c3aed' : '#16a34a',
+                                      color: u.role === 'agendadora' ? 'var(--zx-accent-text)' : '#16a34a',
                                     }}>
                                     {u.role === 'agendadora' ? 'Agendador/a' : u.role === 'vendedor' ? 'Vendedor/a' : u.role}
                                   </span>
@@ -1257,7 +1257,7 @@ Reglas:
                 <p className="text-sm text-white/52 mt-0.5">Define las columnas del pipeline de tu negocio.</p>
               </div>
               <button
-                onClick={() => { setEditingStage(null); setStageForm({ key: '', name: '', color: '#7c3aed', order: pipelineStages.length }); setShowStageModal(true) }}
+                onClick={() => { setEditingStage(null); setStageForm({ key: '', name: '', color: 'var(--zx-accent-text)', order: pipelineStages.length }); setShowStageModal(true) }}
                 className="btn-primary flex items-center gap-2"
               >
                 <Plus size={15} /> Nueva etapa
@@ -1272,7 +1272,7 @@ Reglas:
               <div className="flex flex-col items-center py-14 rounded-xl border border-dashed border-white/10 space-y-3">
                 <GitBranch size={28} className="text-white/25" />
                 <p className="text-sm text-white/42">Sin etapas configuradas</p>
-                <button onClick={() => { setEditingStage(null); setStageForm({ key: '', name: '', color: '#7c3aed', order: 0 }); setShowStageModal(true) }} className="btn-primary text-xs">
+                <button onClick={() => { setEditingStage(null); setStageForm({ key: '', name: '', color: 'var(--zx-accent-text)', order: 0 }); setShowStageModal(true) }} className="btn-primary text-xs">
                   Crear primera etapa
                 </button>
               </div>
@@ -1281,13 +1281,13 @@ Reglas:
                 {pipelineStages.map((s: any, idx: number) => (
                   <div key={s.id} className="flex items-center gap-3 px-4 py-3 bg-surface-1 border border-white/[0.08] rounded-xl">
                     <GripVertical size={14} className="text-white/25 flex-shrink-0" />
-                    <span className="w-6 h-6 rounded-full flex-shrink-0 border border-white/20" style={{ backgroundColor: s.color ?? '#7c3aed' }} />
+                    <span className="w-6 h-6 rounded-full flex-shrink-0 border border-white/20" style={{ backgroundColor: s.color ?? 'var(--zx-accent-text)' }} />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-sm text-white">{s.name}</p>
                       <p className="text-xs text-white/42 font-mono">{s.key}</p>
                     </div>
                     <span className="text-xs text-white/30">#{idx + 1}</span>
-                    <button onClick={() => { setEditingStage(s); setStageForm({ key: s.key, name: s.name, color: s.color ?? '#7c3aed', order: s.order }); setShowStageModal(true) }}
+                    <button onClick={() => { setEditingStage(s); setStageForm({ key: s.key, name: s.name, color: s.color ?? 'var(--zx-accent-text)', order: s.order }); setShowStageModal(true) }}
                       className="w-8 h-8 flex items-center justify-center text-white/42 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
                       <Edit2 size={13} />
                     </button>
@@ -1404,7 +1404,7 @@ Reglas:
                           {s.areas?.length > 0 ? (
                             <div className="flex flex-wrap gap-1">
                               {s.areas.map((a: any) => (
-                                <span key={a.id} className="text-[10px] px-1.5 py-0.5 rounded border" style={{ background: 'rgba(124,58,237,0.14)', color: 'rgba(147,168,255,0.85)', borderColor: 'rgba(124,58,237,0.22)' }}>{a.name}</span>
+                                <span key={a.id} className="text-[10px] px-1.5 py-0.5 rounded border" style={{ background: 'rgba(53,122,14,0.14)', color: 'rgba(147,168,255,0.85)', borderColor: 'rgba(53,122,14,0.22)' }}>{a.name}</span>
                               ))}
                             </div>
                           ) : <span className="text-white/25 text-xs">Sin área</span>}
@@ -1433,8 +1433,8 @@ Reglas:
           )}
 
           <div className="rounded-xl p-3 flex items-start gap-2.5"
-            style={{ background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.18)' }}>
-            <Smartphone size={13} className="flex-shrink-0 mt-0.5" style={{ color: 'rgba(124,58,237,0.85)' }} />
+            style={{ background: 'rgba(53,122,14,0.08)', border: '1px solid rgba(53,122,14,0.18)' }}>
+            <Smartphone size={13} className="flex-shrink-0 mt-0.5" style={{ color: 'rgba(53,122,14,0.85)' }} />
             <p className="text-xs" style={{ color: 'rgba(147,168,255,0.80)' }}>
               Los agendadores/as gestionan sus propios números desde <strong>Mis WhatsApp</strong> en el menú lateral.
               Cada una puede vincular hasta 3 números. Desde aquí puedes monitorear todas las conexiones y eliminar sesiones problemáticas.
@@ -2513,7 +2513,7 @@ Reglas:
                       <div className="flex items-center gap-4 min-w-0">
                         {/* Avatar */}
                         <div className="w-11 h-11 rounded-xl flex items-center justify-center font-black text-lg flex-shrink-0"
-                          style={{ background: 'rgba(124,58,237,0.18)', color: '#818cf8' }}>
+                          style={{ background: 'rgba(53,122,14,0.18)', color: '#818cf8' }}>
                           {c.name.charAt(0).toUpperCase()}
                         </div>
                         {/* Name + email + area */}
@@ -2531,7 +2531,7 @@ Reglas:
                             }}
                               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all hover:opacity-80"
                               style={c.cobrador_area
-                                ? { background: 'rgba(124,58,237,0.15)', color: '#818cf8', border: '1px solid rgba(124,58,237,0.35)' }
+                                ? { background: 'rgba(53,122,14,0.15)', color: '#818cf8', border: '1px solid rgba(53,122,14,0.35)' }
                                 : { background: 'rgba(245,158,11,0.15)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.40)', fontWeight: 700 }}>
                               <Edit2 size={10} />
                               {c.cobrador_area
@@ -2570,7 +2570,7 @@ Reglas:
                                         loadCobradorCarteras()
                                       } catch { toast.error('Error') }
                                     }} className="flex-1 py-1.5 rounded-lg text-xs font-semibold text-white transition-colors"
-                                      style={{ background: '#7c3aed' }}>
+                                      style={{ background: 'var(--zx-accent-text)' }}>
                                       Guardar
                                     </button>
                                     <button onClick={() => setEditingCobradorArea({ id: 0, areas: [] })}
@@ -2596,7 +2596,7 @@ Reglas:
                         </div>
                         <button onClick={() => setClientesModal(c)}
                           className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-105"
-                          style={{ background: 'rgba(124,58,237,0.12)', color: '#818cf8', border: '1px solid rgba(124,58,237,0.30)' }}>
+                          style={{ background: 'rgba(53,122,14,0.12)', color: '#818cf8', border: '1px solid rgba(53,122,14,0.30)' }}>
                           Ver clientes
                           <ChevronDown size={13} />
                         </button>
@@ -2610,7 +2610,7 @@ Reglas:
                         <span>Total: ${Math.round(c.total_deuda).toLocaleString('es-CL')}</span>
                       </div>
                       <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                        <div className="h-full rounded-full" style={{ width: `${Math.min(pct, 100)}%`, background: 'linear-gradient(90deg, #7c3aed, #06b6d4)' }} />
+                        <div className="h-full rounded-full" style={{ width: `${Math.min(pct, 100)}%`, background: 'linear-gradient(90deg, var(--zx-accent-text), var(--zx-lime))' }} />
                       </div>
                     </div>
 
@@ -2633,7 +2633,7 @@ Reglas:
               style={{ background: '#faf9fd', borderBottom: '1px solid #e6e1f0' }}>
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-base flex-shrink-0"
-                  style={{ background: 'rgba(124,58,237,0.12)', color: '#7c3aed' }}>
+                  style={{ background: 'rgba(53,122,14,0.12)', color: 'var(--zx-accent-text)' }}>
                   {clientesModal.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
@@ -2654,7 +2654,7 @@ Reglas:
                 <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
                   {clientesModal.leads.map((l: any) => {
                     const stageCfg: Record<string, {label:string;color:string;dot:string;text:string}> = {
-                      pendiente_moroso:  { label: 'Pendiente Moroso',  color: '#ede9fe', dot: '#7c3aed', text: '#5b21b6' },
+                      pendiente_moroso:  { label: 'Pendiente Moroso',  color: '#ede9fe', dot: 'var(--zx-accent-text)', text: '#5b21b6' },
                       lead_moroso:       { label: 'Lead Moroso',       color: '#fee2e2', dot: '#dc2626', text: '#991b1b' },
                       pago_comprometido: { label: 'Pago Comprometido', color: '#fef3c7', dot: '#d97706', text: '#92400e' },
                       pagado:            { label: 'Pagado',             color: '#d1fae5', dot: '#059669', text: '#065f46' },
@@ -2697,7 +2697,7 @@ Reglas:
                         {/* Progress bar */}
                         <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#e6e1f0' }}>
                           <div className="h-full rounded-full transition-all"
-                            style={{ width: `${pctL}%`, background: pctL >= 100 ? '#059669' : 'linear-gradient(90deg,#7c3aed,#06b6d4)' }} />
+                            style={{ width: `${pctL}%`, background: pctL >= 100 ? '#059669' : 'linear-gradient(90deg,var(--zx-accent-text),var(--zx-lime))' }} />
                         </div>
                       </div>
                     )
