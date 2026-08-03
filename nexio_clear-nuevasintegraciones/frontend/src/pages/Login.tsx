@@ -7,7 +7,7 @@ import { NexioLogo } from '../components/NexioLogo'
 import InstallPWA from '../components/InstallPWA'
 
 const PERKS = [
-  { icon: Send,        text: 'Mensajería vía Telegram' },
+  { icon: Send,        text: 'Mensajería vía WhatsApp' },
   { icon: Zap,         text: 'Leads e IA en tiempo real' },
   { icon: ShieldCheck, text: 'Acceso seguro por roles' },
 ]
@@ -194,7 +194,7 @@ export default function Login() {
         </h1>
         <span className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.16em]"
           style={{ background: 'rgba(6,182,212,0.10)', border: '1px solid rgba(6,182,212,0.35)', color: '#0891b2' }}>
-          <Send size={10} /> Telegram CRM
+          <Send size={10} /> WhatsApp CRM
         </span>
       </div>
 
@@ -211,7 +211,7 @@ export default function Login() {
           Inicia sesión
         </h2>
         <p className="text-[13px] mb-6" style={{ color: 'rgba(28,22,51,0.50)' }}>
-          Tu embudo de leads, ahora conectado a Telegram.
+          Tu embudo de leads, conectado a WhatsApp.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -345,16 +345,16 @@ export default function Login() {
           )}
         </div>
 
-        {/* Aviso migración Telegram */}
+        {/* Canal único del sistema: WhatsApp */}
         <div className="mt-5 flex items-start gap-2.5 p-3 rounded-2xl"
-          style={{ background: 'rgba(6,182,212,0.07)', border: '1px solid rgba(6,182,212,0.22)' }}>
+          style={{ background: 'rgba(53,122,14,0.07)', border: '1px solid rgba(53,122,14,0.22)' }}>
           <span className="flex items-center justify-center w-7 h-7 rounded-lg flex-shrink-0"
             style={{ background: 'linear-gradient(135deg, var(--zx-lime), var(--zx-accent-text))' }}>
             <Send size={13} color="#fff" />
           </span>
           <p className="text-[11px] leading-snug" style={{ color: 'rgba(28,22,51,0.60)' }}>
-            <strong style={{ color: '#0891b2' }}>Ahora en Telegram.</strong> Estamos migrando toda la
-            mensajería a Telegram: mensajes ilimitados y en tiempo real.
+            <strong style={{ color: 'var(--zx-accent-text)' }}>Conectado a WhatsApp.</strong> Toda la
+            mensajería del CRM viaja por WhatsApp, en tiempo real.
           </p>
         </div>
 

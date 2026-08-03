@@ -394,9 +394,3 @@ export const getIntegrationsHealth = () =>
     hops: Record<string, { url: string | null; ok: boolean; live: { reachable: boolean; status_code: number | null; latency_ms: number | null; error: string | null } }>
   })
 
-// ── Telegram — bots conectados vía Bot API ──
-export const getTelegramBots = () => api.get('/api/telegram/bots').then(r => r.data)
-export const createTelegramBot = (data: { name: string; token: string; group_id?: number }) =>
-  api.post('/api/telegram/bots', data).then(r => r.data)
-export const getTelegramBotStatus = (id: number) => api.get(`/api/telegram/bots/${id}/status`).then(r => r.data)
-export const deleteTelegramBot = (id: number) => api.delete(`/api/telegram/bots/${id}`).then(r => r.data)

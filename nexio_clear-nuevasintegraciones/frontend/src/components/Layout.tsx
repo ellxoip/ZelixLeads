@@ -42,8 +42,7 @@ const NAV_SECTIONS = [
   {
     label: 'Comunicación',
     items: [
-      { path: '/telegram',      icon: SendIcon,        label: 'Telegram',       sublabel: 'Bots conectados',     roles: ['agendadora','superadmin','subadmin'] },
-      { path: '/whatsapp',      icon: MessageSquare,   label: 'WhatsApp',       sublabel: 'Chat clientes',       roles: ['agendadora'] },
+      { path: '/whatsapp',      icon: MessageSquare,   label: 'WhatsApp',       sublabel: 'Chat clientes',       roles: ['agendadora','superadmin','subadmin','cobrador'] },
       { path: '/mis-whatsapp',  icon: Smartphone,      label: 'Mis WhatsApp',   sublabel: 'Conectar números',    roles: ['agendadora'] },
       { path: '/agente-ia',     icon: Bot,             label: 'Agente IA',      sublabel: 'Leads IA pendientes', roles: ['agendadora','superadmin','subadmin'] },
       { path: '/nexin',         icon: Brain,           label: 'Asistente IA',   sublabel: 'Copiloto ZelixLeads', roles: ['superadmin'] },
@@ -290,7 +289,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </p>
             <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-[0.14em]"
               style={{ background: 'rgba(6,182,212,0.12)', border: '1px solid rgba(6,182,212,0.30)', color: '#67e8f9' }}>
-              <Sparkles size={8} /> Telegram CRM
+              <Sparkles size={8} /> WhatsApp CRM
             </span>
           </div>
         )}

@@ -19,7 +19,6 @@ import Tecnico from './pages/Tecnico'
 import Agenda from './pages/Agenda'
 import VendorPipeline from './pages/VendorPipeline'
 import MisWhatsApp from './pages/MisWhatsApp'
-import Telegram from './pages/Telegram'
 import PagarCuota from './pages/PagarCuota'
 import Seguimiento from './pages/Seguimiento'
 import AgentIA from './pages/AgentIA'
@@ -73,7 +72,6 @@ function AppRoutes() {
       <Route path="/notificaciones" element={<ProtectedRoute><Layout><Notificaciones /></Layout></ProtectedRoute>} />
       <Route path="/whatsapp" element={<ProtectedRoute roles={['superadmin','subadmin','agendadora','cobrador']}><Layout><WhatsApp /></Layout></ProtectedRoute>} />
       <Route path="/mis-whatsapp" element={<ProtectedRoute roles={['agendadora','cobrador','superadmin','subadmin']}><Layout><MisWhatsApp /></Layout></ProtectedRoute>} />
-      <Route path="/telegram" element={<ProtectedRoute roles={['agendadora','superadmin','subadmin','tecnico']}><Layout><Telegram /></Layout></ProtectedRoute>} />
       <Route path="/seguimiento" element={<ProtectedRoute roles={['agendadora','superadmin','subadmin']}><Layout><Seguimiento /></Layout></ProtectedRoute>} />
       <Route path="/agente-ia" element={<ProtectedRoute roles={['agendadora','superadmin','subadmin']}><Layout><AgentIA /></Layout></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute roles={['superadmin','subadmin']}><Layout><Admin /></Layout></ProtectedRoute>} />

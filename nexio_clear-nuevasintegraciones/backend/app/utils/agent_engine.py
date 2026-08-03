@@ -80,13 +80,7 @@ async def _send_via_qr(config_id: int, phone: str, message: str, retries: int = 
 
 
 async def _send_via_channel(db, config_id: int, phone: str, message: str) -> str | None:
-    """Despacha el envío según el canal de la config (telegram o WhatsApp QR)."""
-    cfg = db.query(models.WhatsAppConfig).filter(
-        models.WhatsAppConfig.id == config_id
-    ).first()
-    if cfg and cfg.api_provider == "telegram" and cfg.api_token:
-        from .telegram_api import send_text
-        return await send_text(cfg.api_token, phone, message)
+    """Despacha el envío. WhatsApp es el único canal del sistema."""
     return await _send_via_qr(config_id, phone, message)
 
 

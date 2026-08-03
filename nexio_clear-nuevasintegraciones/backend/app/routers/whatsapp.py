@@ -40,13 +40,6 @@ async def send_whatsapp_api(config: models.WhatsAppConfig, phone: str, message: 
             if resp.status_code == 200:
                 return {"status": "sent", "message_id": resp.json().get("messages", [{}])[0].get("id")}
 
-    if config.api_provider == "telegram" and config.api_token:
-        from ..utils.telegram_api import send_text
-        mid = await send_text(config.api_token, phone, message)
-        if mid:
-            return {"status": "sent", "message_id": mid}
-        return {"status": "failed", "message_id": None}
-
     if config.api_provider == "qr":
         try:
             async with httpx.AsyncClient() as client:
@@ -206,39 +199,6 @@ async def send_whatsapp_media_file(config: models.WhatsAppConfig, phone: str, lo
     """Send a local media file via the config's provider (meta o qr). Devuelve
     {"status", "message_id"} — "logged" si el provider no soporta media o falla."""
     result = {"status": "logged", "message_id": None}
-    if config.api_provider == "telegram" and config.api_token:
-        from ..utils.telegram_api import send_media_file
-        mid = await send_media_file(config.api_token, phone, local_path, mime_type, caption)
-        if mid:
-            result = {"status": "sent", "message_id": mid}
-    elif config.api_provider == "meta" and config.api_token and config.phone_number_id:
-        media_id = await upload_media_to_meta(config, local_path, mime_type)
-        if media_id:
-            result = await send_whatsapp_media_api(config, phone, media_id, mime_type, caption)
-    elif config.api_provider == "qr":
-        import base64 as _b64
-        with open(local_path, "rb") as f:
-            file_b64 = _b64.b64encode(f.read()).decode()
-        try:
-            async with httpx.AsyncClient() as client:
-                resp = await client.post(
-                    f"{QR_SERVICE_URL}/sessions/{config.id}/send-file",
-                    json={
-                        "to": phone,
-                        "mimeType": mime_type,
-                        "base64": file_b64,
-                        "filename": os.path.basename(local_path),
-                        "caption": caption,
-                    },
-                    timeout=30,
-                )
-                if resp.status_code == 200:
-                    data = resp.json()
-                    result = {"status": "sent", "message_id": data.get("message_id")}
-        except Exception:
-            pass
-    return result
-
 
 @router.post("/send-media")
 async def send_media_message(

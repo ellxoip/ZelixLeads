@@ -18,7 +18,7 @@ if hasattr(time, 'tzset'):
 from sqlalchemy import text
 from .database import engine
 from . import models
-from .routers import auth, users, groups, contacts, leads, payments, calendar, notifications, whatsapp, pdf, webhooks, settings, tecnico, google_calendar, push, whatsapp_qr, whatsapp_sessions, at_informa_integration, legal_finance_integration, pagacuotas_router, ai_agents, pipeline_stages, work_orders, security, cobrador, seguimiento_asistente, analista, integrations_health, webhook_dlq_router, search, insights, nexin, telegram
+from .routers import auth, users, groups, contacts, leads, payments, calendar, notifications, whatsapp, pdf, webhooks, settings, tecnico, google_calendar, push, whatsapp_qr, whatsapp_sessions, at_informa_integration, legal_finance_integration, pagacuotas_router, ai_agents, pipeline_stages, work_orders, security, cobrador, seguimiento_asistente, analista, integrations_health, webhook_dlq_router, search, insights, nexin
 from .seed import seed
 from .auth import hash_password
 from .broadcaster import wa_broadcaster
@@ -90,8 +90,6 @@ app.include_router(webhook_dlq_router.router)
 app.include_router(search.router)
 app.include_router(insights.router)
 app.include_router(nexin.router)
-app.include_router(telegram.router)
-app.include_router(telegram.webhook_router)
 
 
 def _ensure_tecnico():
@@ -548,12 +546,6 @@ async def startup():
             finally:
                 startup_lock.close()
     await wa_broadcaster.start()
-    # Telegram: long-polling para bots activos (si no hay webhook público)
-    try:
-        await telegram.start_all_polling()
-    except Exception as _tg_exc:
-        import logging as _log
-        _log.getLogger(__name__).warning("Telegram polling startup skipped: %s", _tg_exc)
     # Start background auto-sync for cobrador leads (every 5 minutes)
     asyncio.create_task(_auto_sync_cobrador())
     # Start background papelera cleanup (every 6 hours)
@@ -985,7 +977,6 @@ def health():
 uploads_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../uploads"))
 os.makedirs(uploads_dir, exist_ok=True)
 os.makedirs(os.path.join(uploads_dir, "whatsapp_media"), exist_ok=True)
-os.makedirs(os.path.join(uploads_dir, "telegram_media"), exist_ok=True)
 try:
     app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 except Exception:
