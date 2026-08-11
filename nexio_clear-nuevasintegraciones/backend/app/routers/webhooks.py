@@ -4,7 +4,7 @@ import uuid
 import logging
 import httpx
 from typing import Optional
-from fastapi import APIRouter, Request, Query, HTTPException
+from fastapi import APIRouter, Request, Query, HTTPException, Header
 from fastapi.responses import PlainTextResponse
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
@@ -172,9 +172,24 @@ def verify_webhook(
     raise HTTPException(status_code=403, detail="Invalid verify token")
 
 
+# Secreto compartido con Zelix (ladrillo 1 de la fusión). Meta entrega el
+# webhook a UNA sola URL por app, y esa URL es la de Zelix: desde la fusión este
+# endpoint ya NO recibe de Meta, recibe de Zelix. Como acá nunca se validó la
+# firma de Meta, este secreto es lo ÚNICO que impide que cualquiera inyecte
+# conversaciones falsas y ensucie el pipeline de leads.
+# Sin la variable seteada el endpoint queda abierto como antes (retrocompatible).
+ZELIX_FORWARD_SECRET = os.getenv("ZELIX_CRM_SECRET", "")
+
+
 @router.post("/whatsapp", status_code=200)
-async def receive_message(request: Request):
-    """Process incoming WhatsApp messages from Meta Cloud API."""
+async def receive_message(
+    request: Request,
+    x_crm_callback_secret: str = Header(None, alias="x-crm-callback-secret"),
+):
+    """Procesa mensajes de WhatsApp reenviados por Zelix (Meta Cloud API)."""
+    if ZELIX_FORWARD_SECRET and x_crm_callback_secret != ZELIX_FORWARD_SECRET:
+        logger.warning("webhook whatsapp: secreto inválido — descartado")
+        raise HTTPException(status_code=401, detail="Secret inválido")
     try:
         body = await request.json()
     except Exception:
