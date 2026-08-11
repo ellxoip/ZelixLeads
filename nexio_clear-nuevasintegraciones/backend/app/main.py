@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -71,9 +71,44 @@ app.include_router(settings.router)
 app.include_router(tecnico.router)
 app.include_router(google_calendar.router)
 app.include_router(push.router)
-app.include_router(whatsapp_qr.router)
-app.include_router(whatsapp_qr.webhook_router)
-app.include_router(whatsapp_sessions.router)
+# ── Transporte por QR (Baileys) RETIRADO — 2026-08-11 ───────────────────────
+# Estos routers hacían de proxy a un servicio Node con @whiskeysockets/baileys:
+# la librería NO OFICIAL que se conecta escaneando un QR y se hace pasar por
+# WhatsApp Web.
+#
+# Se retiró al fusionar con Zelix, que es proveedor de tecnología VERIFICADO por
+# Meta y cuya portada promete "WhatsApp por la API oficial de Meta (nada de bots
+# pirata que te banean)". Sostener las dos vías ponía esa verificación —y el
+# número que atiende a los clientes que pagan— bajo un riesgo de baneo que
+# ninguna función justificaba: la Cloud API ya hacía todo lo que hacía el QR,
+# incluida la media.
+#
+# NO se desmontan a secas: el frontend todavía tiene la pantalla de sesiones QR
+# y un 404 la dejaría fallando sin decir por qué. Responden 410 con la razón y
+# el camino correcto. Se eliminan cuando esa pantalla se retire.
+_qr_retirado = APIRouter(tags=["whatsapp-qr-retirado"])
+_QR_RETIRADO = (
+    "El canal por QR fue retirado: ahora se opera con la API oficial de Meta. "
+    "Configura tu número en WhatsApp con proveedor 'meta' (phone_number_id + token) "
+    "y vuelve a intentar."
+)
+
+
+@_qr_retirado.api_route(
+    "/api/whatsapp-sessions{resto:path}",
+    methods=["GET", "POST", "PATCH", "DELETE"],
+    include_in_schema=False,
+)
+@_qr_retirado.api_route(
+    "/api/tecnico/whatsapp/qr{resto:path}",
+    methods=["GET", "POST", "PATCH", "DELETE"],
+    include_in_schema=False,
+)
+async def _qr_gone(resto: str):
+    raise HTTPException(status_code=410, detail=_QR_RETIRADO)
+
+
+app.include_router(_qr_retirado)
 app.include_router(at_informa_integration.router)
 app.include_router(legal_finance_integration.router)
 app.include_router(pagacuotas_router.router)

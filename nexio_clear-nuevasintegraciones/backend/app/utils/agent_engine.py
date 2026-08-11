@@ -59,29 +59,36 @@ def _get_or_create_state(db: Session, agent_id: int, contact_id: int) -> models.
     return state
 
 
-async def _send_via_qr(config_id: int, phone: str, message: str, retries: int = 3) -> str | None:
-    """Send message via QR service. Returns message_id on success, None on failure."""
-    for attempt in range(retries):
-        try:
-            async with httpx.AsyncClient(timeout=15) as client:
-                resp = await client.post(
-                    f"{QR_SERVICE_URL}/sessions/{config_id}/send",
-                    json={"to": phone, "message": message},
-                )
-                if resp.status_code < 300:
-                    data = resp.json()
-                    return data.get("message_id") or ""
-                logger.warning("QR send %d/%d failed — %d: %s", attempt + 1, retries, resp.status_code, resp.text[:200])
-        except Exception as exc:
-            logger.warning("QR send %d/%d error: %s", attempt + 1, retries, exc)
-        if attempt < retries - 1:
-            await asyncio.sleep(1.5 * (attempt + 1))
+async def _send_via_cloud_api(db, config_id: int, phone: str, message: str) -> str | None:
+    """
+    Envío por la API oficial de Meta.
+
+    Reemplaza a `_send_via_qr`, que hablaba con un servicio Node basado en
+    @whiskeysockets/baileys (no oficial, por QR). Se retiró al fusionar con
+    Zelix: la Cloud API ya hacía lo mismo sin poner en riesgo de baneo el número
+    que atiende a los clientes.
+
+    Devuelve el message_id, o None si no salió — quien llama decide qué hacer.
+    """
+    from ..routers.whatsapp import send_whatsapp_api  # import local: evita ciclo
+
+    config = db.query(models.WhatsAppConfig).filter(models.WhatsAppConfig.id == config_id).first()
+    if not config:
+        logger.warning("envío WhatsApp: no existe la config %s", config_id)
+        return None
+    try:
+        r = await send_whatsapp_api(config, phone, message)
+        if r.get("status") == "sent":
+            return r.get("message_id") or ""
+        logger.warning("envío WhatsApp no salió (config %s, estado %s)", config_id, r.get("status"))
+    except Exception as exc:  # noqa: BLE001 — un fallo de envío jamás tumba el flujo
+        logger.warning("envío WhatsApp falló (config %s): %s", config_id, exc)
     return None
 
 
 async def _send_via_channel(db, config_id: int, phone: str, message: str) -> str | None:
     """Despacha el envío. WhatsApp es el único canal del sistema."""
-    return await _send_via_qr(config_id, phone, message)
+    return await _send_via_cloud_api(db, config_id, phone, message)
 
 
 def _split_reply(text: str) -> list[str]:

@@ -40,21 +40,23 @@ async def send_whatsapp_api(config: models.WhatsAppConfig, phone: str, message: 
             if resp.status_code == 200:
                 return {"status": "sent", "message_id": resp.json().get("messages", [{}])[0].get("id")}
 
+    # ── Baileys RETIRADO (2026-08-11) ────────────────────────────────────────
+    # Existía una rama `api_provider == "qr"` que enviaba por un servicio Node
+    # con @whiskeysockets/baileys: la librería NO OFICIAL que se conecta
+    # escaneando un QR y se hace pasar por WhatsApp Web.
+    #
+    # Se retiró al fusionar con Zelix, que es proveedor de tecnología VERIFICADO
+    # por Meta y cuya portada promete textualmente "WhatsApp por la API oficial
+    # de Meta (nada de bots pirata que te banean)". Mantener las dos vías ponía
+    # esa verificación —y el número que atiende a las pymes que pagan— bajo un
+    # riesgo de baneo que ninguna función justificaba: la Cloud API ya hacía
+    # todo lo que hacía el QR.
+    #
+    # Una config que aún diga "qr" NO se envía por un camino inexistente: cae
+    # acá y queda registrada, para que el cambio se note en vez de perderse en
+    # silencio.
     if config.api_provider == "qr":
-        try:
-            async with httpx.AsyncClient() as client:
-                resp = await client.post(
-                    f"{QR_SERVICE_URL}/sessions/{config.id}/send",
-                    json={"to": phone, "message": message},
-                    timeout=10,
-                )
-                if resp.status_code == 200:
-                    data = resp.json()
-                    return {"status": "sent", "message_id": data.get("message_id")}
-                else:
-                    print(f"[WA] QR send failed {resp.status_code}: {resp.text}")
-        except Exception as e:
-            print(f"[WA] QR send exception: {e}")
+        print(f"[WA] config {config.id} sigue marcada como 'qr' (transporte retirado) — no se envió. Cámbiala a 'meta'.")
 
     return {"status": "logged", "message_id": None}
 
