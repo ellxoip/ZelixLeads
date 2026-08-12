@@ -1,3 +1,6 @@
+import os
+import json
+import secrets
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
@@ -93,3 +96,45 @@ def login(request: Request, credentials: schemas.LoginRequest, db: Session = Dep
 @router.get("/me")
 def me(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
     return _enrich_user(current_user, db)
+
+
+# ── Panel de credenciales del equipo ────────────────────────────────────────
+#
+# Antes, el login mostraba las cuentas del CRM con su contraseña EN TEXTO PLANO
+# dentro del bundle de JavaScript: cualquiera que abriera leads.zelix.cl podía
+# leerlas y entrar como SuperAdmin. Ponerlas detrás de una clave en el frontend
+# no habría cambiado nada — el bundle es público, y la clave habría viajado
+# junto a lo que protege.
+#
+# Por eso la comprobación vive ACÁ: la clave se compara en el servidor y las
+# credenciales solo cruzan la red cuando ya acertó. El navegador nunca recibe
+# nada que no se haya ganado.
+_PANEL_CLAVE = os.getenv("PANEL_CREDENCIALES_CLAVE", "")
+_PANEL_CUENTAS = os.getenv("PANEL_CREDENCIALES", "")
+
+
+@router.post("/panel-credenciales")
+def panel_credenciales(payload: dict, request: Request, db: Session = Depends(get_db)):
+    """Devuelve las credenciales del equipo si la clave es correcta."""
+    # Sin configurar = la función no existe. Así un despliegue que olvide las
+    # variables no deja un endpoint abierto devolviendo listas vacías.
+    if not _PANEL_CLAVE or not _PANEL_CUENTAS:
+        raise HTTPException(status_code=404, detail="No disponible")
+
+    clave = (payload or {}).get("clave") or ""
+    # compare_digest: el tiempo de comparación no depende de cuántos caracteres
+    # acertó, así que no se puede adivinar la clave letra por letra midiendo.
+    if not secrets.compare_digest(str(clave), _PANEL_CLAVE):
+        log_event(
+            db, "panel_credenciales_clave_incorrecta",
+            ip=request.client.host if request.client else None,
+            ua=request.headers.get("user-agent"),
+            severity="warning",
+        )
+        raise HTTPException(status_code=401, detail="Clave incorrecta")
+
+    try:
+        cuentas = json.loads(_PANEL_CUENTAS)
+    except ValueError:
+        raise HTTPException(status_code=500, detail="Credenciales mal configuradas")
+    return {"cuentas": cuentas}

@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { Lock, Mail, Eye, EyeOff, Send, ShieldCheck, Zap } from 'lucide-react'
 import { NexioLogo } from '../components/NexioLogo'
 import InstallPWA from '../components/InstallPWA'
+import api from '../api/client'
 
 const PERKS = [
   { icon: Send,        text: 'Mensajería vía WhatsApp' },
@@ -12,32 +13,23 @@ const PERKS = [
   { icon: ShieldCheck, text: 'Acceso seguro por roles' },
 ]
 
-// Cuentas demo — un clic para probar cada rol del CRM
-const DEMO_ACCOUNTS: { label: string; role: string; email: string; pw: string }[] = [
-  { label: 'Admin Zelix',     role: 'SuperAdmin',  email: 'admin@zelix.cl',       pw: 'Admin2026!'   },
-  { label: 'Sofía Rojas',     role: 'SubAdmin',    email: 'subadmin@zelix.cl',    pw: 'Sub2026!'     },
-  { label: 'Técnico Zelix',   role: 'Técnico',     email: 'tecnico@zelix.cl',     pw: 'Tecnico2026!' },
-  { label: 'Ignacio Silva',   role: 'Verificador', email: 'verificador@zelix.cl', pw: 'Zelix2026!'   },
-  { label: 'Cobrador Zelix',  role: 'Cobrador',    email: 'cobrador@zelix.cl',    pw: 'Zelix2026!'   },
-  { label: 'Matías Vega',     role: 'Vendedor',    email: 'vendedor1@zelix.cl',   pw: 'Zelix2026!'   },
-  { label: 'Diego Fuentes',   role: 'Vendedor',    email: 'vendedor2@zelix.cl',   pw: 'Zelix2026!'   },
-  { label: 'Felipe Soto',     role: 'Vendedor',    email: 'vendedor3@zelix.cl',   pw: 'Zelix2026!'   },
-  { label: 'Tomás Herrera',   role: 'Vendedor',    email: 'vendedor5@zelix.cl',   pw: 'Zelix2026!'   },
-  { label: 'Camila Torres',   role: 'Agendadora',  email: 'agenda1@zelix.cl',     pw: 'Zelix2026!'   },
-  { label: 'Valentina Ruiz',  role: 'Agendadora',  email: 'agenda2@zelix.cl',     pw: 'Zelix2026!'   },
-  { label: 'Antonia Pérez',   role: 'Agendadora',  email: 'agenda3@zelix.cl',     pw: 'Zelix2026!'   },
-  { label: 'Josefa Muñoz',    role: 'Agendadora',  email: 'agenda4@zelix.cl',     pw: 'Zelix2026!'   },
-  { label: 'Fernanda Castro', role: 'Agendadora',  email: 'agenda5@zelix.cl',     pw: 'Zelix2026!'   },
-]
+// Las cuentas del equipo YA NO viven acá. Estaban en este archivo con su
+// contraseña en texto plano, y este archivo se compila en un bundle público:
+// cualquiera que abriera leads.zelix.cl podía leerlas y entrar como SuperAdmin.
+// Ahora las pide el servidor con /api/auth/panel-credenciales y solo las
+// entrega si la clave es correcta. Ver ese endpoint para el porqué completo.
+type CuentaEquipo = { email: string; rol: string; pw: string }
 
+// Las claves son los roles TAL COMO los guarda la base, porque ahora la lista
+// llega del servidor y no de una constante escrita a mano acá.
 const ROLE_COLORS: Record<string, string> = {
-  SuperAdmin:  'var(--zx-accent-text)',
-  SubAdmin:    '#a78bfa',
-  'Técnico':   '#0891b2',
-  Verificador: '#f59e0b',
-  Cobrador:    '#e11d48',
-  Vendedor:    'var(--zx-lime)',
-  Agendadora:  '#10b981',
+  superadmin:  'var(--zx-accent-text)',
+  subadmin:    '#a78bfa',
+  tecnico:     '#0891b2',
+  verificador: '#f59e0b',
+  cobrador:    '#e11d48',
+  vendedor:    'var(--zx-lime)',
+  agendadora:  '#10b981',
 }
 
 export default function Login() {
@@ -47,6 +39,9 @@ export default function Login() {
   const [loading, setLoading]   = useState(false)
   const [showDemo, setShowDemo] = useState(false)
   const [demoLoading, setDemoLoading] = useState<string | null>(null)
+  const [claveEquipo, setClaveEquipo] = useState('')
+  const [cuentas, setCuentas] = useState<CuentaEquipo[] | null>(null)
+  const [abriendo, setAbriendo] = useState(false)
   const login    = useAuthStore(s => s.login)
   const navigate = useNavigate()
 
@@ -74,6 +69,22 @@ export default function Login() {
       }
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Pide las credenciales al servidor. Si la clave no es la correcta, no llega
+  // absolutamente nada: la comprobación NO ocurre en el navegador.
+  const pedirCuentas = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setAbriendo(true)
+    try {
+      const { data } = await api.post('/api/auth/panel-credenciales', { clave: claveEquipo })
+      setCuentas(data.cuentas)
+      setClaveEquipo('')
+    } catch (err: any) {
+      toast.error(err?.response?.status === 401 ? 'Clave incorrecta' : 'No se pudo abrir')
+    } finally {
+      setAbriendo(false)
     }
   }
 
@@ -294,7 +305,7 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Cuentas demo — probar cada rol con un clic */}
+        {/* Cuentas del equipo — protegidas por clave, resueltas en el SERVIDOR */}
         <div className="mt-5">
           <button type="button" onClick={() => setShowDemo(v => !v)}
             className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all"
@@ -304,42 +315,61 @@ export default function Login() {
               color: 'var(--zx-accent-text)',
             }}>
             <span className="inline-flex items-center gap-1.5">
-              <Zap size={12} /> Cuentas demo — prueba cada rol
+              <Zap size={12} /> Cuentas del equipo
             </span>
             <span style={{ transform: showDemo ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', fontSize: 10 }}>▼</span>
           </button>
 
-          {showDemo && (
+          {showDemo && cuentas === null && (
+            <form onSubmit={pedirCuentas} className="mt-2.5 rounded-2xl p-3"
+              style={{ background: '#f7f5fc', border: '1px solid rgba(28,22,51,0.10)' }}>
+              <p className="text-[10px] mb-2" style={{ color: 'rgba(28,22,51,0.55)' }}>
+                Clave de acceso para ver las credenciales del equipo.
+              </p>
+              <div className="flex gap-2">
+                <input type="password" value={claveEquipo} autoComplete="off"
+                  onChange={e => setClaveEquipo(e.target.value)}
+                  placeholder="Clave"
+                  className="flex-1 px-3 py-2 rounded-xl text-xs outline-none"
+                  style={{ border: '1px solid rgba(28,22,51,0.15)', background: '#fff' }} />
+                <button type="submit" disabled={abriendo || !claveEquipo}
+                  className="px-3.5 py-2 rounded-xl text-xs font-bold disabled:opacity-50"
+                  style={{ background: 'var(--zx-accent-text)', color: '#fff' }}>
+                  {abriendo ? '…' : 'Ver'}
+                </button>
+              </div>
+            </form>
+          )}
+
+          {showDemo && cuentas !== null && (
             <div className="mt-2.5 rounded-2xl p-2 space-y-1 overflow-y-auto"
               style={{ maxHeight: 240, background: '#f7f5fc', border: '1px solid rgba(28,22,51,0.10)' }}>
-              {DEMO_ACCOUNTS.map(acc => {
-                const color = ROLE_COLORS[acc.role] || 'var(--zx-accent-text)'
+              {cuentas.map(acc => {
+                const color = ROLE_COLORS[acc.rol] || 'var(--zx-accent-text)'
                 const busy = demoLoading === acc.email
                 return (
                   <button key={acc.email} type="button"
-                    onClick={() => handleDemoLogin(acc)}
+                    onClick={() => handleDemoLogin({ email: acc.email, pw: acc.pw, label: acc.rol })}
                     disabled={demoLoading !== null}
                     className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left transition-all disabled:opacity-50"
-                    style={{ background: '#ffffff', border: '1px solid rgba(28,22,51,0.08)' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `${color}66`; (e.currentTarget as HTMLElement).style.boxShadow = `0 2px 10px ${color}22` }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(28,22,51,0.08)'; (e.currentTarget as HTMLElement).style.boxShadow = 'none' }}>
+                    style={{ background: '#ffffff', border: '1px solid rgba(28,22,51,0.08)' }}>
                     <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-[10px] font-black"
                       style={{ background: `${color}18`, color, border: `1px solid ${color}40` }}>
-                      {busy ? '…' : acc.label.charAt(0)}
+                      {busy ? '…' : acc.rol.charAt(0).toUpperCase()}
                     </span>
                     <span className="flex-1 min-w-0">
-                      <span className="block text-[11px] font-bold leading-tight truncate" style={{ color: '#1c1633' }}>{acc.label}</span>
-                      <span className="block text-[9px] leading-tight truncate" style={{ color: 'rgba(28,22,51,0.45)' }}>{acc.email}</span>
+                      <span className="block text-[11px] font-bold leading-tight truncate" style={{ color: '#1c1633' }}>{acc.email}</span>
+                      <span className="block text-[9px] leading-tight truncate font-mono" style={{ color: 'rgba(28,22,51,0.45)' }}>{acc.pw}</span>
                     </span>
                     <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider"
                       style={{ background: `${color}14`, color }}>
-                      {acc.role}
+                      {acc.rol}
                     </span>
                   </button>
                 )
               })}
               <p className="text-[9px] text-center pt-1 pb-0.5" style={{ color: 'rgba(28,22,51,0.35)' }}>
-                Contraseñas: Admin2026! · Sub2026! · Tecnico2026! · resto Zelix2026!
+                Toca una cuenta para entrar con ella.
               </p>
             </div>
           )}
