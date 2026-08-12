@@ -18,7 +18,7 @@ if hasattr(time, 'tzset'):
 from sqlalchemy import text
 from .database import engine
 from . import models
-from .routers import auth, users, groups, contacts, leads, payments, calendar, notifications, whatsapp, pdf, webhooks, settings, tecnico, google_calendar, push, whatsapp_qr, whatsapp_sessions, at_informa_integration, legal_finance_integration, pagacuotas_router, ai_agents, pipeline_stages, work_orders, security, cobrador, seguimiento_asistente, analista, integrations_health, webhook_dlq_router, search, insights, nexin
+from .routers import auth, users, groups, contacts, leads, payments, calendar, notifications, whatsapp, pdf, webhooks, settings, tecnico, google_calendar, push, at_informa_integration, legal_finance_integration, pagacuotas_router, ai_agents, pipeline_stages, work_orders, security, cobrador, seguimiento_asistente, analista, integrations_health, webhook_dlq_router, search, insights, nexin
 from .seed import seed
 from .auth import hash_password
 from .broadcaster import wa_broadcaster
