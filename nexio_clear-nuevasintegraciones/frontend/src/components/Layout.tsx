@@ -42,8 +42,8 @@ const NAV_SECTIONS = [
   {
     label: 'Comunicación',
     items: [
+      { path: '/mis-whatsapp',  icon: Smartphone,      label: 'Mis WhatsApp',   sublabel: 'Vincular mi número', roles: ['agendadora','vendedor','cobrador'] },
       { path: '/whatsapp',      icon: MessageSquare,   label: 'WhatsApp',       sublabel: 'Chat clientes',       roles: ['agendadora','superadmin','subadmin','cobrador'] },
-      { path: '/mis-whatsapp',  icon: Smartphone,      label: 'Mis WhatsApp',   sublabel: 'Conectar números',    roles: ['agendadora'] },
       { path: '/agente-ia',     icon: Bot,             label: 'Agente IA',      sublabel: 'Leads IA pendientes', roles: ['agendadora','superadmin','subadmin'] },
       { path: '/nexin',         icon: Brain,           label: 'Asistente IA',   sublabel: 'Copiloto ZelixLeads', roles: ['superadmin'] },
     ],
@@ -54,7 +54,6 @@ const NAV_SECTIONS = [
       { path: '/cobrador/cartera',   icon: Wallet,        label: 'Cartera',      sublabel: 'Mis clientes',     roles: ['cobrador'] },
       { path: '/cobrador/pipeline',  icon: GitBranchIcon, label: 'Pipeline',     sublabel: 'Embudo cobranza',  roles: ['cobrador'] },
       { path: '/cobrador/historial', icon: Archive,       label: 'Historial',    sublabel: 'Clientes pagados', roles: ['cobrador'] },
-      { path: '/mis-whatsapp',       icon: Smartphone,    label: 'Mis WhatsApp', sublabel: 'Conectar número',  roles: ['cobrador'] },
       { path: '/pagos',              icon: CreditCard,    label: 'Verificar Pagos', sublabel: 'Confirmar cobros', roles: ['verificador'] },
     ],
   },

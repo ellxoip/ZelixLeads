@@ -136,6 +136,15 @@ class WhatsAppConfigCreate(BaseModel):
     phone_number_id: Optional[str] = None
     group_id: Optional[int] = None
 
+class MiNumeroCreate(BaseModel):
+    """Alta de un número propio. NO acepta group_id ni owner_user_id: los pone
+    el servidor desde la sesión, para que nadie pueda vincular un número dentro
+    del negocio de otro mandando un campo de más."""
+    name: Optional[str] = None
+    phone_number_id: str
+    api_token: str
+
+
 class WhatsAppConfigUpdate(BaseModel):
     name: Optional[str] = None
     phone_number: Optional[str] = None

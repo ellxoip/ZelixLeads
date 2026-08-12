@@ -13,12 +13,12 @@ import Contactos from './pages/Contactos'
 import Calendario from './pages/Calendario'
 import Pagos from './pages/Pagos'
 import Notificaciones from './pages/Notificaciones'
+import MisWhatsApp from './pages/MisWhatsApp'
 import WhatsApp from './pages/WhatsApp'
 import Admin from './pages/Admin'
 import Tecnico from './pages/Tecnico'
 import Agenda from './pages/Agenda'
 import VendorPipeline from './pages/VendorPipeline'
-import MisWhatsApp from './pages/MisWhatsApp'
 import PagarCuota from './pages/PagarCuota'
 import Seguimiento from './pages/Seguimiento'
 import AgentIA from './pages/AgentIA'
@@ -69,9 +69,9 @@ function AppRoutes() {
       <Route path="/agenda" element={<ProtectedRoute roles={['vendedor']}><Layout><Agenda /></Layout></ProtectedRoute>} />
       <Route path="/mi-pipeline" element={<ProtectedRoute roles={['vendedor']}><Layout><VendorPipeline /></Layout></ProtectedRoute>} />
       <Route path="/pagos" element={<ProtectedRoute roles={['verificador','superadmin','subadmin']}><Layout><Pagos /></Layout></ProtectedRoute>} />
+      <Route path="/mis-whatsapp" element={<ProtectedRoute roles={['agendadora','cobrador','vendedor','superadmin','subadmin']}><Layout><MisWhatsApp /></Layout></ProtectedRoute>} />
       <Route path="/notificaciones" element={<ProtectedRoute><Layout><Notificaciones /></Layout></ProtectedRoute>} />
       <Route path="/whatsapp" element={<ProtectedRoute roles={['superadmin','subadmin','agendadora','cobrador']}><Layout><WhatsApp /></Layout></ProtectedRoute>} />
-      <Route path="/mis-whatsapp" element={<ProtectedRoute roles={['agendadora','cobrador','superadmin','subadmin']}><Layout><MisWhatsApp /></Layout></ProtectedRoute>} />
       <Route path="/seguimiento" element={<ProtectedRoute roles={['agendadora','superadmin','subadmin']}><Layout><Seguimiento /></Layout></ProtectedRoute>} />
       <Route path="/agente-ia" element={<ProtectedRoute roles={['agendadora','superadmin','subadmin']}><Layout><AgentIA /></Layout></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute roles={['superadmin','subadmin']}><Layout><Admin /></Layout></ProtectedRoute>} />

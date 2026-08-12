@@ -617,29 +617,6 @@ export default function WhatsApp() {
     }
   }
 
-  const syncChats = async () => {
-    if (!selectedConfig) return
-    setSyncing(true)
-    try {
-      const result = await syncFullHistory(parseInt(selectedConfig))
-      await loadConversations()
-      const msgs = result?.messages_pushed ?? 0
-      const contacts = result?.contacts_pushed ?? 0
-      toast.success(`Sincronizado: ${contacts} contactos, ${msgs} mensajes importados`)
-    } catch {
-      // Fallback to basic sync if full history not available
-      try {
-        await syncWhatsAppChats(parseInt(selectedConfig))
-        await loadConversations()
-        toast.success('Chats sincronizados')
-      } catch {
-        toast.error('Error al sincronizar chats')
-      }
-    } finally {
-      setSyncing(false)
-    }
-  }
-
   const handleDeleteMsg = async (id: number) => {
     try {
       await deleteWhatsAppMessage(id)
@@ -728,18 +705,6 @@ export default function WhatsApp() {
               <RefreshCw size={14} />
             </button>
           )}
-          {configs.length > 0 && selectedConfig && (
-            <button
-              onClick={syncChats}
-              disabled={syncing}
-              className="btn-secondary h-9 px-3 gap-1.5"
-              title="Sincronizar todos los chats de WhatsApp"
-              style={{ fontSize: 12 }}
-            >
-              {syncing ? <RefreshCw size={13} className="animate-spin" /> : <RefreshCw size={13} />}
-              Sync
-            </button>
-          )}
         </div>
       </div>
 
@@ -755,11 +720,10 @@ export default function WhatsApp() {
             <p className="text-sm font-semibold text-white/70">Sin números de WhatsApp conectados</p>
             <p className="text-xs text-white/38 mt-1">Vincula un número para ver y responder mensajes de tus clientes</p>
           </div>
-          <Link to="/mis-whatsapp"
-            className="flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-xl transition-all"
-            style={{ background: 'var(--primary)', color: '#ffffff', boxShadow: '0 4px 16px rgba(53,122,14,0.25)' }}>
-            Ir a Mis WhatsApp →
-          </Link>
+          <p className="text-xs text-white/38 text-center max-w-sm">
+            Los números se conectan por la API oficial de Meta desde Configuración.
+            Los mensajes entran solos por el webhook: no hay nada que sincronizar a mano.
+          </p>
         </div>
       )}
 

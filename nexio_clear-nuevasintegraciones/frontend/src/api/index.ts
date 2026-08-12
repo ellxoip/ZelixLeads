@@ -245,30 +245,6 @@ export const getGoogleEvents = (params?: any) => api.get('/api/google/events', {
 export const syncEventToGoogle = (eventId: number) => api.post(`/api/google/sync-event/${eventId}`).then(r => r.data)
 export const syncAllToGoogle = () => api.post('/api/google/sync-all').then(r => r.data)
 
-// WHATSAPP QR
-export const createQRSession = () => api.post('/api/tecnico/whatsapp/qr').then(r => r.data)
-export const startQRSession = (configId: number) => api.post(`/api/tecnico/whatsapp/qr/${configId}/start`).then(r => r.data)
-export const getQRStatus = (configId: number) => api.get(`/api/tecnico/whatsapp/qr/${configId}/status`).then(r => r.data)
-export const getQRImage = (configId: number) => api.get(`/api/tecnico/whatsapp/qr/${configId}/qr-image`).then(r => r.data)
-export const deleteQRSession = (configId: number) => api.delete(`/api/tecnico/whatsapp/qr/${configId}`).then(r => r.data)
-export const renameQRSession = (configId: number, name: string) => api.patch(`/api/tecnico/whatsapp/qr/${configId}/rename`, { name }).then(r => r.data)
-
-// WHATSAPP SESSIONS (agendadora self-service + admin)
-export const getMyWASessions = () => api.get('/api/whatsapp-sessions/mine').then(r => r.data)
-export const createMyWASession = () => api.post('/api/whatsapp-sessions/mine').then(r => r.data)
-export const startMyWASession = (id: number) => api.post(`/api/whatsapp-sessions/mine/${id}/start`).then(r => r.data)
-export const getMyWASessionStatus = (id: number) => api.get(`/api/whatsapp-sessions/mine/${id}/status`).then(r => r.data)
-export const getMyWASessionQR = (id: number) => api.get(`/api/whatsapp-sessions/mine/${id}/qr`).then(r => r.data)
-export const renameMyWASession = (id: number, name: string) => api.patch(`/api/whatsapp-sessions/mine/${id}/rename`, { name }).then(r => r.data)
-export const deleteMyWASession = (id: number) => api.delete(`/api/whatsapp-sessions/mine/${id}`).then(r => r.data)
-
-export const adminListWASessions = () => api.get('/api/whatsapp-sessions/admin/all').then(r => r.data)
-export const adminAssignWAArea = (id: number, area_ids: number[], group_id?: number) =>
-  api.patch(`/api/whatsapp-sessions/admin/${id}/assign-area`, { area_ids, group_id }).then(r => r.data)
-export const adminReassignWAOwner = (id: number, owner_user_id: number | null) =>
-  api.patch(`/api/whatsapp-sessions/admin/${id}/reassign-owner`, { owner_user_id }).then(r => r.data)
-export const adminDeleteWASession = (id: number) => api.delete(`/api/whatsapp-sessions/admin/${id}`).then(r => r.data)
-
 // AT INFORMA INTEGRATION
 export const getAtInformaAbogados = () =>
   api.get('/api/at_informa/abogados').then(r => r.data)
@@ -394,3 +370,12 @@ export const getIntegrationsHealth = () =>
     hops: Record<string, { url: string | null; ok: boolean; live: { reachable: boolean; status_code: number | null; latency_ms: number | null; error: string | null } }>
   })
 
+
+// ── Mis números de WhatsApp (API oficial de Meta) ──────────────────────────
+// Reemplazan a las sesiones por QR, retiradas con Baileys. El servidor le
+// pregunta a Meta si el token manda sobre el número antes de guardarlo.
+export const getMisNumeros = () => api.get('/api/whatsapp/mis-numeros').then(r => r.data)
+export const vincularMiNumero = (d: { name?: string; phone_number_id: string; api_token: string }) =>
+  api.post('/api/whatsapp/mis-numeros', d).then(r => r.data)
+export const desvincularMiNumero = (id: number) =>
+  api.delete(`/api/whatsapp/mis-numeros/${id}`).then(r => r.data)

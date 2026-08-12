@@ -4,7 +4,6 @@ import {
   getTecnicoStats, getTecnicoWhatsApp, createTecnicoWhatsApp, updateTecnicoWhatsApp,
   deleteTecnicoWhatsApp, toggleTecnicoWhatsApp, getGoogleOAuthSettings,
   updateGoogleOAuthSettings, getTecnicoUsers, getGroups,
-  createQRSession, startQRSession, getQRStatus, getQRImage, deleteQRSession, renameQRSession,
   getAIAgents, createAIAgent, updateAIAgent, toggleAIAgent, deleteAIAgent, getAIAgentLogs,
   getAllWhatsAppConfigs, getNegocios, createNegocio, patchNegocio, deleteNegocio, patchNegocioAdmin, patchNegocioPlan,
   getAuditLog, getSecurityStats, getLockedUsers, unlockUser,
@@ -20,7 +19,7 @@ import {
 } from 'lucide-react'
 import { useConfirm } from '../components/ConfirmDialog'
 
-type Tab = 'negocios' | 'overview' | 'whatsapp' | 'whatsapp_qr' | 'google' | 'users' | 'ai_agents' | 'security'
+type Tab = 'negocios' | 'overview' | 'whatsapp' | 'google' | 'users' | 'ai_agents' | 'security'
 
 interface QRConfig {
   id: number
@@ -85,15 +84,6 @@ export default function Tecnico() {
   const [showToken, setShowToken] = useState(false)
   const [savingWA, setSavingWA] = useState(false)
 
-  // QR state
-  const [qrConfigs, setQRConfigs] = useState<QRConfig[]>([])
-  const [loadingQR, setLoadingQR] = useState(false)
-  const [showQRModal, setShowQRModal] = useState(false)
-  const [qrModalConfig, setQRModalConfig] = useState<QRConfig | null>(null)
-  const [qrStatus, setQRStatus] = useState<QRStatus>('not_started')
-  const [qrImage, setQRImage] = useState<string | null>(null)
-  const [qrPhone, setQRPhone] = useState<string | null>(null)
-  const qrPollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     loadAll()
@@ -124,7 +114,6 @@ export default function Tecnico() {
 
   useEffect(() => {
     if (tab === 'whatsapp') loadWA()
-    if (tab === 'whatsapp_qr') loadQRConfigs()
     if (tab === 'google') loadGoogle()
     if (tab === 'users') loadUsers()
   }, [tab])
@@ -255,112 +244,6 @@ export default function Tecnico() {
     } catch (err: any) {
       toast.error(err?.response?.data?.detail || 'Error al actualizar')
     } finally { setEditAdminSaving(false) }
-  }
-
-  // ── QR Sessions ─────────────────────────────────────────────
-
-  const loadQRConfigs = useCallback(async () => {
-    setLoadingQR(true)
-    try {
-      const all = await getTecnicoWhatsApp()
-      setQRConfigs((all as WAConfig[]).filter((c: WAConfig) => c.api_provider === 'qr') as unknown as QRConfig[])
-    } catch { toast.error('Error cargando sesiones QR') }
-    finally { setLoadingQR(false) }
-  }, [])
-
-  const stopQRPoll = useCallback(() => {
-    if (qrPollRef.current) { clearInterval(qrPollRef.current); qrPollRef.current = null }
-  }, [])
-
-  const startQRPoll = useCallback((configId: number) => {
-    stopQRPoll()
-    qrPollRef.current = setInterval(async () => {
-      try {
-        const statusData = await getQRStatus(configId)
-        const st: QRStatus = statusData.status
-        setQRStatus(st)
-        setQRPhone(statusData.phone || null)
-
-        if (st === 'qr_ready') {
-          try {
-            const imgData = await getQRImage(configId)
-            if (imgData.qr) setQRImage(imgData.qr)
-          } catch {}
-        } else if (st === 'connected') {
-          setQRImage(null)
-          stopQRPoll()
-          loadQRConfigs()
-        } else if (st === 'logged_out' || st === 'service_unavailable') {
-          stopQRPoll()
-          loadQRConfigs()
-        }
-      } catch {}
-    }, 3000)
-  }, [stopQRPoll, loadQRConfigs])
-
-  const openQRModal = useCallback(async (cfg: QRConfig) => {
-    setQRModalConfig(cfg)
-    setQRImage(null)
-    setQRPhone(cfg.is_active ? cfg.phone_number : null)
-    setShowQRModal(true)
-
-    try {
-      const statusData = await getQRStatus(cfg.id)
-      setQRStatus(statusData.status)
-      setQRPhone(statusData.phone || cfg.phone_number || null)
-      if (statusData.status === 'qr_ready') {
-        const imgData = await getQRImage(cfg.id)
-        if (imgData.qr) setQRImage(imgData.qr)
-      }
-    } catch {
-      setQRStatus('not_started')
-    }
-
-    startQRPoll(cfg.id)
-  }, [startQRPoll])
-
-  const closeQRModal = useCallback(() => {
-    stopQRPoll()
-    setShowQRModal(false)
-    setQRModalConfig(null)
-    setQRImage(null)
-    setQRStatus('not_started')
-  }, [stopQRPoll])
-
-  useEffect(() => () => stopQRPoll(), [stopQRPoll])
-
-  const handleCreateQR = async () => {
-    try {
-      const cfg = await createQRSession()
-      toast.success('Sesión QR creada')
-      await loadQRConfigs()
-      openQRModal(cfg as QRConfig)
-    } catch (e: any) {
-      toast.error(e?.response?.data?.detail || 'Error al crear sesión QR')
-    }
-  }
-
-  const handleStartQR = async () => {
-    if (!qrModalConfig) return
-    setQRStatus('connecting')
-    setQRImage(null)
-    try {
-      await startQRSession(qrModalConfig.id)
-      startQRPoll(qrModalConfig.id)
-    } catch (e: any) {
-      toast.error(e?.response?.data?.detail || 'Error al iniciar sesión')
-      setQRStatus('service_unavailable')
-    }
-  }
-
-  const handleDeleteQR = async (cfg: QRConfig) => {
-    const ok = await confirm(`Se desconectará WhatsApp "${cfg.name}".`, { title: 'Eliminar sesión', confirmLabel: 'Eliminar' })
-    if (!ok) return
-    try {
-      await deleteQRSession(cfg.id)
-      toast.success('Sesión eliminada')
-      loadQRConfigs()
-    } catch { toast.error('Error al eliminar') }
   }
 
   // ── WA CRUD ─────────────────────────────────────────────────
@@ -1241,103 +1124,6 @@ Si el cliente tiene una consulta compleja o quiere hablar con una persona, dile 
         )
       })()}
 
-      {/* ── WHATSAPP QR ── */}
-      {tab === 'whatsapp_qr' && (() => {
-        const visibleQR = qrConfigs.filter(c => inSelectedNegocio(c.group_id))
-        return (
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="flex-1">
-              <p className="text-sm text-white/62">
-                Conecta WhatsApp escaneando un código QR desde tu teléfono. No requiere cuenta de Meta Business.
-              </p>
-            </div>
-            <button onClick={handleCreateQR} className="btn-primary flex-shrink-0">
-              <Plus size={16} /> Nueva Sesión QR
-            </button>
-          </div>
-
-          {/* Info box */}
-          <div className="flex items-start gap-3 p-3 bg-warn/[0.08] border border-warn/20 rounded-xl text-sm text-warn/90">
-            <Info size={16} className="flex-shrink-0 mt-0.5" />
-            <p>
-              Esta conexión usa el protocolo de WhatsApp Web. El teléfono debe estar con internet para enviar mensajes.
-              Para conexión oficial sin restricciones usa <strong>WhatsApp Meta</strong>.
-            </p>
-          </div>
-
-          {loadingQR ? (
-            <div className="flex items-center justify-center py-16">
-              <Loader2 size={24} className="animate-spin text-white/52" />
-            </div>
-          ) : visibleQR.length === 0 ? (
-            <div className="bg-surface-1 rounded-xl border border-white/[0.07] text-center py-16 text-white/52">
-              <QrCode size={32} className="mx-auto mb-3 opacity-30" />
-              <p className="font-medium">Sin sesiones QR{selectedNegocioId ? ' para este negocio' : ''}</p>
-              <p className="text-sm mt-1">Crea una sesión y escanea el QR con tu teléfono</p>
-            </div>
-          ) : (
-            <div className="bg-surface-1 rounded-xl border border-white/[0.07] overflow-hidden table-scroll">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-white/[0.07] text-left">
-                    <th className="px-4 py-3 text-white/62 font-medium">Nombre</th>
-                    <th className="px-4 py-3 text-white/62 font-medium">Número</th>
-                    <th className="px-4 py-3 text-white/62 font-medium text-center">Estado</th>
-                    <th className="px-4 py-3 text-white/62 font-medium text-right">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {visibleQR.map(cfg => (
-                    <tr key={cfg.id} className="border-b border-white/5 hover:bg-surface-0/50 transition-colors">
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <Smartphone size={14} className="text-white/52" />
-                          <span className="font-medium text-white/90">{cfg.name}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 font-mono text-white/78">
-                        {cfg.phone_number === 'pending' ? (
-                          <span className="text-white/52 italic">Pendiente escaneo</span>
-                        ) : cfg.phone_number}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        {cfg.is_active ? (
-                          <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full text-lime bg-lime/10">
-                            <Wifi size={10} /> Conectado
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-surface-2 text-white/62">
-                            <WifiOff size={10} /> Desconectado
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => openQRModal(cfg)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-surface-2 hover:bg-surface-3 text-white/85 rounded-lg transition-colors"
-                          >
-                            <QrCode size={12} /> {cfg.is_active ? 'Ver estado' : 'Conectar'}
-                          </button>
-                          <button
-                            onClick={() => handleDeleteQR(cfg)}
-                            className="p-1.5 text-white/52 hover:text-danger hover:bg-danger/10 rounded-lg transition-colors"
-                            title="Eliminar"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-        )
-      })()}
 
       {/* ── GOOGLE OAUTH ── */}
       {tab === 'google' && (
@@ -1524,86 +1310,6 @@ Si el cliente tiene una consulta compleja o quiere hablar con una persona, dile 
         )
       })()}
 
-      {/* ── QR Modal ── */}
-      {showQRModal && qrModalConfig && (
-        <div className="fixed inset-0 modal-backdrop flex items-center justify-center z-50 p-4">
-          <div className="bg-surface-1 rounded-2xl shadow-modal w-full max-w-sm">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.07]">
-              <div className="flex items-center gap-2">
-                <QrCode size={18} className="text-white/78" />
-                <h2 className="text-base font-bold text-white">{qrModalConfig.name}</h2>
-              </div>
-              <button onClick={closeQRModal} className="p-2 hover:bg-surface-2 rounded-lg text-white/62 text-lg leading-none">×</button>
-            </div>
-
-            <div className="px-6 py-5 space-y-4">
-              {/* Status badge */}
-              <div className={`flex items-center gap-2 p-3 rounded-xl text-sm font-medium ${
-                qrStatus === 'connected'             ? 'bg-lime/[0.07] text-lime border border-lime/20' :
-                qrStatus === 'qr_ready'              ? 'bg-neon/[0.07] text-neon border border-neon/20' :
-                qrStatus === 'connecting'            ? 'bg-warn/[0.07] text-warn border border-warn/20' :
-                qrStatus === 'service_unavailable'   ? 'bg-danger/[0.07] text-danger border border-danger/20' :
-                'bg-surface-0 text-white/85 border border-white/10'
-              }`}>
-                {qrStatus === 'connected' && <><Wifi size={16} /> Conectado como <strong>{qrPhone}</strong></>}
-                {qrStatus === 'qr_ready' && <><QrCode size={16} /> Escanea el QR con WhatsApp</>}
-                {qrStatus === 'connecting' && <><Loader2 size={16} className="animate-spin" /> Generando QR...</>}
-                {qrStatus === 'disconnected' && <><WifiOff size={16} /> Desconectado</>}
-                {qrStatus === 'logged_out' && <><Unlink size={16} /> Sesión cerrada en el teléfono</>}
-                {qrStatus === 'not_started' && <><Link size={16} /> Sin sesión activa</>}
-                {qrStatus === 'service_unavailable' && <><XCircle size={16} /> Servicio QR no disponible</>}
-              </div>
-
-              {/* QR Image */}
-              {qrStatus === 'qr_ready' && qrImage ? (
-                <div className="flex flex-col items-center gap-3">
-                  <img
-                    src={qrImage}
-                    alt="WhatsApp QR Code"
-                    className="w-56 h-56 rounded-xl border-4 border-white/[0.07]"
-                  />
-                  <p className="text-xs text-white/62 text-center">
-                    Abre WhatsApp → Dispositivos vinculados → Vincular dispositivo
-                  </p>
-                  <div className="flex items-center gap-1 text-xs text-neon/70">
-                    <RefreshCw size={11} className="animate-spin" /> Actualizando automáticamente...
-                  </div>
-                </div>
-              ) : qrStatus === 'connecting' ? (
-                <div className="flex items-center justify-center h-40">
-                  <Loader2 size={40} className="animate-spin text-white/38" />
-                </div>
-              ) : qrStatus === 'connected' ? (
-                <div className="flex flex-col items-center gap-3 py-6">
-                  <div className="w-20 h-20 rounded-full bg-lime/15 flex items-center justify-center">
-                    <CheckCircle size={40} className="text-lime" />
-                  </div>
-                  <p className="text-white/78 text-sm text-center">
-                    WhatsApp conectado. Los mensajes entrantes se registrarán automáticamente.
-                  </p>
-                </div>
-              ) : null}
-
-              {/* Actions */}
-              <div className="flex gap-3 pt-1">
-                {(qrStatus === 'not_started' || qrStatus === 'disconnected' || qrStatus === 'logged_out') && (
-                  <button onClick={handleStartQR} className="btn-primary flex-1">
-                    <QrCode size={15} /> Generar QR
-                  </button>
-                )}
-                {qrStatus === 'qr_ready' && (
-                  <button onClick={handleStartQR} className="btn-secondary flex-1">
-                    <RefreshCw size={15} /> Nuevo QR
-                  </button>
-                )}
-                <button onClick={closeQRModal} className="btn-secondary flex-1">
-                  Cerrar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── WA Modal ── */}
       {showWAModal && (
