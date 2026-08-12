@@ -52,8 +52,32 @@ def _exige_secreto(x_crm_callback_secret: str = Header(None, alias="x-crm-callba
         raise HTTPException(status_code=401, detail="Secret inválido")
 
 
-def _lead_o_404(db: Session, lead_id: int) -> models.Lead:
-    lead = db.query(models.Lead).filter(models.Lead.id == lead_id).first()
+def _normalizar_tel(tel: str) -> str:
+    return "+" + "".join(c for c in (tel or "") if c.isdigit())
+
+
+def _lead_o_404(db: Session, lead_id: int | None = None, telefono: str | None = None) -> models.Lead:
+    """Ubica el lead por id o por TELÉFONO.
+
+    Zelix conoce el número de WhatsApp de quien escribe, no los ids del CRM.
+    Obligarlo a manejar ids habría significado guardar acá una tabla de
+    equivalencias o allá un dato que no le pertenece; el teléfono ya es la
+    identidad compartida entre ambos sistemas.
+    """
+    if lead_id:
+        lead = db.query(models.Lead).filter(models.Lead.id == lead_id).first()
+    elif telefono:
+        contacto = db.query(models.Contact).filter(models.Contact.phone == _normalizar_tel(telefono)).first()
+        lead = (
+            db.query(models.Lead)
+            .filter(models.Lead.contact_id == contacto.id,
+                    models.Lead.current_stage.notin_(["pagado_confirmado"]))
+            .order_by(models.Lead.created_at.desc())
+            .first()
+            if contacto else None
+        )
+    else:
+        raise HTTPException(status_code=400, detail="Falta lead_id o telefono")
     if not lead:
         raise HTTPException(status_code=404, detail="Lead no encontrado")
     return lead
@@ -75,14 +99,14 @@ def _ocupados(db: Session, user_id: int, desde_utc: datetime, hasta_utc: datetim
 
 
 @router.get("/disponibilidad", dependencies=[Depends(_exige_secreto)])
-def disponibilidad(lead_id: int, dias: int = 3, limite: int = 3, db: Session = Depends(get_db)):
+def disponibilidad(lead_id: int | None = None, telefono: str | None = None, dias: int = 3, limite: int = 3, db: Session = Depends(get_db)):
     """Huecos que se le pueden OFRECER a este lead, ya listos para mostrar.
 
     `limite` nace de WhatsApp: sus mensajes interactivos admiten como máximo
     **tres botones**. Ofrecer más obliga a paginar y a que la persona elija dos
     veces, que es donde se pierden las reuniones.
     """
-    lead = _lead_o_404(db, lead_id)
+    lead = _lead_o_404(db, lead_id, telefono)
     vendedor_id = lead.vendedor_id
     ahora = datetime.now(timezone.utc)
     minimo = ahora + timedelta(minutes=ANTICIPACION_MIN)
@@ -142,9 +166,10 @@ def reservar(payload: dict, db: Session = Depends(get_db)):
     paga el vendedor con su tiempo y el cliente con su confianza.
     """
     lead_id = payload.get("lead_id")
+    telefono = payload.get("telefono")
     inicio_raw = payload.get("inicio")
-    if not lead_id or not inicio_raw:
-        raise HTTPException(status_code=400, detail="Faltan lead_id e inicio")
+    if not (lead_id or telefono) or not inicio_raw:
+        raise HTTPException(status_code=400, detail="Faltan lead_id/telefono e inicio")
     try:
         inicio = datetime.fromisoformat(str(inicio_raw))
     except ValueError:
@@ -153,7 +178,7 @@ def reservar(payload: dict, db: Session = Depends(get_db)):
         inicio = inicio.replace(tzinfo=timezone.utc)
     inicio = inicio.astimezone(timezone.utc)
 
-    lead = _lead_o_404(db, lead_id)
+    lead = _lead_o_404(db, lead_id, telefono)
     if inicio < datetime.now(timezone.utc):
         raise HTTPException(status_code=409, detail="Ese horario ya pasó")
     fin = inicio + timedelta(minutes=DURACION_MIN)
