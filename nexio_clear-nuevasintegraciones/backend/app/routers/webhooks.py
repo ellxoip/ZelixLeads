@@ -21,6 +21,10 @@ router = APIRouter(prefix="/api/webhook", tags=["webhook"])
 
 VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN", "crm_abogados_tributarios_2024")
 
+# Respaldo para descargar media cuando el config no trae token propio. Vacío =
+# la media no se baja y el mensaje igual se guarda con su marcador ([Imagen]).
+META_FALLBACK_TOKEN = os.getenv("META_API_KEY", "")
+
 
 def _normalize_phone(phone: str) -> str:
     """Strip non-digits and ensure leading +."""
@@ -94,6 +98,82 @@ def _get_active_lead(db: Session, contact_id: int, config_id: int | None = None)
             return preferred_legacy
     # No config match — return most recent active lead
     return base.order_by(models.Lead.created_at.desc()).first()
+
+
+def _crear_lead_automatico(
+    db: Session, contact: models.Contact, config: models.WhatsAppConfig
+) -> models.Lead | None:
+    """Crea el Lead de una conversación nueva. None si falta contexto.
+
+    Por qué existe: la creación automática de leads vivía SOLO en el receptor de
+    Baileys (`whatsapp_qr.py`). Al retirar Baileys, el webhook de Meta guardaba
+    contacto y mensaje pero NO creaba lead — y todo lo que cuelga del lead
+    (pipeline, copiloto de enfriamiento a 24 h, asignación a agendadora) queda
+    apagado. Un mensaje que entra sin lead es un prospecto que el equipo nunca ve
+    en su tablero.
+
+    Se conserva la MISMA precedencia que usaba Baileys, para que un lead creado
+    hoy caiga donde habría caído antes: área del config, si no la primera del
+    grupo; dueño del config como agendadora, si no la primera del grupo; vendedor
+    del grupo, y si no hay, la propia agendadora.
+
+    Si falta cualquier pieza NO se inventa nada y se devuelve None: el mensaje
+    igual queda guardado. Perder el lead es malo; adjudicárselo a un área o a una
+    persona equivocada es peor, porque nadie lo revisa.
+    """
+    if not config.group_id:
+        return None
+
+    area_id = None
+    if config.areas:
+        area_id = config.areas[0].id
+    if not area_id:
+        primera = db.query(models.Area).filter(models.Area.group_id == config.group_id).first()
+        area_id = primera.id if primera else None
+
+    agendadora_id = config.owner_user_id
+    if not agendadora_id:
+        ag = (
+            db.query(models.User)
+            .filter(
+                models.User.group_id == config.group_id,
+                models.User.role == "agendadora",
+                models.User.is_active == True,
+            )
+            .first()
+        )
+        agendadora_id = ag.id if ag else None
+
+    vendedor = (
+        db.query(models.User)
+        .filter(
+            models.User.group_id == config.group_id,
+            models.User.role == "vendedor",
+            models.User.is_active == True,
+        )
+        .first()
+    )
+    vendedor_id = vendedor.id if vendedor else agendadora_id
+
+    if not (area_id and agendadora_id and vendedor_id):
+        logger.warning(
+            "lead no creado para contacto=%s config=%s: falta area/agendadora/vendedor en el grupo %s",
+            contact.id, config.id, config.group_id,
+        )
+        return None
+
+    lead = models.Lead(
+        contact_id=contact.id,
+        area_id=area_id,
+        group_id=config.group_id,
+        agendadora_id=agendadora_id,
+        vendedor_id=vendedor_id,
+        current_stage="lead",
+        source="whatsapp",
+    )
+    db.add(lead)
+    db.flush()
+    return lead
 
 
 def _notify_agendadoras(db: Session, config: models.WhatsAppConfig, contact: models.Contact, preview: str):
@@ -227,6 +307,12 @@ async def receive_message(
                     logger.warning(f"No config found for phone_number_id={phone_number_id}")
                     continue
 
+                # Token para BAJAR media (imagen, audio, documento). Se prefiere
+                # el del config, pero el respaldo vive en el ENTORNO y no en una
+                # columna: un volcado de la base no debe llevarse consigo una
+                # credencial que puede escribirle a los clientes en WhatsApp.
+                api_token = config.api_token or META_FALLBACK_TOKEN
+
                 contacts_map = {
                     c["wa_id"]: c["profile"]["name"]
                     for c in value.get("contacts", [])
@@ -252,28 +338,28 @@ async def receive_message(
                         img_data = msg.get("image", {})
                         caption = img_data.get("caption", "")
                         content = caption or "[Imagen]"
-                        if config.api_token and img_data.get("id"):
-                            media_url = await _download_meta_media(img_data["id"], config.api_token)
+                        if api_token and img_data.get("id"):
+                            media_url = await _download_meta_media(img_data["id"], api_token)
                     elif msg_type == "audio":
                         audio_data = msg.get("audio", {})
                         content = "[Audio]"
-                        if config.api_token and audio_data.get("id"):
-                            media_url = await _download_meta_media(audio_data["id"], config.api_token)
+                        if api_token and audio_data.get("id"):
+                            media_url = await _download_meta_media(audio_data["id"], api_token)
                     elif msg_type == "video":
                         video_data = msg.get("video", {})
                         content = video_data.get("caption", "[Video]") or "[Video]"
-                        if config.api_token and video_data.get("id"):
-                            media_url = await _download_meta_media(video_data["id"], config.api_token)
+                        if api_token and video_data.get("id"):
+                            media_url = await _download_meta_media(video_data["id"], api_token)
                     elif msg_type == "document":
                         doc_data = msg.get("document", {})
                         content = f"[Documento: {doc_data.get('filename', '')}]"
-                        if config.api_token and doc_data.get("id"):
-                            media_url = await _download_meta_media(doc_data["id"], config.api_token)
+                        if api_token and doc_data.get("id"):
+                            media_url = await _download_meta_media(doc_data["id"], api_token)
                     elif msg_type == "sticker":
                         content = "[Sticker]"
                         sticker_data = msg.get("sticker", {})
-                        if config.api_token and sticker_data.get("id"):
-                            media_url = await _download_meta_media(sticker_data["id"], config.api_token)
+                        if api_token and sticker_data.get("id"):
+                            media_url = await _download_meta_media(sticker_data["id"], api_token)
                     else:
                         content = f"[{msg_type}]"
 
@@ -283,6 +369,10 @@ async def receive_message(
                     sender_name = contacts_map.get(from_phone, from_phone)
                     contact = _get_or_create_contact(db, from_phone, sender_name, config)
                     active_lead = _get_active_lead(db, contact.id, config_id=config.id)
+                    # Conversación nueva = lead nuevo. Sin esto el mensaje queda
+                    # en el inbox pero fuera del pipeline, y nadie lo gestiona.
+                    if not active_lead:
+                        active_lead = _crear_lead_automatico(db, contact, config)
 
                     message = models.WhatsAppMessage(
                         lead_id=active_lead.id if active_lead else None,
