@@ -155,6 +155,62 @@ def _etiqueta(local: datetime, hoy) -> str:
     return f"{_DIAS[local.weekday()]} {local.day} · {local.strftime('%H:%M')}"[:20]
 
 
+def _proxima(db: Session, lead: models.Lead):
+    """La próxima reunión futura de este lead, si tiene."""
+    return (
+        db.query(models.CalendarEvent)
+        .filter(
+            models.CalendarEvent.lead_id == lead.id,
+            models.CalendarEvent.event_type == "reunion",
+            models.CalendarEvent.is_completed == False,  # noqa: E712
+        )
+        .order_by(models.CalendarEvent.start_time)
+        .all()
+    )
+
+
+def _futura(db: Session, lead: models.Lead):
+    ahora = datetime.now(timezone.utc)
+    for ev in _proxima(db, lead):
+        if _utc(ev.start_time) > ahora:
+            return ev
+    return None
+
+
+@router.get("/mi-reunion", dependencies=[Depends(_exige_secreto)])
+def mi_reunion(lead_id: int | None = None, telefono: str | None = None, db: Session = Depends(get_db)):
+    """¿Esta persona ya tiene hora? Sin esto se le agenda una segunda reunión
+    cada vez que lo pide, y el vendedor termina con dos horas bloqueadas para
+    el mismo cliente."""
+    lead = _lead_o_404(db, lead_id, telefono)
+    ev = _futura(db, lead)
+    if not ev:
+        return {"reunion": None}
+    local = _utc(ev.start_time).astimezone(TZ)
+    return {"reunion": {
+        "evento_id": ev.id,
+        "inicio": _utc(ev.start_time).isoformat(),
+        "etiqueta": _etiqueta(local, datetime.now(timezone.utc).astimezone(TZ).date()),
+    }}
+
+
+@router.post("/cancelar", dependencies=[Depends(_exige_secreto)])
+def cancelar(payload: dict, db: Session = Depends(get_db)):
+    """Anula la próxima reunión. Sin esto la conversación no tiene salida: el
+    cliente que no puede asistir se queda callado y el vendedor viaja igual."""
+    lead = _lead_o_404(db, payload.get("lead_id"), payload.get("telefono"))
+    ev = _futura(db, lead)
+    if not ev:
+        return {"cancelada": False}
+    local = _utc(ev.start_time).astimezone(TZ)
+    etiqueta = _etiqueta(local, datetime.now(timezone.utc).astimezone(TZ).date())
+    db.delete(ev)
+    db.commit()
+    log_event(db, "reunion_cancelada_whatsapp", user_id=lead.vendedor_id,
+              resource_type="lead", resource_id=lead.id, severity="warning")
+    return {"cancelada": True, "etiqueta": etiqueta}
+
+
 @router.post("/reservar", dependencies=[Depends(_exige_secreto)])
 def reservar(payload: dict, db: Session = Depends(get_db)):
     """Toma un hueco. Rechaza si alguien se le adelantó.
@@ -187,8 +243,36 @@ def reservar(payload: dict, db: Session = Depends(get_db)):
     # después ve el choque, en vez de escribir encima.
     db.query(models.User).filter(models.User.id == lead.vendedor_id).with_for_update().first()
 
-    if _ocupados(db, lead.vendedor_id, inicio, fin):
+    ya = _futura(db, lead)
+
+    # Tocó dos veces el mismo botón. Su propia reunión NO es un choque: decirle
+    # "ese horario lo acaban de tomar" cuando lo tomó él mismo es mentirle.
+    if ya and _utc(ya.start_time) == inicio:
+        local = inicio.astimezone(TZ)
+        return {"evento_id": ya.id, "inicio": inicio.isoformat(), "reagendada": False, "ya_estaba": True,
+                "etiqueta": _etiqueta(local, datetime.now(timezone.utc).astimezone(TZ).date()),
+                "etapa_lead": lead.current_stage}
+
+    # El choque se mide contra las reuniones AJENAS: la propia se va a mover.
+    choques = [o for o in _ocupados(db, lead.vendedor_id, inicio, fin) if not (ya and o.id == ya.id)]
+    if choques:
         raise HTTPException(status_code=409, detail="Ese horario acaba de ocuparse")
+
+    # Si ya tenía hora, se MUEVE en vez de crear otra. Dos reuniones para el
+    # mismo cliente le bloquean al vendedor una hora que nadie va a usar, y el
+    # cliente cree que cambió la suya.
+    if ya:
+        ya.start_time = inicio
+        ya.end_time = fin
+        ya.notes = "Reagendada por el cliente desde WhatsApp (Zelix)."
+        db.commit()
+        db.refresh(ya)
+        log_event(db, "reunion_reagendada_whatsapp", user_id=lead.vendedor_id,
+                  resource_type="calendar_event", resource_id=ya.id)
+        local = inicio.astimezone(TZ)
+        return {"evento_id": ya.id, "inicio": inicio.isoformat(), "reagendada": True, "ya_estaba": False,
+                "etiqueta": _etiqueta(local, datetime.now(timezone.utc).astimezone(TZ).date()),
+                "etapa_lead": lead.current_stage}
 
     contacto = db.query(models.Contact).filter(models.Contact.id == lead.contact_id).first()
     ev = models.CalendarEvent(
@@ -220,6 +304,8 @@ def reservar(payload: dict, db: Session = Depends(get_db)):
     return {
         "evento_id": ev.id,
         "inicio": inicio.isoformat(),
+        "reagendada": False,
+        "ya_estaba": False,
         "etiqueta": _etiqueta(local, datetime.now(timezone.utc).astimezone(TZ).date()),
         "etapa_lead": lead.current_stage,
     }
