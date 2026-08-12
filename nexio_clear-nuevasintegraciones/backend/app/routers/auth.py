@@ -112,6 +112,30 @@ def me(current_user: models.User = Depends(get_current_user), db: Session = Depe
 _PANEL_CLAVE = os.getenv("PANEL_CREDENCIALES_CLAVE", "")
 _PANEL_CUENTAS = os.getenv("PANEL_CREDENCIALES", "")
 
+# Freno de fuerza bruta. El login se bloquea por usuario con `locked_until` en la
+# base; acá no hay usuario que bloquear, así que se cuenta por IP.
+#
+# Vive en MEMORIA del proceso, y eso es una limitación real, no un descuido: se
+# reinicia con cada despliegue y no se comparte entre instancias. Hoy el servicio
+# corre con una sola, así que frena lo que tiene que frenar; el día que haya
+# varias, esto necesita Redis o una tabla. Aun así vale la pena: sin nada, una
+# clave se prueba miles de veces por minuto; con esto, quince por hora.
+_PANEL_MAX_FALLOS = 5
+_PANEL_BLOQUEO_MIN = 15
+_panel_fallos: dict[str, tuple[int, datetime]] = {}
+
+
+def _panel_bloqueado(ip: str) -> int:
+    """Minutos que faltan para poder reintentar. 0 = puede pasar."""
+    fallos, hasta = _panel_fallos.get(ip, (0, datetime.now(timezone.utc)))
+    if fallos < _PANEL_MAX_FALLOS:
+        return 0
+    restante = (hasta - datetime.now(timezone.utc)).total_seconds()
+    if restante <= 0:
+        _panel_fallos.pop(ip, None)
+        return 0
+    return max(1, int(restante // 60) + 1)
+
 
 @router.post("/panel-credenciales")
 def panel_credenciales(payload: dict, request: Request, db: Session = Depends(get_db)):
@@ -121,17 +145,27 @@ def panel_credenciales(payload: dict, request: Request, db: Session = Depends(ge
     if not _PANEL_CLAVE or not _PANEL_CUENTAS:
         raise HTTPException(status_code=404, detail="No disponible")
 
+    ip = request.client.host if request.client else "desconocida"
+    espera = _panel_bloqueado(ip)
+    if espera:
+        raise HTTPException(status_code=429, detail=f"Demasiados intentos. Reintenta en {espera} minutos.")
+
     clave = (payload or {}).get("clave") or ""
     # compare_digest: el tiempo de comparación no depende de cuántos caracteres
     # acertó, así que no se puede adivinar la clave letra por letra midiendo.
     if not secrets.compare_digest(str(clave), _PANEL_CLAVE):
+        fallos = _panel_fallos.get(ip, (0, None))[0] + 1
+        _panel_fallos[ip] = (fallos, datetime.now(timezone.utc) + timedelta(minutes=_PANEL_BLOQUEO_MIN))
         log_event(
             db, "panel_credenciales_clave_incorrecta",
             ip=request.client.host if request.client else None,
             ua=request.headers.get("user-agent"),
-            severity="warning",
+            severity="warning" if fallos < _PANEL_MAX_FALLOS else "critical",
+            details=f"intento {fallos}",
         )
         raise HTTPException(status_code=401, detail="Clave incorrecta")
+
+    _panel_fallos.pop(ip, None)  # acertó: se limpia la cuenta
 
     try:
         cuentas = json.loads(_PANEL_CUENTAS)
