@@ -169,6 +169,12 @@ def test_contact(db, test_group, test_superadmin):
         name="Juan Pérez Test",
         phone="+56912345678",
         email="juan@test.com",
+        # El RUT es obligatorio para avanzar un lead más allá de 'lead' (regla de
+        # completitud en leads.py). Sin él, tres pruebas de movimiento de etapa
+        # fallaban por un dato faltante del fixture y no por un defecto real —
+        # una suite roja de base enseña a ignorar el rojo. Las pruebas que sí
+        # verifican la regla lo anulan explícitamente (ver test_tania_integration).
+        rut_persona="12.345.678-5",
         group_id=test_group.id,
         created_by=test_superadmin.id,
     )
