@@ -164,6 +164,8 @@ def _run_pg_migrations():
         "ALTER TABLE calendar_events ADD COLUMN IF NOT EXISTS ai_summary TEXT",
         # Enlace de Google Meet del evento (generado vía conferenceData)
         "ALTER TABLE calendar_events ADD COLUMN IF NOT EXISTS meet_link VARCHAR(500)",
+        # Recordatorio por WhatsApp del ladrillo 2
+        "ALTER TABLE calendar_events ADD COLUMN IF NOT EXISTS recordatorio_enviado_at TIMESTAMPTZ",
         # Ensure updated_at has a default so new rows are immediately sortable
         "ALTER TABLE leads ALTER COLUMN updated_at SET DEFAULT now()",
         # Back-fill NULL updated_at with created_at for proper ordering

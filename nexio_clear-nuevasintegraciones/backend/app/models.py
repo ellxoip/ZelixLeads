@@ -307,6 +307,9 @@ class CalendarEvent(Base):
     vendor_status = Column(String(30), nullable=True)  # espera_cliente, sin_exito, altamente_interesado
     ai_summary = Column(Text, nullable=True)  # resumen IA de la conversación, cacheado para el evento de Google
     meet_link = Column(String(500), nullable=True)  # enlace de Google Meet generado al pushear el evento
+    # Recordatorio por WhatsApp: sello de envío. Sin esta marca, cada pasada
+    # del despertador volvería a avisar y el cliente recibiría spam.
+    recordatorio_enviado_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     lead = relationship("Lead", back_populates="calendar_events")

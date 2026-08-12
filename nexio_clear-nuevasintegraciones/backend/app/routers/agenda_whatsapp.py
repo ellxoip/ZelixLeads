@@ -309,3 +309,61 @@ def reservar(payload: dict, db: Session = Depends(get_db)):
         "etiqueta": _etiqueta(local, datetime.now(timezone.utc).astimezone(TZ).date()),
         "etapa_lead": lead.current_stage,
     }
+
+
+# ── Recordatorios ───────────────────────────────────────────────────────────
+#
+# El mensaje de confirmación prometía un recordatorio y nada lo enviaba; la
+# promesa se quitó (decisión 78) y esto la cumple de verdad.
+#
+# NO hay scheduler dentro de Zelix (decisión 50): quien despierta esto es el
+# Worker de Cloudflare que ya mantiene vivos los servicios (decisión 74). Es un
+# disparador externo que ya existía y que ya se aceptó, no uno nuevo.
+RECORDATORIO_ANTES_MIN = 120  # se avisa cuando faltan ~2 horas
+
+
+@router.post("/recordatorios", dependencies=[Depends(_exige_secreto)])
+def recordatorios(db: Session = Depends(get_db)):
+    """Reuniones a punto de ocurrir que aún no se avisaron.
+
+    Las marca ANTES de devolverlas, a propósito. Si Zelix falla al enviar, ese
+    recordatorio se pierde; si no se marcaran, una caída de Zelix haría que la
+    siguiente pasada —y la siguiente— volvieran a avisar. **Un recordatorio
+    perdido es invisible; cinco repetidos hacen que el negocio parezca roto.**
+    """
+    ahora = datetime.now(timezone.utc)
+    hasta = ahora + timedelta(minutes=RECORDATORIO_ANTES_MIN)
+
+    candidatos = (
+        db.query(models.CalendarEvent)
+        .filter(
+            models.CalendarEvent.event_type == "reunion",
+            models.CalendarEvent.recordatorio_enviado_at.is_(None),
+            models.CalendarEvent.lead_id.isnot(None),
+        )
+        .order_by(models.CalendarEvent.start_time)
+        .limit(50)
+        .all()
+    )
+
+    salida = []
+    for ev in candidatos:
+        inicio = _utc(ev.start_time)
+        # Ni las pasadas ni las lejanas. Avisar de algo que ya ocurrió es peor
+        # que no avisar: confunde y no se puede actuar.
+        if not (ahora < inicio <= hasta):
+            continue
+        lead = db.query(models.Lead).filter(models.Lead.id == ev.lead_id).first()
+        contacto = db.query(models.Contact).filter(models.Contact.id == lead.contact_id).first() if lead else None
+        if not contacto or not contacto.phone:
+            continue
+        ev.recordatorio_enviado_at = ahora
+        local = inicio.astimezone(TZ)
+        salida.append({
+            "evento_id": ev.id,
+            "telefono": contacto.phone.lstrip("+"),
+            "nombre": contacto.name,
+            "etiqueta": _etiqueta(local, ahora.astimezone(TZ).date()),
+        })
+    db.commit()
+    return {"recordatorios": salida}
