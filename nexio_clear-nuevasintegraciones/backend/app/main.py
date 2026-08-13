@@ -166,6 +166,63 @@ def _run_pg_migrations():
         "ALTER TABLE calendar_events ADD COLUMN IF NOT EXISTS meet_link VARCHAR(500)",
         # Recordatorio por WhatsApp del ladrillo 2
         "ALTER TABLE calendar_events ADD COLUMN IF NOT EXISTS recordatorio_enviado_at TIMESTAMPTZ",
+        # ── Valores por defecto que vivían SOLO en SQLAlchemy ──────────────
+        # `default=` lo aplica el ORM al insertar: cualquier fila creada fuera
+        # de él (script, siembra, migración) quedaba NULL, y el esquema de
+        # salida exige valor. Una sola fila así tumbó /api/leads con un 500 y
+        # el navegador lo reportó como bloqueo de CORS. Se cierra en la BASE,
+        # que es el único sitio donde no se puede esquivar.
+        "UPDATE areas SET kpi_leads = 50 WHERE kpi_leads IS NULL",
+        "ALTER TABLE areas ALTER COLUMN kpi_leads SET DEFAULT 50",
+        "ALTER TABLE areas ALTER COLUMN kpi_leads SET NOT NULL",
+        "UPDATE areas SET is_active = true WHERE is_active IS NULL",
+        "ALTER TABLE areas ALTER COLUMN is_active SET DEFAULT true",
+        "ALTER TABLE areas ALTER COLUMN is_active SET NOT NULL",
+        "UPDATE whatsapp_configs SET api_provider = 'manual' WHERE api_provider IS NULL",
+        "ALTER TABLE whatsapp_configs ALTER COLUMN api_provider SET DEFAULT 'manual'",
+        "ALTER TABLE whatsapp_configs ALTER COLUMN api_provider SET NOT NULL",
+        "UPDATE whatsapp_configs SET is_active = true WHERE is_active IS NULL",
+        "ALTER TABLE whatsapp_configs ALTER COLUMN is_active SET DEFAULT true",
+        "ALTER TABLE whatsapp_configs ALTER COLUMN is_active SET NOT NULL",
+        "UPDATE calendar_events SET event_type = 'reunion' WHERE event_type IS NULL",
+        "ALTER TABLE calendar_events ALTER COLUMN event_type SET DEFAULT 'reunion'",
+        "ALTER TABLE calendar_events ALTER COLUMN event_type SET NOT NULL",
+        "UPDATE calendar_events SET is_completed = false WHERE is_completed IS NULL",
+        "ALTER TABLE calendar_events ALTER COLUMN is_completed SET DEFAULT false",
+        "ALTER TABLE calendar_events ALTER COLUMN is_completed SET NOT NULL",
+        "UPDATE calendar_events SET color = '#3B82F6' WHERE color IS NULL",
+        "ALTER TABLE calendar_events ALTER COLUMN color SET DEFAULT '#3B82F6'",
+        "ALTER TABLE calendar_events ALTER COLUMN color SET NOT NULL",
+        "UPDATE leads SET honorarios = 0 WHERE honorarios IS NULL",
+        "ALTER TABLE leads ALTER COLUMN honorarios SET DEFAULT 0",
+        "ALTER TABLE leads ALTER COLUMN honorarios SET NOT NULL",
+        "UPDATE leads SET cuota_inicial = 0 WHERE cuota_inicial IS NULL",
+        "ALTER TABLE leads ALTER COLUMN cuota_inicial SET DEFAULT 0",
+        "ALTER TABLE leads ALTER COLUMN cuota_inicial SET NOT NULL",
+        "UPDATE leads SET num_cuotas = 1 WHERE num_cuotas IS NULL",
+        "ALTER TABLE leads ALTER COLUMN num_cuotas SET DEFAULT 1",
+        "ALTER TABLE leads ALTER COLUMN num_cuotas SET NOT NULL",
+        "UPDATE leads SET monto_cuota = 0 WHERE monto_cuota IS NULL",
+        "ALTER TABLE leads ALTER COLUMN monto_cuota SET DEFAULT 0",
+        "ALTER TABLE leads ALTER COLUMN monto_cuota SET NOT NULL",
+        "UPDATE whatsapp_messages SET is_read = false WHERE is_read IS NULL",
+        "ALTER TABLE whatsapp_messages ALTER COLUMN is_read SET DEFAULT false",
+        "ALTER TABLE whatsapp_messages ALTER COLUMN is_read SET NOT NULL",
+        "UPDATE notifications SET notification_type = 'general' WHERE notification_type IS NULL",
+        "ALTER TABLE notifications ALTER COLUMN notification_type SET DEFAULT 'general'",
+        "ALTER TABLE notifications ALTER COLUMN notification_type SET NOT NULL",
+        "UPDATE notifications SET is_read = false WHERE is_read IS NULL",
+        "ALTER TABLE notifications ALTER COLUMN is_read SET DEFAULT false",
+        "ALTER TABLE notifications ALTER COLUMN is_read SET NOT NULL",
+        # Áreas: el valor por defecto vivía solo en SQLAlchemy, así que toda fila
+        # insertada fuera del ORM quedaba en NULL y reventaba la serialización
+        # de CUALQUIER lead de esa área. Se corrige el dato y se cierra la puerta.
+        "UPDATE areas SET kpi_leads = 50 WHERE kpi_leads IS NULL",
+        "UPDATE areas SET is_active = true WHERE is_active IS NULL",
+        "ALTER TABLE areas ALTER COLUMN kpi_leads SET DEFAULT 50",
+        "ALTER TABLE areas ALTER COLUMN kpi_leads SET NOT NULL",
+        "ALTER TABLE areas ALTER COLUMN is_active SET DEFAULT true",
+        "ALTER TABLE areas ALTER COLUMN is_active SET NOT NULL",
         # Ensure updated_at has a default so new rows are immediately sortable
         "ALTER TABLE leads ALTER COLUMN updated_at SET DEFAULT now()",
         # Back-fill NULL updated_at with created_at for proper ordering

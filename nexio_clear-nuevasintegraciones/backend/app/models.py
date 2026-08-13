@@ -46,7 +46,7 @@ class User(Base):
     # superadmin, subadmin, vendedor, agendadora, dante
     role = Column(String(30), nullable=False)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=True)
-    is_active = Column(Boolean, default=True)
+    is_active = Column(Boolean, default=True, server_default="true", nullable=False)
     whatsapp_number = Column(String(30), nullable=True)
     avatar_url = Column(String(200), nullable=True)
     at_informa_user_id = Column(String(100), nullable=True)  # UUID del usuario en AT Informa
@@ -117,8 +117,8 @@ class Area(Base):
     name = Column(String(100), nullable=False)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
     whatsapp_config_id = Column(Integer, ForeignKey("whatsapp_configs.id"), nullable=True)
-    kpi_leads = Column(Integer, default=50)
-    is_active = Column(Boolean, default=True)
+    kpi_leads = Column(Integer, default=50, server_default="50", nullable=False)
+    is_active = Column(Boolean, default=True, server_default="true", nullable=False)
 
     group = relationship("Group", back_populates="areas")
     whatsapp_config = relationship("WhatsAppConfig", foreign_keys=[whatsapp_config_id], back_populates="areas")
@@ -133,11 +133,11 @@ class WhatsAppConfig(Base):
     name = Column(String(100), nullable=False)
     phone_number = Column(String(30), nullable=False)
     api_token = Column(String(500), nullable=True)
-    api_provider = Column(String(30), default="manual")  # meta, twilio, manual, qr
+    api_provider = Column(String(30), default="manual", server_default="manual", nullable=False)  # meta, twilio, manual, qr
     phone_number_id = Column(String(100), nullable=True)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=True)
     owner_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # agendadora who owns this QR session
-    is_active = Column(Boolean, default=True)
+    is_active = Column(Boolean, default=True, server_default="true", nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     group = relationship("Group", back_populates="whatsapp_configs")
@@ -199,10 +199,10 @@ class Lead(Base):
     # Recovery: recuperacion_lead, recuperacion_reunion, recuperacion_cierre
     current_stage = Column(String(50), default="lead", nullable=False)
     service_description = Column(Text, nullable=True)
-    honorarios = Column(Float, default=0)
-    cuota_inicial = Column(Float, default=0)
-    num_cuotas = Column(Integer, default=1)
-    monto_cuota = Column(Float, default=0)
+    honorarios = Column(Float, default=0, server_default="0", nullable=False)
+    cuota_inicial = Column(Float, default=0, server_default="0", nullable=False)
+    num_cuotas = Column(Integer, default=1, server_default="1", nullable=False)
+    monto_cuota = Column(Float, default=0, server_default="0", nullable=False)
     notes = Column(Text, nullable=True)
     priority = Column(String(20), default="normal")  # low, normal, high
     source = Column(String(50), nullable=True)  # whatsapp, referido, etc.
@@ -299,10 +299,10 @@ class CalendarEvent(Base):
     assigned_to = Column(Integer, ForeignKey("users.id"), nullable=True)
     start_time = Column(DateTime(timezone=True), nullable=False)
     end_time = Column(DateTime(timezone=True), nullable=False)
-    event_type = Column(String(30), default="reunion")  # reunion, llamada, seguimiento, tarea
+    event_type = Column(String(30), default="reunion", server_default="reunion", nullable=False)  # reunion, llamada, seguimiento, tarea
     notes = Column(Text, nullable=True)
-    is_completed = Column(Boolean, default=False)
-    color = Column(String(20), default="#3B82F6")
+    is_completed = Column(Boolean, default=False, server_default="false", nullable=False)
+    color = Column(String(20), default="#3B82F6", server_default="#3B82F6", nullable=False)
     google_event_id = Column(String(200), nullable=True)
     vendor_status = Column(String(30), nullable=True)  # espera_cliente, sin_exito, altamente_interesado
     ai_summary = Column(Text, nullable=True)  # resumen IA de la conversación, cacheado para el evento de Google
@@ -325,8 +325,8 @@ class Notification(Base):
     message = Column(Text, nullable=False)
     lead_id = Column(Integer, ForeignKey("leads.id", ondelete="CASCADE"), nullable=True)
     event_id = Column(Integer, ForeignKey("calendar_events.id", ondelete="CASCADE"), nullable=True)
-    notification_type = Column(String(30), default="general")
-    is_read = Column(Boolean, default=False)
+    notification_type = Column(String(30), default="general", server_default="general", nullable=False)
+    is_read = Column(Boolean, default=False, server_default="false", nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="notifications")
@@ -351,7 +351,7 @@ class WhatsAppMessage(Base):
     status = Column(String(20), default="sent")  # sent, delivered, read, failed
     sent_by = Column(Integer, ForeignKey("users.id"), nullable=True)
     message_id = Column(String(100), nullable=True, unique=True)  # wamid for dedup
-    is_read = Column(Boolean, default=False)
+    is_read = Column(Boolean, default=False, server_default="false", nullable=False)
     media_url = Column(String(1000), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -382,16 +382,16 @@ class PagaCuotasCliente(Base):
     razon_social = Column(String(200), nullable=True)
     email = Column(String(100), nullable=True)
     phone = Column(String(30), nullable=True)
-    honorarios = Column(Float, default=0)
-    cuota_inicial = Column(Float, default=0)
-    num_cuotas = Column(Integer, default=1)
-    monto_cuota = Column(Float, default=0)
+    honorarios = Column(Float, default=0, server_default="0", nullable=False)
+    cuota_inicial = Column(Float, default=0, server_default="0", nullable=False)
+    num_cuotas = Column(Integer, default=1, server_default="1", nullable=False)
+    monto_cuota = Column(Float, default=0, server_default="0", nullable=False)
     tipo_servicio = Column(String(200), nullable=True)
     area_name = Column(String(100), nullable=True)
     vendedor_name = Column(String(100), nullable=True)
     access_token = Column(String(64), unique=True, nullable=False, index=True)
-    cuotas_pagadas = Column(Integer, default=0)
-    is_active = Column(Boolean, default=True)
+    cuotas_pagadas = Column(Integer, default=0, server_default="0", nullable=False)
+    is_active = Column(Boolean, default=True, server_default="true", nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
@@ -420,7 +420,7 @@ class AIAgent(Base):
     description             = Column(Text, nullable=True)
     whatsapp_config_id      = Column(Integer, ForeignKey("whatsapp_configs.id"), nullable=True)
     group_id                = Column(Integer, ForeignKey("groups.id"), nullable=True)
-    is_active               = Column(Boolean, default=True)
+    is_active = Column(Boolean, default=True, server_default="true", nullable=False)
     # OpenAI settings
     openai_api_key          = Column(String(200), nullable=False)
     openai_model            = Column(String(50), default="gpt-4o-mini")
@@ -529,9 +529,9 @@ class CobradorLead(Base):
     email       = Column(String(100), nullable=True)
     monto_deuda   = Column(Float, default=0)
     monto_pagado  = Column(Float, default=0)
-    num_cuotas    = Column(Integer, default=1)
-    cuota_inicial = Column(Float, default=0)
-    monto_cuota   = Column(Float, default=0)
+    num_cuotas = Column(Integer, default=1, server_default="1", nullable=False)
+    cuota_inicial = Column(Float, default=0, server_default="0", nullable=False)
+    monto_cuota = Column(Float, default=0, server_default="0", nullable=False)
     descripcion   = Column(Text, nullable=True)
     stage         = Column(String(50), default="lead_moroso", nullable=False)
     notes         = Column(Text, nullable=True)
