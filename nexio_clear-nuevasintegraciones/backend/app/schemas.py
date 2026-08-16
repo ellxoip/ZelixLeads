@@ -412,6 +412,10 @@ class WhatsAppMessageOut(BaseModel):
     is_read: bool = False
     media_url: Optional[str] = None
     created_at: Optional[datetime] = None
+    # Ladrillo 3 — por qué NO salió, cuando no salió. No es una columna: es el
+    # motivo del intento, para que la interfaz diga "pasaron 24 h" en vez del
+    # genérico "WhatsApp no conectado", que muchas veces era falso.
+    error: Optional[str] = None
     class Config:
         from_attributes = True
 

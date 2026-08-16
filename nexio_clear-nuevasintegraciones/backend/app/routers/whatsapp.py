@@ -24,8 +24,73 @@ router = APIRouter(prefix="/api/whatsapp", tags=["whatsapp"])
 QR_SERVICE_URL = os.getenv("QR_SERVICE_URL", "http://localhost:3005")
 
 
+# ── LADRILLO 3: la boca única ───────────────────────────────────────────────
+# Zelix es el dueño del número +56994124779 y el único que tiene su token. Este
+# CRM le pide que hable en vez de hablarle a Meta por su cuenta.
+#
+# El agujero que esto cierra, con evidencia: en `whatsapp_messages` había UN
+# solo mensaje saliente en toda la historia de la base —id 12, "Hola",
+# 2026-08-12— con `status = 'logged'`, o sea guardado y jamás enviado. La config
+# del número no tiene `api_token` (decisión 72: una credencial que le escribe a
+# los clientes no vive en la base), así que TODO lo que se contestara desde el
+# inbox se quedaba acá adentro.
+#
+# Poner el token en la base habría resuelto el síntoma y creado uno peor: dos
+# bocas independientes en el mismo número, el bot y el CRM contestándole a la
+# misma persona sin saber lo que dijo el otro. Enviando por Zelix hay una sola
+# boca, y además Zelix CALLA a su bot cuando acá contesta un humano.
+ZELIX_API_URL = os.getenv("ZELIX_API_URL", "").rstrip("/")
+ZELIX_CRM_SECRET = os.getenv("ZELIX_CRM_SECRET", "")
+
+
+async def _enviar_por_zelix(config: models.WhatsAppConfig, phone: str, message: str) -> Optional[dict]:
+    """
+    Pide a Zelix que envíe por el número de esta config.
+
+    Devuelve None cuando Zelix NO se hace cargo de este número (no configurado,
+    o responde 404): quien llama sigue con el camino directo. Un fallo real de
+    envío NO devuelve None — devuelve `failed` con el motivo, porque "no salió"
+    y "no es mi número" son cosas distintas y confundirlas esconde el problema.
+    """
+    if not ZELIX_API_URL or not ZELIX_CRM_SECRET or not config.phone_number_id:
+        return None
+    try:
+        # Generoso a propósito: Zelix habla con Meta y ambos servicios corren en
+        # planes que duermen. Un timeout corto convertiría un arranque en frío
+        # en un "no se pudo enviar" mentiroso.
+        async with httpx.AsyncClient(timeout=45) as client:
+            resp = await client.post(
+                f"{ZELIX_API_URL}/api/crm/enviar",
+                json={
+                    "phone_number_id": config.phone_number_id,
+                    "telefono": phone,
+                    "texto": message,
+                },
+                headers={"x-crm-callback-secret": ZELIX_CRM_SECRET},
+            )
+    except Exception as exc:  # noqa: BLE001 — red caída: se informa, no se traga
+        print(f"[WA] Zelix no respondió al enviar (config {config.id}): {exc}")
+        return {"status": "failed", "message_id": None, "error": "No se pudo contactar a Zelix para enviar el mensaje."}
+
+    if resp.status_code == 404:
+        return None  # ese número no lo maneja Zelix
+    if resp.status_code == 200:
+        datos = resp.json()
+        return {"status": "sent", "message_id": datos.get("message_id")}
+    try:
+        motivo = resp.json().get("error") or f"Zelix respondió {resp.status_code}"
+    except Exception:  # noqa: BLE001 — cuerpo no-JSON
+        motivo = f"Zelix respondió {resp.status_code}"
+    return {"status": "failed", "message_id": None, "error": motivo}
+
+
 async def send_whatsapp_api(config: models.WhatsAppConfig, phone: str, message: str) -> dict:
-    """Send via Meta WhatsApp Cloud API, QR session, or log only."""
+    """Send via Zelix (boca única), Meta WhatsApp Cloud API direct, or log only."""
+    # Zelix PRIMERO: si el número es suyo, es el único que debe hablar por él.
+    por_zelix = await _enviar_por_zelix(config, phone, message)
+    if por_zelix is not None:
+        return por_zelix
+
     if config.api_provider == "meta" and config.api_token and config.phone_number_id:
         phone_clean = phone.replace("+", "").replace(" ", "").replace("-", "")
         url = f"https://graph.facebook.com/v18.0/{config.phone_number_id}/messages"
@@ -431,7 +496,14 @@ async def send_message(
         },
     })
 
-    return msg
+    # El MOTIVO viaja en la respuesta y no en la fila: no hay columna donde
+    # guardarlo, y "no salió" sin decir por qué es lo que tenía a la agendadora
+    # creyendo que WhatsApp estaba desconectado cuando el problema podía ser la
+    # ventana de 24 h. No se persiste; se muestra en el momento, que es cuando
+    # sirve para decidir qué hacer.
+    salida = schemas.WhatsAppMessageOut.model_validate(msg)
+    salida.error = result.get("error")
+    return salida
 
 
 @router.get("/configs")
@@ -612,14 +684,21 @@ async def retry_message(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    """Re-send a 'logged' (unsent) outgoing message via the QR service."""
+    """
+    Reintenta un saliente que no salió.
+
+    Acepta `logged` (guardado sin enviar) y también `failed`: desde el ladrillo 3
+    un rechazo de WhatsApp se marca `failed` con su motivo, y si el reintento no
+    lo aceptara, el mensaje quedaría sin ninguna salida — que es exactamente el
+    limbo que este endpoint existe para evitar.
+    """
     msg = db.query(models.WhatsAppMessage).filter(
         models.WhatsAppMessage.id == message_id,
         models.WhatsAppMessage.direction == "out",
-        models.WhatsAppMessage.status == "logged",
+        models.WhatsAppMessage.status.in_(("logged", "failed")),
     ).first()
     if not msg:
-        raise HTTPException(status_code=404, detail="Mensaje no encontrado o no está en estado 'logged'")
+        raise HTTPException(status_code=404, detail="Mensaje no encontrado o ya fue enviado")
 
     contact = db.query(models.Contact).filter(models.Contact.id == msg.contact_id).first()
     config = db.query(models.WhatsAppConfig).filter(models.WhatsAppConfig.id == msg.whatsapp_config_id).first()
@@ -633,7 +712,9 @@ async def retry_message(
         db.commit()
         db.refresh(msg)
 
-    return msg
+    salida = schemas.WhatsAppMessageOut.model_validate(msg)
+    salida.error = result.get("error")
+    return salida
 
 
 @router.delete("/messages/{message_id}")
