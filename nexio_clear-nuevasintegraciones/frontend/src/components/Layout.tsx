@@ -99,7 +99,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, logout }    = useAuthStore()
   const location            = useLocation()
   const navigate            = useNavigate()
-  const [open, setOpen]           = useState(true)
   const [mobile, setMobile]       = useState(false)
   const [unread, setUnread]       = useState(0)
   const [agentCount, setAgentCount] = useState(0)
@@ -108,6 +107,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [showSearch, setShowSearch] = useState(false)
   const [showNotifPanel, setShowNotifPanel] = useState(false)
   const [collapsedSecs, setCollapsedSecs] = useState<string[]>([])
+  /** Menú horizontal: qué sección tiene el submenú abierto (una sola a la vez). */
+  const [openSec, setOpenSec] = useState<string | null>(null)
+  const navRef = useRef<HTMLElement | null>(null)
 
   // Modo observador (solo lectura) para superadmin/subadmin.
   const { readOnly, isSupervisor, editUnlocked, unlock, lock } = useReadOnly()
@@ -150,14 +152,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // Sound state — skip first load to avoid playing on page open
   const prevUnread     = useRef<number | null>(null)
   const prevLeadCount  = useRef<number | null>(null)
-
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 768px)')
-    const handler = (e: MediaQueryListEvent) => { if (e.matches) setOpen(false) }
-    if (mq.matches) setOpen(false)
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [])
 
   useEffect(() => {
     const isAgendadora = user?.role === 'agendadora' || user?.role === 'superadmin' || user?.role === 'subadmin'
@@ -217,6 +211,28 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
+  /**
+   * El submenú abierto se cierra al hacer clic fuera o con Escape. Sin esto
+   * queda flotando sobre el contenido y hay que volver a la sección para
+   * cerrarlo — la molestia clásica de los menús desplegables mal terminados.
+   */
+  useEffect(() => {
+    if (!openSec) return
+    const fuera = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) setOpenSec(null)
+    }
+    const escape = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpenSec(null) }
+    document.addEventListener('mousedown', fuera)
+    document.addEventListener('keydown', escape)
+    return () => {
+      document.removeEventListener('mousedown', fuera)
+      document.removeEventListener('keydown', escape)
+    }
+  }, [openSec])
+
+  // Navegar cierra el submenú (incluye ir por el buscador global o el historial).
+  useEffect(() => { setOpenSec(null) }, [location.pathname, location.search])
+
   const handleLogout = () => { logout(); navigate('/login') }
 
   const handleReRegisterPush = async () => {
@@ -270,7 +286,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return true
   }
 
-  const SidebarContent = ({ expanded = open }: { expanded?: boolean }) => (
+  /** Contenido del menú en versión VERTICAL — hoy solo lo usa el drawer móvil. */
+  const SidebarContent = ({ expanded = true }: { expanded?: boolean }) => (
     <div className="flex flex-col h-full">
 
       {/* ── Marca ── */}
@@ -445,23 +462,175 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   )
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--bg)' }}>
+    <div className="flex flex-col h-screen overflow-hidden" style={{ background: 'var(--bg)' }}>
 
-      {/* Sidebar escritorio */}
-      <aside
-        className={`hidden md:flex flex-col flex-shrink-0 transition-all duration-300 relative overflow-hidden ${open ? 'w-[268px]' : 'w-[72px]'}`}
+      {/* ── Menú HORIZONTAL (escritorio) ────────────────────────────────────
+          Reemplaza a la barra lateral: las secciones viven en una fila arriba y
+          cada una abre su submenú hacia abajo. El ancho que ocupaba la lateral
+          (268 px) queda para el contenido, que es lo que se mira todo el día.
+
+          El submenú esconde cosas, y hay dos que NO pueden esconderse: los
+          leads nuevos y la cola del agente IA. Por eso la sección lleva un
+          punto cuando alguno de sus ítems trae contador — si no, un "12 leads
+          sin atender" se volvería invisible detrás de un desplegable. */}
+      <nav className="hidden md:flex items-center gap-1 px-4 flex-shrink-0 relative z-50"
         style={{
-          background: 'linear-gradient(180deg, #1a1038 0%, #130d26 55%, #0e0a1d 100%)',
-          borderRight: '1px solid rgba(53,122,14,0.14)',
+          background: 'linear-gradient(90deg, #1a1038 0%, #130d26 55%, #0e0a1d 100%)',
+          borderBottom: '1px solid rgba(53,122,14,0.18)',
+          height: '56px',
         }}
+        ref={navRef}
       >
-        {/* Halo decorativo superior */}
-        <div className="absolute -top-24 -left-16 w-64 h-64 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(53,122,14,0.22) 0%, transparent 70%)' }} />
-        <div className="relative z-10 flex flex-col h-full">
-          <SidebarContent />
+        {/* Marca */}
+        <Link to="/" className="flex items-center gap-2.5 pr-4 mr-1 flex-shrink-0">
+          <NexioLogo size={28} />
+          <span className="font-black text-[15px] leading-none"
+            style={{
+              fontFamily: '"Space Grotesk", sans-serif', letterSpacing: '-0.03em',
+              background: 'linear-gradient(90deg, #a78bfa 0%, var(--zx-lime) 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            }}>
+            ZelixLeads
+          </span>
+        </Link>
+
+        {/* Secciones */}
+        {NAV_SECTIONS.map(section => {
+          const visible = section.items
+            .filter(n => user && n.roles.includes(user.role))
+            .filter(filterByPlan)
+          if (!visible.length) return null
+
+          const badgeDe = (path: string) => (path === '/agente-ia' ? agentCount : path === '/leads' ? leadsCount : 0)
+          const badgeSeccion = visible.reduce((t: number, n: any) => t + badgeDe(n.path), 0)
+          const activa = visible.some((n: any) =>
+            location.pathname === n.path || (n.path !== '/' && location.pathname.startsWith(n.path)))
+          const abierta = openSec === section.label
+
+          // Una sección con un solo destino no necesita desplegable: sería un
+          // clic de más para llegar siempre al mismo lugar.
+          const unica = visible.length === 1 ? (visible[0] as any) : null
+          const to = (n: any) => (n.tab ? `${n.path}?tab=${n.tab}` : n.path)
+
+          const estilo = {
+            height: '38px',
+            padding: '0 14px',
+            borderRadius: '10px',
+            fontSize: '12.5px',
+            fontWeight: 700,
+            color: activa || abierta ? '#ffffff' : 'rgba(255,255,255,0.62)',
+            background: abierta
+              ? 'rgba(255,255,255,0.10)'
+              : activa
+                ? 'linear-gradient(90deg, var(--zx-accent-text) 0%, var(--zx-lime) 160%)'
+                : 'transparent',
+            boxShadow: activa && !abierta ? '0 4px 14px rgba(53,122,14,0.35)' : 'none',
+            transition: 'all 0.15s',
+          } as React.CSSProperties
+
+          return (
+            <div key={section.label} className="relative flex-shrink-0">
+              {unica ? (
+                <Link to={to(unica)} onClick={() => setOpenSec(null)}
+                  className="flex items-center gap-2" style={estilo}>
+                  <unica.icon size={15} />
+                  <span>{unica.label}</span>
+                  {badgeDe(unica.path) > 0 && (
+                    <span className="min-w-[18px] h-[18px] rounded-md flex items-center justify-center text-[9px] font-black px-1"
+                      style={{ background: 'rgba(255,255,255,0.22)', color: '#ffffff' }}>
+                      {badgeDe(unica.path) > 99 ? '99+' : badgeDe(unica.path)}
+                    </span>
+                  )}
+                </Link>
+              ) : (
+                <button onClick={() => setOpenSec(abierta ? null : section.label)}
+                  className="flex items-center gap-2" style={estilo}>
+                  <span>{section.label}</span>
+                  {badgeSeccion > 0 && !abierta && (
+                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#e11d48' }} />
+                  )}
+                  <ChevronDown size={12} style={{ transform: abierta ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }} />
+                </button>
+              )}
+
+              {/* Submenú: cae bajo su sección, como una pestaña abierta */}
+              {abierta && !unica && (
+                <div className="absolute left-0 top-full mt-1 py-1.5 rounded-xl overflow-hidden"
+                  style={{
+                    minWidth: '218px',
+                    background: 'linear-gradient(180deg, #1a1038 0%, #130d26 100%)',
+                    border: '1px solid rgba(53,122,14,0.22)',
+                    boxShadow: '0 14px 38px rgba(10,6,20,0.55)',
+                  }}>
+                  {visible.map((n: any) => {
+                    const { path, icon: Icon, label, sublabel, tab: navTab } = n
+                    const searchTab = new URLSearchParams(location.search).get('tab')
+                    const DEFAULT_TABS: Record<string, string> = { '/tecnico': 'negocios', '/admin': 'users' }
+                    const active = navTab
+                      ? location.pathname === path && (searchTab === navTab || (!location.search && DEFAULT_TABS[path] === navTab))
+                      : location.pathname === path
+                    const badge = badgeDe(path)
+                    return (
+                      <Link key={navTab ? `${path}-${navTab}` : path} to={to(n)}
+                        onClick={() => setOpenSec(null)}
+                        className="flex items-center gap-2.5 px-3 py-2 mx-1.5 rounded-lg transition-colors"
+                        style={{
+                          color: active ? '#ffffff' : 'rgba(255,255,255,0.62)',
+                          background: active ? 'linear-gradient(90deg, var(--zx-accent-text) 0%, var(--zx-lime) 160%)' : 'transparent',
+                        }}
+                        onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.07)' }}
+                        onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.background = 'transparent' }}>
+                        <Icon size={15} className="flex-shrink-0" />
+                        <span className="flex-1 min-w-0">
+                          <span className="block text-[12.5px] font-semibold leading-tight truncate">{label}</span>
+                          {sublabel && (
+                            <span className="block text-[9.5px] leading-tight truncate" style={{ color: 'rgba(255,255,255,0.38)' }}>
+                              {sublabel}
+                            </span>
+                          )}
+                        </span>
+                        {badge > 0 && (
+                          <span className="flex-shrink-0 min-w-[18px] h-[18px] rounded-md flex items-center justify-center text-[9px] font-black px-1"
+                            style={{
+                              background: active ? 'rgba(255,255,255,0.22)' : path === '/agente-ia' ? 'rgba(6,182,212,0.20)' : 'rgba(225,29,72,0.22)',
+                              color: active ? '#ffffff' : path === '/agente-ia' ? '#67e8f9' : '#fda4af',
+                            }}>
+                            {badge > 99 ? '99+' : badge}
+                          </span>
+                        )}
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )
+        })}
+
+        {/* Buscador + acciones de cuenta (vivían en el pie de la lateral) */}
+        <div className="ml-auto flex items-center gap-2 flex-shrink-0">
+          {/* Se muestra solo cuando el navegador ofrece instalar; vivía en el pie
+              de la lateral y sin esto habría desaparecido del escritorio. */}
+          <InstallPWA variant="button" />
+          <button onClick={() => setShowSearch(true)}
+            className="flex items-center gap-2 px-3 rounded-xl text-[11.5px] font-medium transition-all"
+            style={{ height: '34px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.45)' }}>
+            <Search size={13} />
+            <span>Buscar…</span>
+            <kbd className="text-[9px] px-1.5 py-0.5 rounded-md"
+              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.10)' }}>⌘K</kbd>
+          </button>
+          <button onClick={handleReRegisterPush} disabled={pushRegistering}
+            title="Activar notificaciones push en este dispositivo"
+            className="p-2 rounded-xl transition-all" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <Bell size={15} className={pushRegistering ? 'animate-pulse' : ''} />
+          </button>
+          <button onClick={handleLogout} title="Cerrar sesión"
+            className="p-2 rounded-xl transition-all" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <LogOut size={15} />
+          </button>
         </div>
-      </aside>
+      </nav>
 
       {/* Drawer móvil */}
       {mobile && (
@@ -500,15 +669,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               boxShadow: '0 4px 14px rgba(53,122,14,0.35)', color: '#fff',
             }}>
             <Menu size={19} />
-          </button>
-
-          {/* Colapsar sidebar (escritorio) */}
-          <button onClick={() => setOpen(!open)}
-            className="hidden md:flex items-center justify-center rounded-xl transition-colors flex-shrink-0"
-            style={{ width: '34px', height: '34px', border: '1px solid rgba(28,22,51,0.12)', background: '#ffffff', color: 'rgba(28,22,51,0.50)' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(53,122,14,0.45)'; (e.currentTarget as HTMLElement).style.color = 'var(--zx-accent-text)' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(28,22,51,0.12)'; (e.currentTarget as HTMLElement).style.color = 'rgba(28,22,51,0.50)' }}>
-            <Menu size={15} />
           </button>
 
           {/* Título de página */}

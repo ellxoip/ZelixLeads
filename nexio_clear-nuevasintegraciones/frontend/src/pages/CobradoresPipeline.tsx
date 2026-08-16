@@ -381,7 +381,7 @@ export default function CobradoresPipeline() {
       </div>
 
       {/* Kanban — full width equal columns */}
-      <KanbanBoard layout="fill">
+      <KanbanBoard layout="vertical">
         {STAGES.map(stage => (
           <CobradorColumn key={stage.key} stage={stage}
             leads={leads.filter(l => l.stage === stage.key)}

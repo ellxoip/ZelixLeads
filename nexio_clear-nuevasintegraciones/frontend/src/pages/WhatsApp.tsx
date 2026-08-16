@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { getAllWhatsAppConfigs, getWhatsAppMessages, sendWhatsAppMessage, sendWhatsAppMedia, getConversations, markMessagesRead, updateContact, deleteWhatsAppMessage, editWhatsAppMessage, syncWhatsAppChats, syncFullHistory, sendTypingPresence, retryWhatsAppMessage } from '../api'
+import { getAllWhatsAppConfigs, getWhatsAppMessages, sendWhatsAppMessage, sendWhatsAppMedia, getConversations, markMessagesRead, updateContact, deleteWhatsAppMessage, editWhatsAppMessage, syncWhatsAppChats, syncFullHistory, sendTypingPresence, retryWhatsAppMessage, avisoEnvioWhatsApp } from '../api'
 import { apiUrl } from '../api/client'
 import { playMessageSound } from '../hooks/useNotificationSound'
 import { useAuthStore } from '../store/auth'
@@ -131,8 +131,9 @@ interface MsgMenuProps {
 }
 function MsgMenu({ x, y, msg, onClose, onDelete, onEdit, onRetry }: MsgMenuProps) {
   const isOut = msg.direction === 'out'
-  const canEdit = isOut && msg.message_type === 'text' && msg.status !== 'logged'
-  const canRetry = isOut && msg.status === 'logged' && msg.message_type === 'text'
+  const noSalio = msg.status === 'logged' || msg.status === 'failed'
+  const canEdit = isOut && msg.message_type === 'text' && !noSalio
+  const canRetry = isOut && noSalio && msg.message_type === 'text'
   return (
     <>
       <div className="fixed inset-0 z-40" onClick={onClose} />
@@ -590,7 +591,7 @@ export default function WhatsApp() {
         fd.append('caption', msgText.trim())
         if (selectedConv.lead_id) fd.append('lead_id', selectedConv.lead_id.toString())
         const mediaResult = await sendWhatsAppMedia(fd)
-        if (mediaResult?.status === 'logged') toast.error('WhatsApp no conectado — archivo guardado sin enviar')
+        { const aviso = avisoEnvioWhatsApp(mediaResult); if (aviso) toast.error(aviso) }
         clearMedia()
         setMsgText('')
       } else {
@@ -600,7 +601,7 @@ export default function WhatsApp() {
           message: optimisticText,
           lead_id: selectedConv.lead_id ?? undefined,
         })
-        if (result?.status === 'logged') toast.error('WhatsApp no conectado — mensaje guardado sin enviar')
+        { const aviso = avisoEnvioWhatsApp(result); if (aviso) toast.error(aviso) }
         // Replace optimistic with real message from API
         if (result?.id) {
           setMessages(prev => prev.map(m => m.id === optimisticId ? { ...result, direction: 'out' } : m))
@@ -640,10 +641,13 @@ export default function WhatsApp() {
     try {
       const updated = await retryWhatsAppMessage(msg.id)
       setMessages(prev => prev.map(m => m.id === msg.id ? updated : m))
-      if (updated.status === 'logged') {
-        // Still couldn't send — revert optimistic
-        setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, status: 'logged' } : m))
-        toast.error('WhatsApp no conectado — reintenta más tarde')
+      const aviso = avisoEnvioWhatsApp(updated)
+      if (aviso) {
+        // Sigue sin salir — se revierte el optimismo con el estado REAL que
+        // devolvió el backend ('logged' si no se pudo intentar, 'failed' si
+        // WhatsApp lo rechazó), no con uno fijo que taparía el motivo.
+        setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, status: updated.status } : m))
+        toast.error(aviso)
       }
     } catch {
       setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, status: 'logged' } : m))
@@ -944,7 +948,7 @@ export default function WhatsApp() {
                                 }}>
                                 <MsgContent m={m} />
                                 <div className="flex items-center justify-end gap-1 mt-1" style={{minHeight:16}}>
-                                  {isOut && m.status === 'logged' && m.id > 0 && (
+                                  {isOut && (m.status === 'logged' || m.status === 'failed') && m.id > 0 && (
                                     <button
                                       onClick={() => handleRetryMsg(m)}
                                       title="No enviado — haz clic para reintentar"

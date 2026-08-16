@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import {
-  getWhatsAppMessages, sendWhatsAppMessage, sendWhatsAppMedia, markMessagesRead,
+  getWhatsAppMessages, sendWhatsAppMessage, sendWhatsAppMedia, markMessagesRead, avisoEnvioWhatsApp,
   deleteWhatsAppMessage, editWhatsAppMessage,
   getContactAgentState, setContactAgentState, updateContact, updateLead,
 } from '../../api'
@@ -651,12 +651,12 @@ function ChatTab({ lead, configs, onLeadUpdate, onClearUnread }: { lead: Lead; c
         fd.append('caption', msgText.trim())
         fd.append('lead_id', lead.id.toString())
         const mediaResult = await sendWhatsAppMedia(fd)
-        if (mediaResult?.status === 'logged') toast.error('WhatsApp no conectado — archivo guardado sin enviar')
+        { const aviso = avisoEnvioWhatsApp(mediaResult); if (aviso) toast.error(aviso) }
         clearMedia()
         setMsgText('')
       } else {
         const result = await sendWhatsAppMessage({ contact_id: lead.contact_id, whatsapp_config_id: parseInt(configId), message: msgText, lead_id: lead.id })
-        if (result?.status === 'logged') toast.error('WhatsApp no conectado — mensaje guardado sin enviar')
+        { const aviso = avisoEnvioWhatsApp(result); if (aviso) toast.error(aviso) }
         setMsgText('')
       }
       loadMessages()

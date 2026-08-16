@@ -1623,7 +1623,7 @@ export default function Pipeline() {
         </div>
       ) : (
         /* ── Full kanban ── */
-        <KanbanBoard layout="scroll">
+        <KanbanBoard layout="vertical">
           {highlightSinOT && (
             <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold shadow-lg"
               style={{ background: '#e11d48', color: '#fff' }}>

@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react'
-import { Lock } from 'lucide-react'
+import { useContext, useState, type ReactNode } from 'react'
+import { Lock, ChevronDown } from 'lucide-react'
+import { KanbanLayoutCtx } from './KanbanBoard'
 
 // Encabezado + cuerpo de columna Kanban, presentacional y compartido por todos
 // los tableros (Pipeline, Cobranza, etc.). Las TARJETAS son children — cada
@@ -38,6 +39,63 @@ export default function KanbanColumn({
   const headerBg = `rgba(${r},${g},${b},0.07)`
   const headerBorder = `rgba(${r},${g},${b},0.30)`
   const countBg = `rgba(${r},${g},${b},0.18)`
+
+  const vertical = useContext(KanbanLayoutCtx) === 'vertical'
+  // Apiladas, una etapa larga empuja a las de abajo fuera de la vista. Poder
+  // plegarla es lo que mantiene el embudo completo a un vistazo — que es la
+  // razón de mirar un pipeline. Se pliega sola cuando está vacía.
+  const [plegada, setPlegada] = useState(false)
+
+  if (vertical) {
+    return (
+      <div className="w-full flex-shrink-0">
+        {/* ── Encabezado de etapa: franja a lo ancho, y es el que pliega ── */}
+        <button
+          onClick={() => setPlegada(p => !p)}
+          className="w-full rounded-xl px-3 py-2.5 flex items-center justify-between text-left"
+          style={{
+            background: `linear-gradient(135deg, ${headerBg} 0%, #ffffff 70%)`,
+            border: `1px solid ${headerBorder}`,
+            borderLeft: `4px solid ${color}`,
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06), inset 0 0 0 1px rgba(255,255,255,0.5)',
+          }}>
+          <div className="flex items-center gap-2 min-w-0">
+            <ChevronDown size={13} style={{ color, transform: plegada ? 'rotate(-90deg)' : 'none', transition: 'transform 0.18s' }} />
+            <span className="flex-shrink-0 w-2 h-2 rounded-full"
+              style={{ background: color, boxShadow: `0 0 6px ${color}` }} />
+            <div className="min-w-0">
+              <p className="font-bold text-[11.5px] leading-tight truncate uppercase"
+                style={{ color: '#1c1633', fontFamily: '"Space Grotesk", sans-serif', letterSpacing: '0.02em' }}>
+                {title}
+                {locked && <Lock size={10} className="inline ml-1 opacity-40" />}
+              </p>
+              {subtitle && (
+                <p className="text-[10px] mt-0.5 font-semibold" style={{ color: 'rgba(28,22,51,0.55)' }}>{subtitle}</p>
+              )}
+            </div>
+          </div>
+          <span className="text-[10px] font-bold min-w-[20px] h-5 rounded-md flex items-center justify-center px-1.5 flex-shrink-0"
+            style={{ background: countBg, color }}>
+            {count}
+          </span>
+        </button>
+
+        {/* ── Leads de la etapa, en vertical y a todo el ancho ── */}
+        {!plegada && (
+          <div className="space-y-2 mt-2 pl-1">
+            {count === 0 && (
+              <div className="text-center py-5 text-xs rounded-xl"
+                style={{ color: 'rgba(28,22,51,0.45)', border: '1.5px dashed #cbd5e1', background: 'rgba(255,255,255,0.6)' }}>
+                {emptyLabel}
+              </div>
+            )}
+            {children}
+            {footer}
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div

@@ -204,6 +204,29 @@ export const deleteWhatsAppMessage = (id: number) => api.delete(`/api/whatsapp/m
 export const editWhatsAppMessage = (id: number, content: string) => api.patch(`/api/whatsapp/messages/${id}`, { content }).then(r => r.data)
 export const retryWhatsAppMessage = (id: number) => api.post(`/api/whatsapp/messages/${id}/retry`).then(r => r.data)
 
+/**
+ * LADRILLO 3 — decir la VERDAD cuando un mensaje no sale.
+ *
+ * Había un solo aviso para todo: "WhatsApp no conectado — mensaje guardado sin
+ * enviar". Muchas veces era falso: WhatsApp estaba perfectamente conectado y lo
+ * que pasaba era otra cosa (pasaron más de 24 h desde el último mensaje del
+ * cliente, el número no existe, la cuenta está saturada). Quien lee "no
+ * conectado" va a revisar la conexión —que está bien— mientras el cliente sigue
+ * sin respuesta.
+ *
+ * Ahora el backend clasifica el rechazo de Meta y manda el motivo en `error`;
+ * acá solo se elige qué mostrar. `logged` conserva su significado de siempre:
+ * se guardó sin poder siquiera intentar el envío.
+ *
+ * Devuelve el aviso, o null si el mensaje salió.
+ */
+export const avisoEnvioWhatsApp = (resultado?: { status?: string; error?: string | null } | null): string | null => {
+  if (!resultado) return null
+  if (resultado.status === 'logged') return 'WhatsApp no conectado — mensaje guardado sin enviar'
+  if (resultado.status === 'failed') return resultado.error || 'WhatsApp rechazó el envío'
+  return null
+}
+
 // TECNICO
 export const getTecnicoStats = () => api.get('/api/tecnico/stats').then(r => r.data)
 export const getTecnicoWhatsApp = () => api.get('/api/tecnico/whatsapp').then(r => r.data)

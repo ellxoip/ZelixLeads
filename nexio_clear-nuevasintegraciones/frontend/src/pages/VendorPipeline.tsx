@@ -1016,7 +1016,7 @@ export default function VendorPipeline() {
           <div className="w-6 h-6 border-2 border-lime border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
-        <KanbanBoard layout="scroll">
+        <KanbanBoard layout="vertical">
 
           {/* ── En proceso de reunión ── */}
           {(() => {

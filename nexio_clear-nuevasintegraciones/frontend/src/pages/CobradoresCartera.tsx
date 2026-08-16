@@ -4,7 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import {
   getCobradorLeads, updateCobradorStage, updateCobradorNotes, updateCobradorMontoPagado,
-  getAllWhatsAppConfigs, getWhatsAppMessages, sendWhatsAppMessage, sendWhatsAppMedia,
+  getAllWhatsAppConfigs, getWhatsAppMessages, sendWhatsAppMessage, sendWhatsAppMedia, avisoEnvioWhatsApp,
   markMessagesRead, deleteWhatsAppMessage, editWhatsAppMessage,
   getCobradorPortalUrl, markCobradorLeadSeen, markCobradorContactado, unmarkCobradorContactado, sendCobradorEmail,
   getGmailStatus, getGmailAuthUrl, disconnectGmail,
@@ -437,11 +437,11 @@ function ChatTab({ lead }: { lead: CobradorLead }) {
         fd.append('whatsapp_config_id', configId)
         fd.append('caption', msgText.trim())
         const result = await sendWhatsAppMedia(fd)
-        if (result?.status === 'logged') toast.error('WhatsApp no conectado — archivo guardado sin enviar')
+        { const aviso = avisoEnvioWhatsApp(result); if (aviso) toast.error(aviso) }
         clearMedia(); setMsgText('')
       } else {
         const result = await sendWhatsAppMessage({ contact_id: lead.contact_id, whatsapp_config_id: parseInt(configId), message: msgText.trim() })
-        if (result?.status === 'logged') toast.error('WhatsApp no conectado — mensaje guardado sin enviar')
+        { const aviso = avisoEnvioWhatsApp(result); if (aviso) toast.error(aviso) }
         setMsgText('')
       }
       loadMessages()
