@@ -115,6 +115,18 @@ router = APIRouter(prefix="/api/work-orders", tags=["work-orders"])
 # ─── OT type catalog ───────────────────────────────────────────────────────────
 
 OT_TYPES: dict[str, dict] = {
+    # Reutiliza el motor de documentos del rubro legal para cerrar la exigencia
+    # de la Ley 21.719: contrato ESCRITO entre responsable (la pyme) y encargado
+    # (Zelix). Sin él, onboardear pymes después de diciembre de 2026 es
+    # infracción de ambas partes. ⚠️ Borrador técnico: requiere firma de abogado.
+    "encargo_datos": {
+        "label": "Contrato de Encargo de Tratamiento de Datos",
+        "subtitle": "Encargo de Tratamiento de Datos Personales — Ley N° 21.719",
+        "icon": "🛡️",
+        "has_diagnosis": False,
+        "extra_fields": [],
+        "ai_fields": ["vigencia_encargo", "observaciones_adicionales"],
+    },
     "prescripcion": {
         "label": "Prescripción de Deuda Tributaria",
         "subtitle": "Tramitación de Prescripción de Deuda Tributaria — Art. 200 C.T.",

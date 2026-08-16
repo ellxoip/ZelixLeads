@@ -627,6 +627,79 @@ function DebtTableDoc({ value, onChange }: { value: any; onChange: (v: any) => v
   )
 }
 
+
+// ── Contrato de encargo de tratamiento (Ley 21.719) ──────────────────────────
+// Reutiliza este mismo motor de documentos, que ya no se ocupa para el rubro
+// legal. La ley exige contrato ESCRITO entre responsable (la pyme) y encargado
+// (Zelix); sin él, onboardear pymes después de diciembre de 2026 es infracción
+// de las dos partes. El wording debe ir igual que en `ot_templates.py`, que es
+// el que emite el PDF — si divergen, el cliente firma una cosa y recibe otra.
+function EncargoDatos({ f, ch }: { f: Record<string, any>; ch: (k: string, v: string) => void }) {
+  return (
+    <>
+      <SectionTitle>II. PARTES Y ROLES</SectionTitle>
+      <BodyText>Para efectos de la Ley N° 19.628, con las modificaciones introducidas por la Ley N° 21.719, las partes reconocen expresamente los siguientes roles:</BodyText>
+      <BulletList items={[
+        'EL CLIENTE individualizado en la sección anterior actúa como RESPONSABLE del tratamiento respecto de los datos personales de sus propios clientes y contactos.',
+        'ZELIX actúa como ENCARGADO del tratamiento, tratando dichos datos únicamente por cuenta del responsable y conforme a sus instrucciones documentadas.',
+      ]} />
+      <BodyText>Zelix no determina los fines del tratamiento ni utiliza los datos para finalidades propias.</BodyText>
+
+      <SectionTitle>III. OBJETO, NATURALEZA, FINALIDAD Y DURACIÓN</SectionTitle>
+      <BodyText>El objeto es el tratamiento de datos personales necesario para prestar el servicio de asistente conversacional de ventas: recibir mensajes de los clientes del responsable, responderlos automáticamente, registrar pedidos y facilitar el cobro.</BodyText>
+
+      <SectionTitle>IV. DATOS Y TITULARES ALCANZADOS</SectionTitle>
+      <BulletList items={[
+        'Identificadores de contacto: número de teléfono y nombre de perfil del cliente final.',
+        'Contenido de las conversaciones sostenidas con el asistente.',
+        'Datos de pedidos: productos, cantidades, montos y fechas.',
+        'Datos de identificación del responsable y de sus operadores autorizados.',
+      ]} />
+      <BodyText>Zelix aplica filtros automáticos que impiden el almacenamiento de datos de tarjetas de pago.</BodyText>
+
+      <SectionTitle>V. OBLIGACIONES DEL ENCARGADO</SectionTitle>
+      <BulletList items={[
+        'Tratar los datos únicamente conforme a las instrucciones documentadas del responsable.',
+        'Garantizar que quienes accedan a los datos estén sujetos a deber de confidencialidad.',
+        'Aplicar medidas técnicas y organizativas apropiadas al riesgo, incluyendo aislamiento lógico entre comercios, cifrado de credenciales y registro de accesos.',
+        'No comunicar ni ceder los datos a terceros distintos de los subencargados autorizados.',
+        'Asistir al responsable en el cumplimiento de sus propias obligaciones.',
+        'Mantener un registro de las actividades de tratamiento y ponerlo a su disposición.',
+      ]} />
+
+      <SectionTitle>VI. SUBENCARGADOS AUTORIZADOS</SectionTitle>
+      <BulletList items={[
+        'Supabase, Inc. (EE.UU.) — almacenamiento de base de datos y bóveda cifrada de credenciales.',
+        'Render, Inc. (EE.UU.) — alojamiento y procesamiento del backend.',
+        'Cloudflare, Inc. (EE.UU.) — sitio web y red de entrega de contenidos.',
+        'OpenAI, LLC (EE.UU.) — generación de las respuestas del asistente.',
+        'Google LLC (EE.UU.) — respaldo ante indisponibilidad del proveedor principal.',
+        'Meta Platforms, Inc. (EE.UU.) — transporte de los mensajes de WhatsApp.',
+        'Telegram Messenger Inc. — transporte de los mensajes del canal Telegram.',
+        'Flow (Chile) — procesamiento de pagos; Zelix no accede a datos de tarjeta.',
+      ]} />
+
+      <SectionTitle>VII. TRANSFERENCIA INTERNACIONAL</SectionTitle>
+      <BodyText>Salvo Flow, los subencargados se encuentran fuera del territorio nacional. La transferencia se ampara en cláusulas contractuales de protección de datos que imponen obligaciones equivalentes y prohíben el uso de los datos para fines propios del proveedor. Tratándose de proveedores de inteligencia artificial, el tratamiento excluye el uso del contenido de las conversaciones para entrenar sus modelos.</BodyText>
+
+      <SectionTitle>VIII. SEGURIDAD Y NOTIFICACIÓN DE VULNERACIONES</SectionTitle>
+      <BodyText>Detectada una vulneración que afecte datos tratados por cuenta del responsable, Zelix se lo notificará SIN DILACIÓN INDEBIDA, informando naturaleza, categorías y volumen aproximado de datos afectados, consecuencias probables y medidas adoptadas. La notificación a la Agencia y a los titulares es obligación del responsable; Zelix le prestará la asistencia necesaria para cumplirla en plazo.</BodyText>
+
+      <SectionTitle>IX. ASISTENCIA EN EL EJERCICIO DE DERECHOS</SectionTitle>
+      <BodyText>Zelix asistirá al responsable para atender solicitudes de acceso, rectificación, supresión, oposición, portabilidad y bloqueo. Si un titular se dirige directamente a Zelix, su solicitud se deriva al responsable sin demora.</BodyText>
+
+      <SectionTitle>X. DEVOLUCIÓN O SUPRESIÓN AL TÉRMINO</SectionTitle>
+      <BodyText>Terminada la prestación, Zelix suprimirá los datos, salvo el respaldo tributario de las operaciones, que se conserva seis años conforme al artículo 200 del Código Tributario y no incluye el contenido de las conversaciones ni los identificadores de contacto.</BodyText>
+
+      <SectionTitle>XI. AUDITORÍA Y ACREDITACIÓN</SectionTitle>
+      <BodyText>Zelix pondrá a disposición del responsable la información necesaria para acreditar el cumplimiento, y permitirá auditorías razonables acordadas con antelación, sin comprometer la seguridad ni la confidencialidad de los datos de otros comercios.</BodyText>
+
+      <SectionTitle>XII. PLAZO Y VIGENCIA <AIBadge /></SectionTitle>
+      <BlankArea fieldKey="vigencia_encargo" value={f.vigencia_encargo} onChange={ch} rows={2} />
+    </>
+  )
+}
+
 // ── Full document renderer ────────────────────────────────────────────────────
 
 function renderTypeContent(otType: string, f: Record<string, any>, ch: (k: string, v: string) => void) {
@@ -643,6 +716,7 @@ function renderTypeContent(otType: string, f: Record<string, any>, ch: (k: strin
     case 'renegociacion':          return <Renegociacion f={f} ch={ch} />
     case 'alzamiento':             return <Alzamiento f={f} ch={ch} />
     case 'constitucion':           return <Constitucion f={f} ch={ch} />
+    case 'encargo_datos':          return <EncargoDatos f={f} ch={ch} />
     default:                       return null
   }
 }

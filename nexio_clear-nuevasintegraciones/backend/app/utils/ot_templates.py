@@ -455,3 +455,117 @@ def get_content(ot_type: str) -> list[dict[str, Any]]:
 
 def acceptance_body() -> list[str]:
     return list(_ACCEPTANCE_BODY)
+
+# ── Contrato de encargo de tratamiento de datos (Ley 21.719) ────────────────
+# Reutiliza el motor de documentos del rubro legal, que ya no se usa para eso.
+# La 21.719 exige contrato ESCRITO entre responsable (la pyme, dueña de los
+# datos de sus clientes) y encargado (Zelix, que los trata por cuenta de ella).
+# Sin él, onboardear pymes después de diciembre de 2026 es infracción de las dos.
+#
+# ⚠️ BORRADOR TÉCNICO: cubre los deberes que la ley enumera para el encargado,
+# pero NO reemplaza revisión de abogado. Antes de usarlo con un cliente real
+# tiene que pasar por firma profesional.
+OT_CONTENT["encargo_datos"] = [
+    _section(
+        "II. PARTES Y ROLES",
+        _body(
+            "Para efectos de la Ley N° 19.628, con las modificaciones introducidas por la Ley N° 21.719, las partes reconocen expresamente los siguientes roles:",
+        ),
+        _bullets(
+            "EL CLIENTE individualizado en la sección anterior actúa como RESPONSABLE del tratamiento respecto de los datos personales de sus propios clientes y contactos.",
+            "ZELIX actúa como ENCARGADO del tratamiento, tratando dichos datos únicamente por cuenta del responsable y conforme a sus instrucciones documentadas.",
+        ),
+        _body(
+            "Zelix no determina los fines del tratamiento ni utiliza los datos para finalidades propias. Cualquier tratamiento fuera de las instrucciones del responsable, salvo obligación legal, constituye incumplimiento de este contrato.",
+        ),
+    ),
+    _section(
+        "III. OBJETO, NATURALEZA, FINALIDAD Y DURACIÓN",
+        _body(
+            "El objeto es el tratamiento de datos personales necesario para prestar el servicio de asistente conversacional de ventas: recibir mensajes de los clientes del responsable, responderlos automáticamente, registrar pedidos y facilitar el cobro.",
+            "La duración del encargo coincide con la vigencia del servicio contratado. Terminado el servicio, rige lo previsto en la sección X.",
+        ),
+    ),
+    _section(
+        "IV. DATOS Y TITULARES ALCANZADOS",
+        _body("El encargo alcanza las siguientes categorías, y ninguna otra:"),
+        _bullets(
+            "Identificadores de contacto: número de teléfono y nombre de perfil del cliente final.",
+            "Contenido de las conversaciones sostenidas con el asistente.",
+            "Datos de pedidos: productos, cantidades, montos y fechas.",
+            "Datos de identificación del responsable y de sus operadores autorizados.",
+        ),
+        _body(
+            "Zelix aplica filtros automáticos que impiden el almacenamiento de datos de tarjetas de pago: si un cliente final los escribe en el chat, el dato se descarta antes de persistirse y antes de enviarse a cualquier proveedor.",
+        ),
+    ),
+    _section(
+        "V. OBLIGACIONES DEL ENCARGADO",
+        _body("Zelix se obliga a:"),
+        _bullets(
+            "Tratar los datos únicamente conforme a las instrucciones documentadas del responsable.",
+            "Garantizar que quienes accedan a los datos estén sujetos a deber de confidencialidad.",
+            "Aplicar medidas técnicas y organizativas apropiadas al riesgo, incluyendo aislamiento lógico entre comercios, cifrado de credenciales y registro de accesos.",
+            "No comunicar ni ceder los datos a terceros distintos de los subencargados autorizados en la sección VI.",
+            "Asistir al responsable en el cumplimiento de sus propias obligaciones, en los términos de las secciones VIII y IX.",
+            "Mantener un registro de las actividades de tratamiento realizadas por cuenta del responsable, y ponerlo a su disposición cuando lo requiera.",
+        ),
+    ),
+    _section(
+        "VI. SUBENCARGADOS AUTORIZADOS",
+        _body(
+            "El responsable autoriza a Zelix a recurrir a los siguientes subencargados, cada uno vinculado por obligaciones de protección equivalentes a las de este contrato:",
+        ),
+        _bullets(
+            "Supabase, Inc. (EE.UU.) — almacenamiento de base de datos y bóveda cifrada de credenciales.",
+            "Render, Inc. (EE.UU.) — alojamiento y procesamiento del backend.",
+            "Cloudflare, Inc. (EE.UU.) — sitio web y red de entrega de contenidos.",
+            "OpenAI, LLC (EE.UU.) — generación de las respuestas del asistente.",
+            "Google LLC (EE.UU.) — generación de respuestas del asistente, únicamente como respaldo ante indisponibilidad del proveedor principal.",
+            "Meta Platforms, Inc. (EE.UU.) — transporte de los mensajes de WhatsApp.",
+            "Telegram Messenger Inc. — transporte de los mensajes del canal Telegram.",
+            "Flow (Chile) — procesamiento de pagos, bajo su propia política; Zelix no accede a datos de tarjeta.",
+        ),
+        _body(
+            "Zelix informará al responsable de cualquier incorporación o sustitución de subencargados con antelación razonable, permitiéndole oponerse por motivos fundados.",
+        ),
+    ),
+    _section(
+        "VII. TRANSFERENCIA INTERNACIONAL",
+        _body(
+            "El responsable reconoce que los subencargados indicados, salvo Flow, se encuentran fuera del territorio nacional, por lo que el tratamiento involucra transferencia internacional de datos.",
+            "Dicha transferencia se ampara en cláusulas contractuales de protección de datos suscritas con cada proveedor, que imponen obligaciones de seguridad y confidencialidad equivalentes y prohíben el uso de los datos para fines propios del proveedor.",
+            "Tratándose de proveedores de inteligencia artificial, el tratamiento se realiza bajo condiciones que excluyen el uso del contenido de las conversaciones para el entrenamiento de sus modelos.",
+        ),
+    ),
+    _section(
+        "VIII. SEGURIDAD Y NOTIFICACIÓN DE VULNERACIONES",
+        _body(
+            "Zelix mantiene medidas de seguridad apropiadas al riesgo y registro de accesos que permite determinar el alcance de un eventual incidente.",
+            "Detectada una vulneración de seguridad que afecte datos personales tratados por cuenta del responsable, Zelix se lo notificará SIN DILACIÓN INDEBIDA, informando la naturaleza del incidente, las categorías y volumen aproximado de datos afectados, las consecuencias probables y las medidas adoptadas o propuestas.",
+            "La notificación a la Agencia de Protección de Datos Personales y, cuando corresponda, a los titulares, es obligación del responsable; Zelix le prestará la asistencia y la información necesarias para cumplirla en plazo.",
+        ),
+    ),
+    _section(
+        "IX. ASISTENCIA EN EL EJERCICIO DE DERECHOS",
+        _body(
+            "Zelix asistirá al responsable para atender las solicitudes de acceso, rectificación, supresión, oposición, portabilidad y bloqueo que formulen los titulares.",
+            "Si un titular dirige su solicitud directamente a Zelix, ésta la derivará al responsable sin demora, absteniéndose de resolverla por sí misma salvo instrucción expresa.",
+        ),
+    ),
+    _section(
+        "X. DEVOLUCIÓN O SUPRESIÓN AL TÉRMINO",
+        _body(
+            "Terminada la prestación, Zelix suprimirá los datos personales tratados por cuenta del responsable, salvo que una norma legal obligue a conservarlos.",
+            "Se exceptúa el respaldo tributario de las operaciones (monto, fecha, medio de pago e identificación del emisor), que se conserva por seis años conforme al artículo 200 del Código Tributario. Dicho respaldo no incluye el contenido de las conversaciones ni los identificadores de contacto de los clientes finales.",
+        ),
+    ),
+    _section(
+        "XI. AUDITORÍA Y ACREDITACIÓN",
+        _body(
+            "Zelix pondrá a disposición del responsable la información necesaria para acreditar el cumplimiento de las obligaciones de esta sección, y permitirá auditorías razonables, acordadas con antelación y sin comprometer la seguridad ni la confidencialidad de los datos de otros comercios.",
+        ),
+    ),
+    _section("XII. PLAZO Y VIGENCIA", _ai_field("Vigencia y condiciones particulares", "vigencia_encargo")),
+    _acceptance("XIII"),
+]
