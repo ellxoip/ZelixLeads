@@ -462,9 +462,12 @@ def acceptance_body() -> list[str]:
 # datos de sus clientes) y encargado (Zelix, que los trata por cuenta de ella).
 # Sin él, onboardear pymes después de diciembre de 2026 es infracción de las dos.
 #
-# ⚠️ BORRADOR TÉCNICO: cubre los deberes que la ley enumera para el encargado,
-# pero NO reemplaza revisión de abogado. Antes de usarlo con un cliente real
-# tiene que pasar por firma profesional.
+# Sobre la firma de abogado: NO es requisito. En Chile un contrato vale por el
+# consentimiento de las partes, y la 21.719 exige que el encargo conste POR
+# ESCRITO con cierto contenido mínimo — no exige abogado, notario ni registro.
+# Lo que se sanciona es no tener contrato. La revisión legal conviene igual,
+# pero por otro motivo: que las cláusulas de responsabilidad protejan a Zelix
+# cuando algo salga mal. Usable desde ya; revisable antes de escalar.
 OT_CONTENT["encargo_datos"] = [
     _section(
         "II. PARTES Y ROLES",

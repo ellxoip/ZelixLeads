@@ -118,7 +118,8 @@ OT_TYPES: dict[str, dict] = {
     # Reutiliza el motor de documentos del rubro legal para cerrar la exigencia
     # de la Ley 21.719: contrato ESCRITO entre responsable (la pyme) y encargado
     # (Zelix). Sin él, onboardear pymes después de diciembre de 2026 es
-    # infracción de ambas partes. ⚠️ Borrador técnico: requiere firma de abogado.
+    # infracción de ambas partes. No requiere abogado para ser válido: la ley
+    # exige que conste por escrito, no firma profesional (ver ot_templates.py).
     "encargo_datos": {
         "label": "Contrato de Encargo de Tratamiento de Datos",
         "subtitle": "Encargo de Tratamiento de Datos Personales — Ley N° 21.719",
