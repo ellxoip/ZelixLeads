@@ -1,5 +1,5 @@
 import { Zap, Calendar, Wrench, Copy, Sparkles, X, ArrowRight } from 'lucide-react'
-import { NexioLogo } from '../NexioLogo'
+import { ZelixLeadsLogo } from '../ZelixLeadsLogo'
 import type { Insight } from './types'
 
 const TYPE_STYLE: Record<Insight['type'], { accent: string; glow: string; Icon: typeof Zap; tag: string }> = {
@@ -37,7 +37,7 @@ export default function CopilotCard({ insight, onAct, onDismiss }: {
             style={{ background: s.glow }} />
           <div className="relative w-9 h-9 rounded-xl flex items-center justify-center"
             style={{ background: 'var(--surface-2)', border: `1px solid ${s.accent}40` }}>
-            <NexioLogo size={20} />
+            <ZelixLeadsLogo size={20} />
           </div>
         </div>
 

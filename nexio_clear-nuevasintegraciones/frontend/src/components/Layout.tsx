@@ -15,7 +15,7 @@ import InstallPWA from './InstallPWA'
 import GlobalSearch from './GlobalSearch'
 import LeadDrawerHost from './LeadDrawerHost'
 import NotificationPanel from './NotificationPanel'
-import { NexioLogo } from './NexioLogo'
+import { ZelixLeadsLogo } from './ZelixLeadsLogo'
 import toast from 'react-hot-toast'
 import { useRealtime } from '../contexts/RealtimeContext'
 
@@ -292,7 +292,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* ── Marca ── */}
       <div className={`flex items-center flex-shrink-0 ${expanded ? 'gap-3 px-5 pt-6 pb-5' : 'flex-col pt-6 pb-5'}`}>
-        <NexioLogo size={expanded ? 38 : 30} />
+        <ZelixLeadsLogo size={expanded ? 38 : 30} />
         {expanded && (
           <div className="min-w-0">
             <p className="font-black text-lg leading-none truncate"
@@ -483,7 +483,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       >
         {/* Marca */}
         <Link to="/" className="flex items-center gap-2.5 pr-4 mr-1 flex-shrink-0">
-          <NexioLogo size={28} />
+          <ZelixLeadsLogo size={28} />
           <span className="font-black text-[15px] leading-none"
             style={{
               fontFamily: '"Space Grotesk", sans-serif', letterSpacing: '-0.03em',

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/auth'
 import toast from 'react-hot-toast'
 import { Lock, Mail, Eye, EyeOff, Send, ShieldCheck, Zap } from 'lucide-react'
-import { NexioLogo } from '../components/NexioLogo'
+import { ZelixLeadsLogo } from '../components/ZelixLeadsLogo'
 import InstallPWA from '../components/InstallPWA'
 import api from '../api/client'
 
@@ -194,7 +194,7 @@ export default function Login() {
 
       {/* Marca */}
       <div className="relative z-10 flex flex-col items-center mb-7">
-        <NexioLogo size={54} />
+        <ZelixLeadsLogo size={54} />
         <h1 className="mt-3 text-3xl font-black tracking-tight leading-none"
           style={{
             fontFamily: '"Space Grotesk", sans-serif', letterSpacing: '-0.03em',

@@ -1,14 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<!-- Logo de ZelixLeads: la Z de embudo dentro de una burbuja de conversación.
+     Mismo dibujo que src/components/ZelixLeadsLogo.tsx, con los colores de marca
+     puestos a mano (un SVG suelto no ve las variables CSS de la app). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#4361ee"/>
-      <stop offset="100%" stop-color="#25d366"/>
+    <linearGradient id="zlG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#357a0e"/>
+      <stop offset="100%" stop-color="#76e130"/>
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
-  <path d="M136 152 C136 136 149 124 165 124 L347 124 C363 124 376 136 376 152 L376 300 C376 316 363 328 347 328 L280 328 L240 388 L200 328 L165 328 C149 328 136 316 136 300 Z"
-        fill="none" stroke="white" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="196" cy="226" r="18" fill="white"/>
-  <circle cx="256" cy="226" r="18" fill="white"/>
-  <circle cx="316" cy="226" r="18" fill="white"/>
+  <path d="M 26,6 H 74 Q 94,6 94,26 V 60 Q 94,80 74,80 H 44 L 22,95 L 26,80 Q 6,79 6,60 V 26 Q 6,6 26,6 Z" fill="url(#zlG)"/>
+  <g stroke="#ffffff" stroke-width="9" stroke-linecap="round" fill="none">
+    <line x1="30" y1="28" x2="70" y2="28"/>
+    <line x1="66" y1="31" x2="38" y2="55"/>
+    <line x1="40" y1="58" x2="60" y2="58"/>
+  </g>
 </svg>
